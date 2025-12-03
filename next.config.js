@@ -14,13 +14,8 @@ const nextConfig = {
       bodySizeLimit: '2mb',
     },
   },
-  // Ensure prisma client is available during build
-  webpack: (config, { isServer }) => {
-    if (isServer) {
-      config.externals.push('_http_common');
-    }
-    return config;
-  },
+  // Empty turbopack config to silence Next.js 16 warning
+  turbopack: {},
   // Output standalone for better deployment
   output: 'standalone',
 };
