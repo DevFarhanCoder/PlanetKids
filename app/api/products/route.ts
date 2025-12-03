@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import { uploadToCloudinary } from '@/lib/cloudinary';
 import { writeFile, mkdir } from 'fs/promises';
 import { join } from 'path';
 import { existsSync } from 'fs';
@@ -141,21 +142,45 @@ export async function POST(request: NextRequest) {
     const images = formData.getAll('images') as File[];
     const imageUrls: string[] = [];
 
-    if (images && images.length > 0) {
-      const uploadDir = join(process.cwd(), 'public', 'uploads', 'products');
-      
-      if (!existsSync(uploadDir)) {
-        await mkdir(uploadDir, { recursive: true });
-      }
+    // Check if Cloudinary is configured
+    const hasCloudinary = process.env.CLOUDINARY_CLOUD_NAME && 
+                          process.env.CLOUDINARY_API_KEY && 
+                          process.env.CLOUDINARY_API_SECRET;
 
-      for (const image of images) {
-        if (image && image.size > 0) {
-          const buffer = Buffer.from(await image.arrayBuffer());
-          const filename = `${Date.now()}-${image.name.replace(/\s/g, '-')}`;
-          const filepath = join(uploadDir, filename);
-          
-          await writeFile(filepath, buffer);
-          imageUrls.push(`/uploads/products/${filename}`);
+    if (images && images.length > 0) {
+      if (hasCloudinary) {
+        // Use Cloudinary for both local and production
+        console.log('Uploading images to Cloudinary...');
+        for (const image of images) {
+          if (image && image.size > 0) {
+            try {
+              const buffer = Buffer.from(await image.arrayBuffer());
+              const url = await uploadToCloudinary(buffer, 'planetkids/products');
+              imageUrls.push(url);
+              console.log('Image uploaded to Cloudinary:', url);
+            } catch (error) {
+              console.error('Failed to upload image to Cloudinary:', error);
+            }
+          }
+        }
+      } else {
+        // Fallback to local filesystem (development only)
+        console.warn('Cloudinary not configured. Using local filesystem.');
+        const uploadDir = join(process.cwd(), 'public', 'uploads', 'products');
+        
+        if (!existsSync(uploadDir)) {
+          await mkdir(uploadDir, { recursive: true });
+        }
+
+        for (const image of images) {
+          if (image && image.size > 0) {
+            const buffer = Buffer.from(await image.arrayBuffer());
+            const filename = `${Date.now()}-${image.name.replace(/\s/g, '-')}`;
+            const filepath = join(uploadDir, filename);
+            
+            await writeFile(filepath, buffer);
+            imageUrls.push(`/uploads/products/${filename}`);
+          }
         }
       }
     }
@@ -246,17 +271,41 @@ export async function PUT(request: NextRequest) {
     // Handle new images
     const images = formData.getAll('images') as File[];
     if (images && images.length > 0) {
-      const uploadDir = join(process.cwd(), 'public', 'uploads', 'products');
+      const hasCloudinary = process.env.CLOUDINARY_CLOUD_NAME && 
+                            process.env.CLOUDINARY_API_KEY && 
+                            process.env.CLOUDINARY_API_SECRET;
       const imageUrls: string[] = [];
 
-      for (const image of images) {
-        if (image && image.size > 0) {
-          const buffer = Buffer.from(await image.arrayBuffer());
-          const filename = `${Date.now()}-${image.name.replace(/\s/g, '-')}`;
-          const filepath = join(uploadDir, filename);
-          
-          await writeFile(filepath, buffer);
-          imageUrls.push(`/uploads/products/${filename}`);
+      if (hasCloudinary) {
+        // Upload to Cloudinary
+        for (const image of images) {
+          if (image && image.size > 0) {
+            try {
+              const buffer = Buffer.from(await image.arrayBuffer());
+              const url = await uploadToCloudinary(buffer, 'planetkids/products');
+              imageUrls.push(url);
+            } catch (error) {
+              console.error('Failed to upload image to Cloudinary:', error);
+            }
+          }
+        }
+      } else {
+        // Fallback to local filesystem
+        const uploadDir = join(process.cwd(), 'public', 'uploads', 'products');
+        
+        if (!existsSync(uploadDir)) {
+          await mkdir(uploadDir, { recursive: true });
+        }
+
+        for (const image of images) {
+          if (image && image.size > 0) {
+            const buffer = Buffer.from(await image.arrayBuffer());
+            const filename = `${Date.now()}-${image.name.replace(/\s/g, '-')}`;
+            const filepath = join(uploadDir, filename);
+            
+            await writeFile(filepath, buffer);
+            imageUrls.push(`/uploads/products/${filename}`);
+          }
         }
       }
 
