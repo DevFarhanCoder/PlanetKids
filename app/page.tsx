@@ -3,6 +3,10 @@ import { ArrowRight, Star } from 'lucide-react';
 import HeroCarousel from '@/components/home/HeroCarousel';
 import Image from 'next/image';
 
+// Force dynamic rendering to avoid build-time fetch issues
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 async function getCategories() {
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/categories`, {
