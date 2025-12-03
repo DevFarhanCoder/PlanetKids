@@ -200,6 +200,7 @@ export async function POST(request: NextRequest) {
         ageGroup: ageGroup as any,
         isFeatured,
         isNewArrival,
+        isActive: true, // Make product active by default
         categories: {
           create: categoryIds.map((categoryId: string) => ({
             categoryId
