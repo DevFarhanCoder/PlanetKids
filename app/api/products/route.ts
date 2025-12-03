@@ -120,6 +120,7 @@ export async function POST(request: NextRequest) {
     }
 
     const formData = await request.formData();
+    console.log('Form data received:', Object.fromEntries(formData));
     
     // Extract product data
     const name = formData.get('name') as string;
@@ -198,9 +199,14 @@ export async function POST(request: NextRequest) {
     });
 
     return NextResponse.json(product, { status: 201 });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error creating product:', error);
-    return NextResponse.json({ error: 'Failed to create product' }, { status: 500 });
+    console.error('Error details:', error.message, error.stack);
+    return NextResponse.json({ 
+      error: 'Failed to create product',
+      details: error.message,
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    }, { status: 500 });
   }
 }
 
