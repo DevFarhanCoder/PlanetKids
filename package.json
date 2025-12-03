@@ -4,14 +4,16 @@
   "description": "PlanetKids E-commerce Platform - Quality Kids Products",
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "prisma generate && next build",
     "start": "next start",
     "lint": "next lint",
+    "postinstall": "prisma generate",
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
     "db:migrate": "prisma migrate dev",
     "db:studio": "prisma studio",
-    "db:seed": "node --loader ts-node/esm prisma/seed.ts"
+    "db:seed": "node --loader ts-node/esm prisma/seed.ts",
+    "vercel-build": "prisma generate && prisma db push && next build"
   },
   "prisma": {
     "seed": "node --loader ts-node/esm prisma/seed.ts"
