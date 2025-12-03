@@ -36,7 +36,14 @@ export default async function Home() {
   const categoryColors = ['bg-blue-100', 'bg-pink-100', 'bg-purple-100', 'bg-yellow-100', 'bg-green-100', 'bg-indigo-100', 'bg-red-100', 'bg-orange-100'];
   const categoryIcons = ['🎒', '🧸', '🎨', '🎁', '👶', '📚', '🎒', '✏️'];
   
-  const categories = dbCategories.length > 0 
+  interface Category {
+    name: string;
+    slug: string;
+    icon: string;
+    color: string;
+  }
+
+  const categories: Category[] = dbCategories.length > 0 
     ? dbCategories.map((cat: any, index: number) => ({
         name: cat.name,
         slug: cat.slug,
