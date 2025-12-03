@@ -9,7 +9,12 @@ export const revalidate = 0;
 
 async function getCategories() {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/categories`, {
+    // Use Vercel URL in production, localhost in development
+    const baseUrl = process.env.VERCEL_URL 
+      ? `https://${process.env.VERCEL_URL}` 
+      : (process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000');
+    
+    const res = await fetch(`${baseUrl}/api/categories`, {
       cache: 'no-store'
     });
     const data = await res.json();
@@ -22,7 +27,12 @@ async function getCategories() {
 
 async function getProducts() {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/products?limit=8&featured=true`, {
+    // Use Vercel URL in production, localhost in development
+    const baseUrl = process.env.VERCEL_URL 
+      ? `https://${process.env.VERCEL_URL}` 
+      : (process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000');
+    
+    const res = await fetch(`${baseUrl}/api/products?limit=8&featured=true`, {
       cache: 'no-store'
     });
     const data = await res.json();
