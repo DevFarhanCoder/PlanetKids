@@ -5,7 +5,19 @@ import { createPortal } from 'react-dom';
 import Link from 'next/link';
 import { Search, ShoppingCart, Heart, User, Menu, X, ChevronDown } from 'lucide-react';
 
+interface Subcategory {
+  name: string;
+  slug: string;
+}
+
+interface Category {
+  name: string;
+  slug: string;
+  subcategories: Subcategory[];
+}
+
 export default function Navbar() {
+  const [categories, setCategories] = useState<Category[]>([]);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [showLeftArrow, setShowLeftArrow] = useState(false);
@@ -18,6 +30,29 @@ export default function Navbar() {
 
   useEffect(() => {
     setMounted(true);
+    
+    // Fetch categories from API
+    fetch('/api/categories')
+      .then(res => res.json())
+      .then(data => {
+        if (data.categories) {
+          // Transform database categories to component format
+          const formattedCategories = data.categories
+            .filter((cat: any) => !cat.parentId) // Only main categories
+            .map((cat: any) => ({
+              name: cat.name,
+              slug: cat.slug,
+              subcategories: data.categories
+                .filter((sub: any) => sub.parentId === cat.id)
+                .map((sub: any) => ({
+                  name: sub.name,
+                  slug: sub.slug
+                }))
+            }));
+          setCategories(formattedCategories);
+        }
+      })
+      .catch(err => console.error('Error fetching categories:', err));
   }, []);
 
   useEffect(() => {
@@ -72,95 +107,20 @@ export default function Navbar() {
     }
   }, []);
 
-  const categories = [
-    {
-      name: 'School Essentials',
-      slug: 'school-essentials',
-      subcategories: [
-        { name: 'All School Essentials', slug: 'all' },
-        { name: 'Backpacks', slug: 'backpacks' },
-        { name: 'School Bags', slug: 'school-bags' },
-        { name: 'Lunch Boxes', slug: 'lunch-boxes' },
-        { name: 'Water Bottles', slug: 'water-bottles' },
-        { name: 'Stationary', slug: 'stationary' }
-      ]
-    },
-    {
-      name: 'Toys and Games',
-      slug: 'toys-games',
-      subcategories: [
-        { name: 'All Toys', slug: 'all' },
-        { name: 'Action Figures', slug: 'action-figures' },
-        { name: 'Building Blocks', slug: 'building-blocks' },
-        { name: 'Board Games', slug: 'board-games' },
-        { name: 'Puzzles', slug: 'puzzles' },
-        { name: 'Educational Toys', slug: 'educational' }
-      ]
-    },
-    {
-      name: 'Art & Craft',
-      slug: 'art-craft',
-      subcategories: [
-        { name: 'All Art & Craft', slug: 'all' },
-        { name: 'Drawing Supplies', slug: 'drawing' },
-        { name: 'Painting Kits', slug: 'painting' },
-        { name: 'Craft Kits', slug: 'craft-kits' },
-        { name: 'Coloring Books', slug: 'coloring-books' }
-      ]
-    },
-    {
-      name: 'Gift Hampers',
-      slug: 'hampers',
-      subcategories: [
-        { name: 'All Hampers', slug: 'all' },
-        { name: 'Birthday Hampers', slug: 'birthday' },
-        { name: 'Festival Hampers', slug: 'festival' },
-        { name: 'Return Gifts', slug: 'return-gifts' }
-      ]
-    },
-    {
-      name: 'Kids Accessories',
-      slug: 'kids-accessories',
-      subcategories: [
-        { name: 'All Accessories', slug: 'all' },
-        { name: 'Hair Accessories', slug: 'hair' },
-        { name: 'Jewelry', slug: 'jewelry' },
-        { name: 'Bags', slug: 'bags' },
-        { name: 'Watches', slug: 'watches' }
-      ]
-    },
-    {
-      name: 'Everyday Essentials',
-      slug: 'everyday-essentials',
-      subcategories: [
-        { name: 'All Essentials', slug: 'all' },
-        { name: 'Baby Care', slug: 'baby-care' },
-        { name: 'Bath & Body', slug: 'bath-body' },
-        { name: 'Health & Safety', slug: 'health-safety' },
-        { name: 'Clothing', slug: 'clothing' }
-      ]
-    },
-    {
-      name: 'Travel Bag & Accessories',
-      slug: 'travel-accessories',
-      subcategories: [
-        { name: 'All Travel Items', slug: 'all' },
-        { name: 'Travel Bags', slug: 'travel-bags' },
-        { name: 'Suitcases', slug: 'suitcases' },
-        { name: 'Travel Games', slug: 'travel-games' }
-      ]
-    },
-    {
-      name: 'Books/Learning Kits',
-      slug: 'books-learning-kits',
-      subcategories: [
-        { name: 'All Books', slug: 'all' },
-        { name: 'Picture Books', slug: 'picture-books' },
-        { name: 'Activity Books', slug: 'activity-books' },
-        { name: 'Learning Kits', slug: 'learning-kits' }
-      ]
+  // Check arrows when categories load
+  useEffect(() => {
+    if (categories.length > 0) {
+      setTimeout(() => {
+        const container = document.getElementById('nav-scroll');
+        if (container) {
+          const { scrollWidth, clientWidth } = container;
+          setShowRightArrow(scrollWidth > clientWidth);
+        }
+      }, 100);
     }
-  ];
+  }, [categories]);
+
+  // Categories are now loaded dynamically from the database via useEffect
 
   return (
     <nav className="bg-white shadow-md sticky top-0 z-50">
@@ -247,34 +207,39 @@ export default function Navbar() {
                   const container = document.getElementById('nav-scroll');
                   if (container) container.scrollLeft -= 200;
                 }}
-                className="flex-shrink-0 p-1 mr-2 text-gray-600 hover:text-primary transition-colors bg-white shadow-sm rounded"
+                className="flex-shrink-0 p-2 mr-2 text-white bg-primary hover:bg-primary/80 transition-colors shadow-md rounded-full z-10"
+                aria-label="Scroll left"
               >
-                <ChevronDown className="w-4 h-4 rotate-90" />
+                <ChevronDown className="w-5 h-5 rotate-90" />
               </button>
             )}
 
             {/* Scrollable Navigation */}
             <div 
               id="nav-scroll"
-              className="flex items-center gap-8 overflow-x-auto scrollbar-hide flex-1"
+              className="flex items-center gap-6 overflow-x-auto scrollbar-hide flex-1"
               style={{ scrollBehavior: 'smooth', overflowY: 'visible' }}
             >
-              {categories.map((category, index) => (
-                <div
-                  key={category.slug}
-                  ref={(el) => { buttonRefs.current[category.slug] = el; }}
-                  className="flex-shrink-0"
-                >
-                  <button
-                    onMouseEnter={() => handleMouseEnter(category.slug)}
-                    onMouseLeave={handleMouseLeave}
-                    className="flex items-center gap-1 text-sm font-medium text-gray-700 hover:text-primary transition-colors whitespace-nowrap cursor-default"
+              {categories.length === 0 ? (
+                <div className="text-sm text-gray-500">Loading categories...</div>
+              ) : (
+                categories.map((category, index) => (
+                  <div
+                    key={category.slug}
+                    ref={(el) => { buttonRefs.current[category.slug] = el; }}
+                    className="flex-shrink-0"
                   >
-                    {category.name}
-                    <ChevronDown className="w-3 h-3" />
-                  </button>
-                </div>
-              ))}
+                    <button
+                      onMouseEnter={() => handleMouseEnter(category.slug)}
+                      onMouseLeave={handleMouseLeave}
+                      className="flex items-center gap-1 text-sm font-medium text-gray-700 hover:text-primary transition-colors whitespace-nowrap cursor-default"
+                    >
+                      {category.name}
+                      <ChevronDown className="w-3 h-3" />
+                    </button>
+                  </div>
+                ))
+              )}
 
               {/* Shop By Age, Price */}
               <div
@@ -307,9 +272,10 @@ export default function Navbar() {
                   const container = document.getElementById('nav-scroll');
                   if (container) container.scrollLeft += 200;
                 }}
-                className="flex-shrink-0 p-1 ml-2 text-gray-600 hover:text-primary transition-colors bg-white shadow-sm rounded"
+                className="flex-shrink-0 p-2 ml-2 text-white bg-primary hover:bg-primary/80 transition-colors shadow-md rounded-full z-10"
+                aria-label="Scroll right"
               >
-                <ChevronDown className="w-4 h-4 -rotate-90" />
+                <ChevronDown className="w-5 h-5 -rotate-90" />
               </button>
             )}
           </div>
