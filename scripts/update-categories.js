@@ -6,175 +6,184 @@ async function updateCategories() {
   try {
     console.log('🗑️  Clearing existing categories...');
     
-    // Delete all existing categories (cascade will handle related data)
+    // Delete all existing categories
     await prisma.category.deleteMany({});
     
     console.log('✅ Existing categories cleared\n');
     console.log('🌱 Creating new categories...\n');
 
-    // New category structure
+    // New category structure with multiple subcategories
     const categories = [
       {
         name: 'Baby & Infant Toys',
         slug: 'baby-infant-toys',
         description: 'Toys designed for babies and infants',
-        subcategories: ['Rattles, teethers, soft toys, musical cot toys']
+        subcategories: ['Rattles', 'Teethers', 'Soft Toys', 'Musical Cot Toys']
       },
       {
         name: 'Preschool & Learning Toys',
         slug: 'preschool-learning-toys',
         description: 'Educational toys for preschool children',
-        subcategories: ['Alphabet toys, number boards, shape sorters, Montessori toys']
+        subcategories: ['Alphabet Toys', 'Number Boards', 'Shape Sorters', 'Montessori Toys']
       },
       {
         name: 'Building & Construction Toys',
         slug: 'building-construction-toys',
         description: 'Building blocks and construction sets',
-        subcategories: ['Lego-type blocks, magnetic tiles, engineering sets']
+        subcategories: ['Lego-Type Blocks', 'Magnetic Tiles', 'Engineering Sets']
       },
       {
         name: 'Action Figures & Superheroes',
         slug: 'action-figures-superheroes',
         description: 'Action figures and superhero toys',
-        subcategories: ['Marvel, DC, anime characters, Indian cartoon characters']
+        subcategories: ['Marvel', 'DC', 'Anime Characters', 'Indian Cartoon Characters']
       },
       {
         name: 'Dolls & Doll Accessories',
         slug: 'dolls-doll-accessories',
         description: 'Dolls and accessories',
-        subcategories: ['Fashion dolls, baby dolls, doll houses, doll furniture']
+        subcategories: ['Fashion Dolls', 'Baby Dolls', 'Doll Houses', 'Doll Furniture']
       },
       {
         name: 'Outdoor & Sports Toys',
         slug: 'outdoor-sports-toys',
         description: 'Outdoor games and sports equipment',
-        subcategories: ['Cricket sets, footballs, badminton sets, skipping ropes']
+        subcategories: ['Cricket Sets', 'Footballs', 'Badminton Sets', 'Skipping Ropes']
       },
       {
         name: 'Ride-On Toys & Scooters',
         slug: 'ride-on-toys-scooters',
-        description: 'Ride-on vehicles and scooters',
-        subcategories: ['Scooty ride-ons, push cars, battery-operated vehicles']
+        description: 'Ride-on toys and scooters',
+        subcategories: ['Scooty Ride-Ons', 'Push Cars', 'Battery-Operated Vehicles']
       },
       {
         name: 'Remote Control & Battery Toys',
         slug: 'remote-control-battery-toys',
-        description: 'RC and battery-operated toys',
-        subcategories: ['RC cars, helicopters, robots, rechargeable vehicles']
+        description: 'Remote control and battery operated toys',
+        subcategories: ['RC Cars', 'Helicopters', 'Robots', 'Rechargeable Vehicles']
       },
       {
         name: 'Board Games & Puzzles',
         slug: 'board-games-puzzles',
-        description: 'Board games and puzzle sets',
-        subcategories: ['Chess, ludo, snakes & ladders, jigsaw puzzles']
+        description: 'Board games and jigsaw puzzles',
+        subcategories: ['Chess', 'Ludo', 'Snakes & Ladders', 'Jigsaw Puzzles']
       },
       {
         name: 'Soft Toys & Plush',
         slug: 'soft-toys-plush',
-        description: 'Soft toys and plush animals',
-        subcategories: ['Teddy bears, cartoon plush dolls, animals']
+        description: 'Soft and plush toys',
+        subcategories: ['Teddy Bears', 'Cartoon Plush Dolls', 'Animals']
       },
       {
         name: 'Electronic & STEM Toys',
         slug: 'electronic-stem-toys',
-        description: 'Electronic and STEM learning toys',
-        subcategories: ['Science kits, circuits, coding toys, robotics']
+        description: 'Electronic learning and STEM toys',
+        subcategories: ['Science Kits', 'Circuits', 'Coding Toys', 'Robotics']
       },
       {
         name: 'Arts, Craft & DIY Sets',
         slug: 'arts-craft-diy-sets',
-        description: 'Art and craft supplies',
-        subcategories: ['Painting kits, clay, slime kits, jewellery-making sets']
+        description: 'Arts, crafts and DIY activity sets',
+        subcategories: ['Painting Kits', 'Clay', 'Slime Kits', 'Jewellery-Making Sets']
       },
       {
         name: 'Kitchen & Role Play Toys',
         slug: 'kitchen-role-play-toys',
         description: 'Kitchen sets and role play toys',
-        subcategories: ['Mini kitchen sets, doctor sets, mechanic sets']
+        subcategories: ['Mini Kitchen Sets', 'Doctor Sets', 'Mechanic Sets']
       },
       {
         name: 'Musical Instruments for Kids',
         slug: 'musical-instruments-kids',
         description: 'Musical instruments for children',
-        subcategories: ['Toy guitars, keyboards, drums, xylophones']
+        subcategories: ['Toy Guitars', 'Keyboards', 'Drums', 'Xylophones']
       },
       {
         name: 'Educational Books & Flash Cards',
         slug: 'educational-books-flash-cards',
-        description: 'Educational books and learning materials',
-        subcategories: ['Storybooks, activity books, learning flash cards']
+        description: 'Educational books and learning flash cards',
+        subcategories: ['Storybooks', 'Activity Books', 'Learning Flash Cards']
       },
       {
         name: 'Party Favour Toys',
         slug: 'party-favour-toys',
-        description: 'Party favours and return gifts',
-        subcategories: ['Small cars, whistles, masks, return-gift sets']
+        description: 'Small toys perfect for party favours',
+        subcategories: ['Small Cars', 'Whistles', 'Masks', 'Return-Gift Sets']
       },
       {
-        name: 'Vehicles & Pull-back Toys',
+        name: 'Vehicles & Pull-Back Toys',
         slug: 'vehicles-pull-back-toys',
         description: 'Vehicle toys and pull-back toys',
-        subcategories: ['Pull-back cars, trucks, buses, trains']
+        subcategories: ['Pull-Back Cars', 'Trucks', 'Buses', 'Trains']
       },
       {
         name: 'Seasonal & Festival Toys',
         slug: 'seasonal-festival-toys',
-        description: 'Festival and seasonal toys',
-        subcategories: ['Diwali lights/toys, Christmas toys, Holi water guns']
+        description: 'Toys for festivals and seasonal celebrations',
+        subcategories: ['Diwali Lights/Toys', 'Christmas Toys', 'Holi Water Guns']
       },
       {
         name: 'Water & Sand Play Toys',
         slug: 'water-sand-play-toys',
-        description: 'Water and sand play equipment',
-        subcategories: ['Water guns, beach sets, inflatable pools']
+        description: 'Water and sand play toys',
+        subcategories: ['Water Guns', 'Beach Sets', 'Inflatable Pools']
       },
       {
         name: 'Premium & Collector\'s Items',
         slug: 'premium-collectors-items',
-        description: 'Premium toys and collector items',
-        subcategories: ['Anime models, branded figures, display toys']
+        description: 'Premium and collectible toys',
+        subcategories: ['Anime Models', 'Branded Figures', 'Display Toys']
       }
     ];
 
-    let displayOrder = 1;
-    
-    for (const category of categories) {
+    let totalSubcategories = 0;
+
+    // Create categories with subcategories
+    for (let i = 0; i < categories.length; i++) {
+      const cat = categories[i];
+      
       // Create main category
       const mainCategory = await prisma.category.create({
         data: {
-          name: category.name,
-          slug: category.slug,
-          description: category.description,
+          name: cat.name,
+          slug: cat.slug,
+          description: cat.description,
+          displayOrder: i + 1,
           isActive: true,
-          displayOrder: displayOrder++
         }
       });
 
-      console.log(`✅ Created: ${category.name}`);
+      console.log(`✅ Created: ${cat.name}`);
 
-      // Create subcategory
-      const subcategoryName = category.subcategories[0];
-      const subcategorySlug = `${category.slug}-all`;
-      
-      await prisma.category.create({
-        data: {
-          name: subcategoryName,
-          slug: subcategorySlug,
-          description: subcategoryName,
-          isActive: true,
-          displayOrder: 1,
-          parentId: mainCategory.id
-        }
-      });
+      // Create subcategories
+      for (let j = 0; j < cat.subcategories.length; j++) {
+        const subName = cat.subcategories[j];
+        const subSlug = `${cat.slug}-${subName.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+        
+        await prisma.category.create({
+          data: {
+            name: subName,
+            slug: subSlug,
+            description: `${subName} in ${cat.name}`,
+            parentId: mainCategory.id,
+            displayOrder: j + 1,
+            isActive: true,
+          }
+        });
 
-      console.log(`   ↳ ${subcategoryName}\n`);
+        console.log(`   ↳ ${subName}`);
+        totalSubcategories++;
+      }
+
+      console.log('');
     }
 
     console.log('✨ All categories created successfully!\n');
     console.log('📊 Summary:');
     console.log(`   Main Categories: ${categories.length}`);
-    console.log(`   Subcategories: ${categories.length}`);
-    console.log(`   Total: ${categories.length * 2}\n`);
+    console.log(`   Subcategories: ${totalSubcategories}`);
+    console.log(`   Total: ${categories.length + totalSubcategories}\n`);
+    console.log('🎯 Category update completed!');
 
   } catch (error) {
     console.error('❌ Error updating categories:', error);
@@ -185,11 +194,7 @@ async function updateCategories() {
 }
 
 updateCategories()
-  .then(() => {
-    console.log('🎯 Category update completed!');
-    process.exit(0);
-  })
   .catch((error) => {
-    console.error('Failed:', error);
+    console.error(error);
     process.exit(1);
   });
