@@ -47,8 +47,8 @@ export default async function Home() {
   const dbCategories = await getCategories();
   const products = await getProducts();
   
-  const categoryColors = ['bg-blue-100', 'bg-pink-100', 'bg-purple-100', 'bg-yellow-100', 'bg-green-100', 'bg-indigo-100', 'bg-red-100', 'bg-orange-100'];
-  const categoryIcons = ['🎒', '🧸', '🎨', '🎁', '👶', '📚', '🎒', '✏️'];
+  const categoryColors = ['bg-blue-100', 'bg-pink-100', 'bg-purple-100', 'bg-yellow-100', 'bg-green-100', 'bg-indigo-100', 'bg-red-100', 'bg-orange-100', 'bg-teal-100', 'bg-cyan-100'];
+  const categoryIcons = ['👶', '🎓', '🏗️', '🦸', '👧', '⚽', '🛴', '🚗', '🎲', '🧸', '🔬', '🎨', '🍳', '🎸', '📚', '🎁', '🚙', '🎄', '💦', '⭐'];
   
   interface Category {
     name: string;
@@ -57,19 +57,17 @@ export default async function Home() {
     color: string;
   }
 
-  const categories: Category[] = dbCategories.length > 0 
-    ? dbCategories.map((cat: any, index: number) => ({
+  // Only show main categories (no parents)
+  const mainCategories = dbCategories.filter((cat: any) => !cat.parentId);
+  
+  const categories: Category[] = mainCategories.length > 0 
+    ? mainCategories.slice(0, 8).map((cat: any, index: number) => ({
         name: cat.name,
         slug: cat.slug,
         icon: categoryIcons[index % categoryIcons.length],
         color: categoryColors[index % categoryColors.length]
       }))
-    : [
-        { name: 'School Essentials', icon: '🎒', slug: 'school-essentials', color: 'bg-blue-100' },
-        { name: 'Toys and Games', icon: '🧸', slug: 'toys-and-games', color: 'bg-pink-100' },
-        { name: 'Art & Craft', icon: '🎨', slug: 'art-craft', color: 'bg-purple-100' },
-        { name: 'Hampers', icon: '🎁', slug: 'hampers', color: 'bg-yellow-100' },
-      ];
+    : [];
 
   const ageGroups = [
     { name: '0-1 Years', slug: '0-1-years', image: '👶' },
