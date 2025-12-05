@@ -381,7 +381,7 @@ export default function Navbar() {
               categories.find(cat => cat.slug === activeDropdown)?.subcategories.map((sub) => (
                 <Link
                   key={sub.slug}
-                  href={`/categories/${activeDropdown}-${sub.slug}`}
+                  href={`/categories/${sub.slug}`}
                   className="block px-6 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-primary transition-colors"
                 >
                   {sub.name}
