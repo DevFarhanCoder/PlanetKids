@@ -163,6 +163,11 @@ export default function AddProduct() {
     try {
       const formDataToSend = new FormData();
       
+      // Add product ID for updates
+      if (productId) {
+        formDataToSend.append('id', productId);
+      }
+
       // Add form fields (excluding categoryId, we'll handle it separately)
       Object.entries(formData).forEach(([key, value]) => {
         if (key !== 'categoryId') {
@@ -185,10 +190,9 @@ export default function AddProduct() {
       // Add variants
       formDataToSend.append('variants', JSON.stringify(variants.filter(v => v.size || v.color)));
 
-      const url = productId ? `/api/products?id=${productId}` : '/api/products';
       const method = productId ? 'PUT' : 'POST';
 
-      const response = await fetch(url, {
+      const response = await fetch('/api/products', {
         method,
         body: formDataToSend,
       });
@@ -637,7 +641,7 @@ export default function AddProduct() {
                   disabled={loading}
                   className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {loading ? 'Creating...' : 'Create Product'}
+                  {loading ? (productId ? 'Updating...' : 'Creating...') : (productId ? 'Update Product' : 'Create Product')}
                 </button>
                 <Link
                   href="/admin/products"
