@@ -2,6 +2,9 @@ import { notFound } from 'next/navigation';
 import { prisma } from '@/lib/prisma';
 import CategoryClient from './CategoryClient';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 async function getCategory(slug: string) {
   const category = await prisma.category.findUnique({
     where: { slug },
