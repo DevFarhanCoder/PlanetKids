@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { ArrowLeft, Upload, X, Plus } from 'lucide-react';
 import Link from 'next/link';
 
@@ -16,6 +16,8 @@ interface Category {
 
 export default function AddProduct() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const productId = searchParams.get('id');
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
   const [parentCategories, setParentCategories] = useState<Category[]>([]);
@@ -58,6 +60,52 @@ export default function AddProduct() {
       })
       .catch(err => console.error('Error loading categories:', err));
   }, []);
+
+  // Fetch product data when editing
+  useEffect(() => {
+    if (productId) {
+      fetch(`/api/products?id=${productId}`)
+        .then(res => res.json())
+        .then(data => {
+          const product = data;
+          setFormData({
+            name: product.name || '',
+            slug: product.slug || '',
+            description: product.description || '',
+            price: product.price?.toString() || '',
+            comparePrice: product.compareAtPrice?.toString() || '',
+            cost: product.costPrice?.toString() || '',
+            sku: product.sku || '',
+            barcode: product.barcode || '',
+            trackQuantity: product.trackInventory ?? true,
+            quantity: product.quantity?.toString() || '',
+            lowStockThreshold: product.lowStockThreshold?.toString() || '10',
+            categoryId: product.categories?.[0]?.categoryId || '',
+            tags: product.metaKeywords || '',
+            metaTitle: product.metaTitle || '',
+            metaDescription: product.metaDescription || '',
+            featured: product.isFeatured || false,
+            status: product.isActive ? 'ACTIVE' : 'DRAFT'
+          });
+          
+          // Set parent category if exists
+          if (product.categories?.[0]?.categoryId) {
+            const cat = categories.find(c => c.id === product.categories[0].categoryId);
+            if (cat?.parentId) {
+              setSelectedParent(cat.parentId);
+            } else {
+              setSelectedParent(product.categories[0].categoryId);
+            }
+          }
+
+          // Set image previews
+          if (product.images?.length) {
+            setImagePreviews(product.images.map((img: any) => img.url));
+          }
+        })
+        .catch(err => console.error('Error loading product:', err));
+    }
+  }, [productId, categories]);
 
   // Update subcategories when parent is selected
   useEffect(() => {
@@ -137,8 +185,11 @@ export default function AddProduct() {
       // Add variants
       formDataToSend.append('variants', JSON.stringify(variants.filter(v => v.size || v.color)));
 
-      const response = await fetch('/api/products', {
-        method: 'POST',
+      const url = productId ? `/api/products?id=${productId}` : '/api/products';
+      const method = productId ? 'PUT' : 'POST';
+
+      const response = await fetch(url, {
+        method,
         body: formDataToSend,
       });
 
@@ -147,7 +198,7 @@ export default function AddProduct() {
         router.refresh();
       } else {
         const error = await response.json();
-        alert(error.error || 'Failed to create product');
+        alert(error.error || `Failed to ${productId ? 'update' : 'create'} product`);
       }
     } catch (error) {
       console.error('Error:', error);
@@ -168,8 +219,8 @@ export default function AddProduct() {
           <ArrowLeft className="w-4 h-4 mr-2" />
           Back to Products
         </Link>
-        <h1 className="text-3xl font-bold text-gray-900">Add New Product</h1>
-        <p className="text-gray-600 mt-2">Create a new product for your store</p>
+        <h1 className="text-3xl font-bold text-gray-900">{productId ? 'Edit Product' : 'Add New Product'}</h1>
+        <p className="text-gray-600 mt-2">{productId ? 'Update product information' : 'Create a new product for your store'}</p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
