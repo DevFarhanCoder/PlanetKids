@@ -323,18 +323,26 @@ export async function PUT(request: NextRequest) {
 
     // Handle category updates
     if (formData.has('categoryIds')) {
-      const categoryIds = JSON.parse(formData.get('categoryIds') as string);
+      const categoryIdsStr = formData.get('categoryIds') as string;
+      console.log('Category IDs string:', categoryIdsStr);
+      const categoryIds = JSON.parse(categoryIdsStr);
+      console.log('Parsed category IDs:', categoryIds);
       
       // Delete existing categories and create new ones
       await prisma.productCategory.deleteMany({
         where: { productId: id }
       });
 
-      updateData.categories = {
-        create: categoryIds.map((categoryId: string) => ({
-          categoryId
-        }))
-      };
+      if (categoryIds.length > 0) {
+        updateData.categories = {
+          create: categoryIds.map((categoryId: string) => ({
+            categoryId
+          }))
+        };
+        console.log('Creating category relationships:', categoryIds);
+      } else {
+        console.log('No categories to link');
+      }
     }
 
     const product = await prisma.product.update({
