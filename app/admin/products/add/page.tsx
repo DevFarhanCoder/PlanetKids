@@ -63,11 +63,13 @@ export default function AddProduct() {
 
   // Fetch product data when editing
   useEffect(() => {
-    if (productId) {
+    if (productId && categories.length > 0) {
       fetch(`/api/products?id=${productId}`)
         .then(res => res.json())
         .then(data => {
           const product = data;
+          const savedCategoryId = product.categories?.[0]?.categoryId || '';
+          
           setFormData({
             name: product.name || '',
             slug: product.slug || '',
@@ -80,7 +82,7 @@ export default function AddProduct() {
             trackQuantity: product.trackInventory ?? true,
             quantity: product.quantity?.toString() || '',
             lowStockThreshold: product.lowStockThreshold?.toString() || '10',
-            categoryId: product.categories?.[0]?.categoryId || '',
+            categoryId: savedCategoryId,
             tags: product.metaKeywords || '',
             metaTitle: product.metaTitle || '',
             metaDescription: product.metaDescription || '',
@@ -88,13 +90,17 @@ export default function AddProduct() {
             status: product.isActive ? 'ACTIVE' : 'DRAFT'
           });
           
-          // Set parent category if exists
-          if (product.categories?.[0]?.categoryId) {
-            const cat = categories.find(c => c.id === product.categories[0].categoryId);
+          // Set parent category and subcategories
+          if (savedCategoryId) {
+            const cat = categories.find(c => c.id === savedCategoryId);
             if (cat?.parentId) {
+              // It's a subcategory
               setSelectedParent(cat.parentId);
+              const subs = categories.filter(c => c.parentId === cat.parentId);
+              setSubcategories(subs);
             } else {
-              setSelectedParent(product.categories[0].categoryId);
+              // It's a parent category
+              setSelectedParent(savedCategoryId);
             }
           }
 
@@ -109,20 +115,24 @@ export default function AddProduct() {
 
   // Update subcategories when parent is selected
   useEffect(() => {
-    if (selectedParent) {
+    if (selectedParent && categories.length > 0) {
       const subs = categories.filter(cat => cat.parentId === selectedParent);
       setSubcategories(subs);
-      // Auto-select parent if no subcategories
-      if (subs.length === 0) {
-        setFormData({ ...formData, categoryId: selectedParent });
-      } else {
-        setFormData({ ...formData, categoryId: '' });
+      // Only auto-select if not editing or if category not already set
+      if (!productId || !formData.categoryId) {
+        if (subs.length === 0) {
+          setFormData(prev => ({ ...prev, categoryId: selectedParent }));
+        } else {
+          setFormData(prev => ({ ...prev, categoryId: '' }));
+        }
       }
-    } else {
+    } else if (!selectedParent) {
       setSubcategories([]);
-      setFormData({ ...formData, categoryId: '' });
+      if (!productId) {
+        setFormData(prev => ({ ...prev, categoryId: '' }));
+      }
     }
-  }, [selectedParent]);
+  }, [selectedParent, categories]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
