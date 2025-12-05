@@ -168,12 +168,15 @@ export default function AddProduct() {
         formDataToSend.append('id', productId);
       }
 
-      // Add form fields (excluding categoryId, we'll handle it separately)
+      // Add form fields (excluding categoryId and status, we'll handle them separately)
       Object.entries(formData).forEach(([key, value]) => {
-        if (key !== 'categoryId') {
+        if (key !== 'categoryId' && key !== 'status') {
           formDataToSend.append(key, value.toString());
         }
       });
+
+      // Convert status to isActive
+      formDataToSend.append('isActive', (formData.status === 'ACTIVE').toString());
 
       // Add category as an array
       if (formData.categoryId) {
