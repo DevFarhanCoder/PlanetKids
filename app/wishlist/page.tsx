@@ -1,49 +1,47 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import ProductCard from '@/components/products/ProductCard';
 import { Heart } from 'lucide-react';
 import Link from 'next/link';
 
 export default function WishlistPage() {
-  const [wishlistItems] = useState([
-    {
-      id: '2',
-      name: 'Colorful Building Blocks Set',
-      slug: 'building-blocks-set',
-      price: 799,
-      originalPrice: 1299,
-      image: '🧱',
-      rating: 4,
-      reviewCount: 18,
-      discount: 38,
-      inStock: true,
-    },
-    {
-      id: '5',
-      name: 'Musical Toy Piano',
-      slug: 'musical-toy-piano',
-      price: 1899,
-      originalPrice: 2999,
-      image: '🎹',
-      rating: 5,
-      reviewCount: 28,
-      discount: 37,
-      inStock: true,
-    },
-    {
-      id: '6',
-      name: 'Puzzle Game Set',
-      slug: 'puzzle-game-set',
-      price: 599,
-      originalPrice: 999,
-      image: '🧩',
-      rating: 4,
-      reviewCount: 21,
-      discount: 40,
-      inStock: false,
-    },
-  ]);
+  const { data: session, status } = useSession();
+  const router = useRouter();
+  const [wishlistItems, setWishlistItems] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      router.push('/login?callbackUrl=/wishlist');
+    } else if (status === 'authenticated') {
+      fetchWishlist();
+    }
+  }, [status, router]);
+
+  const fetchWishlist = async () => {
+    try {
+      const response = await fetch('/api/wishlist');
+      if (response.ok) {
+        const data = await response.json();
+        setWishlistItems(data);
+      }
+    } catch (error) {
+      console.error('Error fetching wishlist:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading || status === 'loading') {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
 
   if (wishlistItems.length === 0) {
     return (
@@ -71,8 +69,19 @@ export default function WishlistPage() {
         <p className="text-gray-600 mb-8">{wishlistItems.length} items saved</p>
 
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {wishlistItems.map((product) => (
-            <ProductCard key={product.id} {...product} />
+          {wishlistItems.map((item) => (
+            <ProductCard
+              key={item.id}
+              id={item.product.id}
+              name={item.product.name}
+              slug={item.product.slug}
+              price={Number(item.product.price)}
+              originalPrice={item.product.compareAtPrice ? Number(item.product.compareAtPrice) : undefined}
+              image={item.product.images[0]?.url || ''}
+              rating={Number(item.product.averageRating) || 0}
+              reviewCount={item.product.reviewCount || 0}
+              inStock={item.product.isActive}
+            />
           ))}
         </div>
       </div>

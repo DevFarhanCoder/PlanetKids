@@ -2,7 +2,9 @@
 
 import Link from 'next/link';
 import { Heart, ShoppingCart, Star } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 
 interface ProductCardProps {
   id: string;
@@ -31,25 +33,104 @@ export default function ProductCard({
   discount,
   inStock = true,
 }: ProductCardProps) {
+  const { data: session } = useSession();
+  const router = useRouter();
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
+  const [isTogglingWishlist, setIsTogglingWishlist] = useState(false);
 
-  const handleWishlistToggle = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsWishlisted(!isWishlisted);
+  // Check if product is in wishlist
+  useEffect(() => {
+    if (session?.user) {
+      checkWishlistStatus();
+    }
+  }, [session, id]);
+
+  const checkWishlistStatus = async () => {
+    try {
+      const response = await fetch('/api/wishlist');
+      if (response.ok) {
+        const wishlist = await response.json();
+        const isInWishlist = wishlist.some((item: any) => item.productId === id);
+        setIsWishlisted(isInWishlist);
+      }
+    } catch (error) {
+      console.error('Error checking wishlist:', error);
+    }
   };
 
-  const handleAddToCart = (e: React.MouseEvent) => {
+  const handleWishlistToggle = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+
+    if (!session?.user) {
+      router.push('/login?callbackUrl=' + encodeURIComponent(window.location.pathname));
+      return;
+    }
+
+    setIsTogglingWishlist(true);
+
+    try {
+      if (isWishlisted) {
+        // Remove from wishlist
+        const response = await fetch(`/api/wishlist?productId=${id}`, {
+          method: 'DELETE',
+        });
+
+        if (response.ok) {
+          setIsWishlisted(false);
+        }
+      } else {
+        // Add to wishlist
+        const response = await fetch('/api/wishlist', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ productId: id }),
+        });
+
+        if (response.ok) {
+          setIsWishlisted(true);
+        }
+      }
+    } catch (error) {
+      console.error('Error toggling wishlist:', error);
+    } finally {
+      setIsTogglingWishlist(false);
+    }
+  };
+
+  const handleAddToCart = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!session?.user) {
+      router.push('/login?callbackUrl=' + encodeURIComponent(window.location.pathname));
+      return;
+    }
+
     setIsAddingToCart(true);
     
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      const response = await fetch('/api/cart', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ productId: id, quantity: 1 }),
+      });
+
+      if (response.ok) {
+        // Trigger cart update event
+        window.dispatchEvent(new Event('cartUpdated'));
+        alert('Added to cart successfully!');
+      } else {
+        const data = await response.json();
+        alert(data.error || 'Failed to add to cart');
+      }
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+      alert('Failed to add to cart');
+    } finally {
       setIsAddingToCart(false);
-      // Show toast notification here
-    }, 500);
+    }
   };
 
   return (

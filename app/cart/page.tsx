@@ -1,60 +1,112 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Minus, Plus, Trash2, ShoppingBag, ArrowRight } from 'lucide-react';
 
+interface CartItem {
+  id: string;
+  quantity: number;
+  product: {
+    id: string;
+    name: string;
+    slug: string;
+    price: number;
+    compareAtPrice?: number;
+    images: { url: string }[];
+    isActive: boolean;
+  };
+}
+
 export default function CartPage() {
-  const [cartItems, setCartItems] = useState([
-    {
-      id: '1',
-      name: 'Educational Learning Kit - STEM Science',
-      slug: 'educational-learning-kit',
-      price: 1299,
-      originalPrice: 1999,
-      image: '🔬',
-      quantity: 2,
-      inStock: true,
-    },
-    {
-      id: '3',
-      name: 'Kids School Backpack - Ergonomic Design',
-      slug: 'kids-school-backpack',
-      price: 1599,
-      originalPrice: 2499,
-      image: '🎒',
-      quantity: 1,
-      inStock: true,
-    },
-    {
-      id: '4',
-      name: 'Art & Craft Supplies Kit - Premium',
-      slug: 'art-craft-kit',
-      price: 899,
-      originalPrice: 1499,
-      image: '🎨',
-      quantity: 1,
-      inStock: true,
-    },
-  ]);
+  const { data: session, status } = useSession();
+  const router = useRouter();
+  const [cart, setCart] = useState<{ items: CartItem[] } | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [updating, setUpdating] = useState<string | null>(null);
 
-  const updateQuantity = (id: string, delta: number) => {
-    setCartItems((items) =>
-      items.map((item) =>
-        item.id === id
-          ? { ...item, quantity: Math.max(1, item.quantity + delta) }
-          : item
-      )
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      router.push('/login?callbackUrl=/cart');
+    } else if (status === 'authenticated') {
+      fetchCart();
+    }
+  }, [status, router]);
+
+  useEffect(() => {
+    const handleCartUpdate = () => fetchCart();
+    window.addEventListener('cartUpdated', handleCartUpdate);
+    return () => window.removeEventListener('cartUpdated', handleCartUpdate);
+  }, []);
+
+  const fetchCart = async () => {
+    try {
+      const response = await fetch('/api/cart');
+      if (response.ok) {
+        const data = await response.json();
+        setCart(data);
+      }
+    } catch (error) {
+      console.error('Error fetching cart:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const updateQuantity = async (itemId: string, quantity: number) => {
+    setUpdating(itemId);
+    try {
+      const response = await fetch('/api/cart', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ itemId, quantity }),
+      });
+
+      if (response.ok) {
+        const updatedCart = await response.json();
+        setCart(updatedCart);
+      }
+    } catch (error) {
+      console.error('Error updating quantity:', error);
+    } finally {
+      setUpdating(null);
+    }
+  };
+
+  const removeItem = async (itemId: string) => {
+    if (!confirm('Remove this item from cart?')) return;
+
+    setUpdating(itemId);
+    try {
+      const response = await fetch(`/api/cart?itemId=${itemId}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        const updatedCart = await response.json();
+        setCart(updatedCart);
+      }
+    } catch (error) {
+      console.error('Error removing item:', error);
+    } finally {
+      setUpdating(null);
+    }
+  };
+
+  if (loading || status === 'loading') {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      </div>
     );
-  };
+  }
 
-  const removeItem = (id: string) => {
-    setCartItems((items) => items.filter((item) => item.id !== id));
-  };
-
-  const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const cartItems = cart?.items || [];
+  const subtotal = cartItems.reduce((sum, item) => sum + Number(item.product.price) * item.quantity, 0);
   const savings = cartItems.reduce(
-    (sum, item) => sum + (item.originalPrice - item.price) * item.quantity,
+    (sum, item) => sum + ((item.product.compareAtPrice || 0) - Number(item.product.price)) * item.quantity,
     0
   );
   const shipping = subtotal >= 999 ? 0 : 60;
@@ -88,10 +140,20 @@ export default function CartPage() {
                 <div className="flex gap-4">
                   {/* Product Image */}
                   <Link
-                    href={`/products/${item.slug}`}
-                    className="w-24 h-24 flex-shrink-0 bg-gradient-to-br from-primary/5 to-secondary/5 rounded-lg flex items-center justify-center text-4xl"
+                    href={`/products/${item.product.slug}`}
+                    className="w-24 h-24 flex-shrink-0 bg-gradient-to-br from-primary/5 to-secondary/5 rounded-lg overflow-hidden"
                   >
-                    {item.image}
+                    {item.product.images[0] ? (
+                      <img
+                        src={item.product.images[0].url}
+                        alt={item.product.name}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-gray-400">
+                        No Image
+                      </div>
+                    )}
                   </Link>
 
                   {/* Product Details */}
@@ -99,20 +161,22 @@ export default function CartPage() {
                     <div className="flex justify-between">
                       <div>
                         <Link
-                          href={`/products/${item.slug}`}
+                          href={`/products/${item.product.slug}`}
                           className="font-semibold text-gray-900 hover:text-primary"
                         >
-                          {item.name}
+                          {item.product.name}
                         </Link>
                         <div className="flex items-center gap-2 mt-1">
                           <span className="text-xl font-bold text-primary">
-                            ₹{item.price.toLocaleString('en-IN')}
+                            ₹{Number(item.product.price).toLocaleString('en-IN')}
                           </span>
-                          <span className="text-sm text-gray-500 line-through">
-                            ₹{item.originalPrice.toLocaleString('en-IN')}
-                          </span>
+                          {item.product.compareAtPrice && (
+                            <span className="text-sm text-gray-500 line-through">
+                              ₹{Number(item.product.compareAtPrice).toLocaleString('en-IN')}
+                            </span>
+                          )}
                         </div>
-                        {item.inStock ? (
+                        {item.product.isActive ? (
                           <span className="text-sm text-green-600 font-medium">In Stock</span>
                         ) : (
                           <span className="text-sm text-red-600 font-medium">Out of Stock</span>
@@ -122,7 +186,8 @@ export default function CartPage() {
                       {/* Remove Button */}
                       <button
                         onClick={() => removeItem(item.id)}
-                        className="text-gray-400 hover:text-red-500 transition-colors"
+                        disabled={updating === item.id}
+                        className="text-gray-400 hover:text-red-500 transition-colors disabled:opacity-50"
                         aria-label="Remove item"
                       >
                         <Trash2 className="w-5 h-5" />
@@ -134,22 +199,23 @@ export default function CartPage() {
                       <span className="text-sm text-gray-600">Quantity:</span>
                       <div className="flex items-center border-2 border-gray-300 rounded-lg">
                         <button
-                          onClick={() => updateQuantity(item.id, -1)}
-                          disabled={item.quantity <= 1}
+                          onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                          disabled={item.quantity <= 1 || updating === item.id}
                           className="p-2 hover:bg-gray-100 disabled:opacity-50"
                         >
                           <Minus className="w-4 h-4" />
                         </button>
                         <span className="px-4 font-semibold">{item.quantity}</span>
                         <button
-                          onClick={() => updateQuantity(item.id, 1)}
-                          className="p-2 hover:bg-gray-100"
+                          onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                          disabled={updating === item.id}
+                          className="p-2 hover:bg-gray-100 disabled:opacity-50"
                         >
                           <Plus className="w-4 h-4" />
                         </button>
                       </div>
                       <span className="text-sm text-gray-600">
-                        Subtotal: ₹{(item.price * item.quantity).toLocaleString('en-IN')}
+                        Subtotal: ₹{(Number(item.product.price) * item.quantity).toLocaleString('en-IN')}
                       </span>
                     </div>
                   </div>
