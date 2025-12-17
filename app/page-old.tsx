@@ -145,8 +145,8 @@ export default async function Home() {
             </Link>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-            {products.length > 0 ? (
-              products.slice(0, 8).map((product: any) => {
+            {featuredProducts.length > 0 ? (
+              featuredProducts.slice(0, 8).map((product: any) => {
                 const discount = product.comparePrice && product.comparePrice > product.price
                   ? Math.round(((product.comparePrice - product.price) / product.comparePrice) * 100)
                   : 0;
