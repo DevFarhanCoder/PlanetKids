@@ -103,7 +103,7 @@ export default async function Home() {
             </Link>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-4">
-            {categories.map((category, index) => {
+            {allCategories.map((category, index) => {
               const gradients = [
                 'from-pink-400 to-pink-600',
                 'from-blue-400 to-blue-600',
