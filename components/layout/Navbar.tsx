@@ -3,7 +3,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import Link from 'next/link';
-import { Search, ShoppingCart, Heart, User, Menu, X, ChevronDown } from 'lucide-react';
+import { useSession, signOut } from 'next-auth/react';
+import { Search, ShoppingCart, Heart, User, Menu, X, ChevronDown, LogOut } from 'lucide-react';
 
 interface Subcategory {
   name: string;
@@ -17,7 +18,10 @@ interface Category {
 }
 
 export default function Navbar() {
+  const { data: session } = useSession();
   const [categories, setCategories] = useState<Category[]>([]);
+  const [cartCount, setCartCount] = useState(0);
+  const [wishlistCount, setWishlistCount] = useState(0);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [showLeftArrow, setShowLeftArrow] = useState(false);
@@ -54,6 +58,48 @@ export default function Navbar() {
       })
       .catch(err => console.error('Error fetching categories:', err));
   }, []);
+
+  // Fetch cart and wishlist counts
+  useEffect(() => {
+    if (session?.user) {
+      fetchCounts();
+    } else {
+      setCartCount(0);
+      setWishlistCount(0);
+    }
+  }, [session]);
+
+  // Listen for cart updates
+  useEffect(() => {
+    const handleCartUpdate = () => {
+      if (session?.user) {
+        fetchCounts();
+      }
+    };
+
+    window.addEventListener('cartUpdated', handleCartUpdate);
+    return () => window.removeEventListener('cartUpdated', handleCartUpdate);
+  }, [session]);
+
+  const fetchCounts = async () => {
+    try {
+      // Fetch cart count
+      const cartResponse = await fetch('/api/cart');
+      if (cartResponse.ok) {
+        const cartData = await cartResponse.json();
+        setCartCount(cartData.items?.length || 0);
+      }
+
+      // Fetch wishlist count
+      const wishlistResponse = await fetch('/api/wishlist');
+      if (wishlistResponse.ok) {
+        const wishlistData = await wishlistResponse.json();
+        setWishlistCount(wishlistData.length || 0);
+      }
+    } catch (error) {
+      console.error('Error fetching counts:', error);
+    }
+  };
 
   useEffect(() => {
     if (activeDropdown && buttonRefs.current[activeDropdown]) {
@@ -166,24 +212,56 @@ export default function Navbar() {
             {/* Wishlist */}
             <Link href="/wishlist" className="relative text-gray-600 hover:text-primary transition-colors">
               <Heart className="w-6 h-6" />
-              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                0
-              </span>
+              {wishlistCount > 0 && (
+                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                  {wishlistCount}
+                </span>
+              )}
             </Link>
 
             {/* Cart */}
             <Link href="/cart" className="relative text-gray-600 hover:text-primary transition-colors">
               <ShoppingCart className="w-6 h-6" />
-              <span className="absolute -top-2 -right-2 bg-primary text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                0
-              </span>
+              {cartCount > 0 && (
+                <span className="absolute -top-2 -right-2 bg-primary text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                  {cartCount}
+                </span>
+              )}
             </Link>
 
             {/* Account */}
-            <Link href="/account" className="hidden lg:flex items-center gap-2 text-gray-600 hover:text-primary transition-colors">
-              <User className="w-5 h-5" />
-              <span className="text-sm">Account</span>
-            </Link>
+            {session?.user ? (
+              <div className="relative group">
+                <button className="hidden lg:flex items-center gap-2 text-gray-600 hover:text-primary transition-colors">
+                  <User className="w-5 h-5" />
+                  <span className="text-sm">{session.user.name || 'Account'}</span>
+                  <ChevronDown className="w-4 h-4" />
+                </button>
+                <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 border border-gray-200">
+                  <Link href="/account" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                    My Account
+                  </Link>
+                  <Link href="/account?tab=orders" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                    My Orders
+                  </Link>
+                  <Link href="/wishlist" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                    Wishlist
+                  </Link>
+                  <button
+                    onClick={() => signOut({ callbackUrl: '/' })}
+                    className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 flex items-center gap-2"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    Logout
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <Link href="/login" className="hidden lg:flex items-center gap-2 text-gray-600 hover:text-primary transition-colors">
+                <User className="w-5 h-5" />
+                <span className="text-sm">Create Account / Login</span>
+              </Link>
+            )}
 
             {/* Mobile Menu Button */}
             <button
