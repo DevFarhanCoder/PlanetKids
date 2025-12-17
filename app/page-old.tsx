@@ -47,6 +47,26 @@ export default async function Home() {
     partyWearProducts = [],
   } = homeData;
 
+  // Hardcoded age groups data
+  const ageGroups = [
+    { slug: '0-12-months', name: '0-12 Months', image: '👶' },
+    { slug: '1-2-years', name: '1-2 Years', image: '🍼' },
+    { slug: '3-4-years', name: '3-4 Years', image: '🎈' },
+    { slug: '5-6-years', name: '5-6 Years', image: '🎨' },
+    { slug: '7-8-years', name: '7-8 Years', image: '⚽' },
+    { slug: '9-plus', name: '9+ Years', image: '🎮' },
+  ];
+
+  // Hardcoded price ranges data
+  const priceRanges = [
+    { slug: 'under-500', name: 'Under ₹500' },
+    { slug: '500-1000', name: '₹500 - ₹1000' },
+    { slug: '1000-2000', name: '₹1000 - ₹2000' },
+    { slug: '2000-3000', name: '₹2000 - ₹3000' },
+    { slug: '3000-5000', name: '₹3000 - ₹5000' },
+    { slug: 'above-5000', name: 'Above ₹5000' },
+  ];
+
   return (
     <main className="min-h-screen bg-gray-50">
       {/* Hero Carousel Section */}
@@ -213,7 +233,7 @@ export default async function Home() {
             <p className="text-gray-500 text-sm">Age-appropriate products for every milestone</p>
           </div>
           <div className="grid grid-cols-3 md:grid-cols-6 gap-3 md:gap-4">
-            {ageGroups.map((age, index) => {
+            {ageGroups.map((age: any, index: number) => {
               const colors = [
                 'from-pink-100 to-pink-200 border-pink-300',
                 'from-blue-100 to-blue-200 border-blue-300',
@@ -245,7 +265,7 @@ export default async function Home() {
             <p className="text-gray-500 text-sm">Quality products at every price point</p>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4">
-            {priceRanges.map((range, index) => {
+            {priceRanges.map((range: any, index: number) => {
               const bgColors = [
                 'bg-gradient-to-br from-blue-500 to-blue-600',
                 'bg-gradient-to-br from-green-500 to-green-600',
