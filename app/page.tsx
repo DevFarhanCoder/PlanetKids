@@ -97,6 +97,52 @@ export default async function Home() {
     partyWearProducts = [],
   } = homeData;
 
+  // Category data for sections
+  const premiumBoutiques = [
+    {
+      title: "Mom Of All Sale I Up To 14 Y",
+      subtitle: "Upto 60% Off",
+      badge: "MOM OF ALL SALES",
+      bgColor: "from-pink-400 to-pink-600",
+      href: "/products?age=0-14"
+    },
+    {
+      title: "Unwrap The Joy Of Christmas",
+      subtitle: "Explore Now",
+      badge: "CHRISTMAS SPECIAL",
+      bgColor: "from-red-500 to-red-700",
+      href: "/products?category=christmas"
+    },
+    {
+      title: "Envision Your Elegance",
+      subtitle: "Flat 40% Off",
+      badge: "THE WEDDING STORE",
+      bgColor: "from-emerald-400 to-emerald-600",
+      href: "/products?category=wedding"
+    }
+  ];
+
+  const winterCategories = [
+    { name: "Hoodies", discount: "50", image: "https://cdn.fcglcdn.com/brainbees/images/cattemplate/winter_moas_desktop_fashion_page_061225_16.jpg", href: "/products?category=hoodies" },
+    { name: "Sweatshirts", discount: "50", image: "https://cdn.fcglcdn.com/brainbees/images/cattemplate/winter_moas_desktop_fashion_page_061225_17.jpg", href: "/products?category=sweatshirts" },
+    { name: "Winter Sets", discount: "50", image: "https://cdn.fcglcdn.com/brainbees/images/cattemplate/winter_moas_desktop_fashion_page_061225_18.jpg", href: "/products?category=winter-sets" },
+    { name: "Pullovers", discount: "50", image: "https://cdn.fcglcdn.com/brainbees/images/cattemplate/winter_moas_desktop_fashion_page_061225_19.jpg", href: "/products?category=pullovers" },
+    { name: "Jackets", discount: "50", image: "https://cdn.fcglcdn.com/brainbees/images/cattemplate/winter_moas_desktop_fashion_page_061225_20.jpg", href: "/products?category=jackets" },
+    { name: "Coats", discount: "50", image: "https://cdn.fcglcdn.com/brainbees/images/cattemplate/winter_moas_desktop_fashion_page_061225_21.jpg", href: "/products?category=coats" },
+    { name: "Sweaters", discount: "50", image: "https://cdn.fcglcdn.com/brainbees/images/cattemplate/winter_moas_desktop_fashion_page_061225_22.jpg", href: "/products?category=sweaters" },
+    { name: "Winter Accessories", discount: "60", image: "https://cdn.fcglcdn.com/brainbees/images/cattemplate/winter_moas_desktop_fashion_page_061225_23.jpg", href: "/products?category=accessories" }
+  ];
+
+  const babyCategories = [
+    { name: "Baby Diapers", icon: "🍼", href: "/products?category=diapers" },
+    { name: "Baby Wipes", icon: "🧻", href: "/products?category=wipes" },
+    { name: "Cloth Diapers & Nappies", icon: "👶", href: "/products?category=cloth-diapers" },
+    { name: "Diaper Rash Cream", icon: "🧴", href: "/products?category=rash-cream" },
+    { name: "Diaper Changing Pads & Mats", icon: "📋", href: "/products?category=changing-pads" },
+    { name: "Diaper Bag", icon: "🎒", href: "/products?category=diaper-bags" },
+    { name: "Potty Training", icon: "🚽", href: "/products?category=potty-training" }
+  ];
+
   return (
     <main className="min-h-screen bg-white">
       {/* Hero Carousel */}
@@ -105,137 +151,214 @@ export default async function Home() {
       </section>
 
       {/* Premium Boutiques Section */}
-      {featuredProducts.length > 0 && (
-        <section className="py-12 bg-white">
-          <div className="container-custom">
-            <div className="text-center mb-8">
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">PREMIUM BOUTIQUES</h2>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-              {/* Large Featured Product Banners */}
-              {featuredProducts.slice(0, 3).map((product: any, index: number) => {
-                const discount = calculateDiscount(Number(product.price), product.compareAtPrice ? Number(product.compareAtPrice) : null);
-                const titles = ['Mom Of All Sales', 'Unwrap The Joy Of Christmas', 'Envision Your Elegance'];
-                const subtitles = ['Up To 14 Years', 'Launching Christmas Collection', 'The Ultimate Wedding Fashion Guide'];
-                const taglines = ['SHOP NOW', 'Explore Now', 'Flat 40% Off'];
-                
-                return (
-                  <Link
-                    key={product.id}
-                    href={`/products/${product.slug}`}
-                    className="relative rounded-2xl overflow-hidden h-[400px] md:h-[500px] shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:scale-[1.02] group cursor-pointer"
-                  >
-                    {/* Background Image */}
-                    {product.images?.[0]?.url ? (
-                      <div className="absolute inset-0">
-                        <Image
-                          src={product.images[0].url}
-                          alt={product.name}
-                          fill
-                          className="object-cover group-hover:scale-110 transition-transform duration-700"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"></div>
-                      </div>
-                    ) : (
-                      <div className="absolute inset-0 bg-gradient-to-br from-pink-400 to-purple-600"></div>
-                    )}
+      <section className="py-12 bg-white">
+        <div className="container-custom">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">PREMIUM BOUTIQUES</h2>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {premiumBoutiques.map((boutique, index) => {
+              const boutiqueImages = [
+                'https://cdn.fcglcdn.com/brainbees/images/boutique/670x670/38293.webp',
+                'https://cdn.fcglcdn.com/brainbees/images/boutique/670x670/38171.webp',
+                'https://cdn.fcglcdn.com/brainbees/images/boutique/670x670/38147.webp'
+              ];
+              
+              return (
+                <div key={index} className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 group">
+                  <Link href={boutique.href} className="block">
+                    {/* Image Section */}
+                    <div className="relative h-[350px] md:h-[450px] overflow-hidden rounded-t-2xl">
+                      <Image
+                        src={boutiqueImages[index]}
+                        alt={boutique.title}
+                        fill
+                        sizes="(max-width: 768px) 100vw, 33vw"
+                        className="object-cover group-hover:scale-105 transition-transform duration-700"
+                      />
+                    </div>
                     
-                    {/* Content Overlay */}
-                    <div className="absolute inset-0 p-6 md:p-8 flex flex-col justify-between">
-                      {/* Top Badge */}
-                      <div className="flex justify-between items-start">
-                        <div className="inline-flex items-center justify-center bg-red-600 text-white rounded-full w-20 h-20 md:w-24 md:h-24 shadow-lg transform group-hover:rotate-12 transition-transform duration-300">
-                          <div className="text-center">
-                            <div className="text-xs md:text-sm font-bold">MOM OF ALL</div>
-                            <div className="text-xs md:text-sm font-bold">SALES</div>
-                          </div>
-                        </div>
-                      </div>
-                      
-                      {/* Bottom Content */}
-                      <div className="relative z-10">
-                        <h3 className="text-2xl md:text-4xl font-bold text-white mb-2 drop-shadow-lg">
-                          {titles[index]}
-                        </h3>
-                        <p className="text-white text-sm md:text-base mb-4 opacity-90">{subtitles[index]}</p>
-                        <div className="flex items-center gap-4">
-                          <div className="inline-block bg-red-700 text-white px-6 py-3 rounded-full font-bold text-lg md:text-2xl shadow-lg">
-                            FLAT {discount > 0 ? discount : 40}% OFF
-                          </div>
-                          <div className="bg-white text-gray-900 px-6 py-3 rounded-full font-bold text-sm group-hover:bg-gray-100 transition-colors shadow-lg">
-                            {taglines[index]} →
-                          </div>
-                        </div>
-                      </div>
+                    {/* Text Content Below */}
+                    <div className="p-6 bg-gray-50">
+                      <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-2">
+                        {boutique.title}
+                      </h3>
+                      <p className="text-gray-600 text-sm md:text-base mb-0">
+                        {boutique.subtitle}
+                      </p>
                     </div>
                   </Link>
-                );
-              })}
-            </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
 
-            {/* Second Row - 3 More Boutique Cards */}
-            {featuredProducts.length > 3 && (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                {featuredProducts.slice(3, 6).map((product: any) => {
-                  const discount = calculateDiscount(Number(product.price), product.compareAtPrice ? Number(product.compareAtPrice) : null);
-                  const image = product.images?.[0]?.url;
-                  
-                  return (
-                    <Link
-                      key={product.id}
-                      href={`/products/${product.slug}`}
-                      className="relative rounded-2xl overflow-hidden h-[280px] md:h-[350px] shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:scale-[1.02] group cursor-pointer bg-white"
-                    >
-                      {/* Image */}
-                      {image ? (
-                        <div className="absolute inset-0">
-                          <Image
-                            src={image}
-                            alt={product.name}
-                            fill
-                            className="object-cover group-hover:scale-110 transition-transform duration-700"
-                          />
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
-                        </div>
-                      ) : (
-                        <div className="absolute inset-0 bg-gradient-to-br from-blue-300 to-purple-400"></div>
-                      )}
-                      
-                      {/* Content */}
-                      <div className="absolute inset-0 p-6 flex flex-col justify-between">
-                        {/* Discount Badge */}
-                        {discount > 0 && (
-                          <div className="self-end">
-                            <div className="bg-red-600 text-white px-4 py-2 rounded-full font-bold text-sm shadow-lg">
-                              Upto {discount}% Off
-                            </div>
+      {/* Affordable Winter Must-haves Section */}
+      <section className="py-12 bg-gray-50">
+        <div className="container-custom">
+          <div className="mb-8">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
+              Affordable <span className="text-pink-600">Winter Must-haves!</span>
+            </h2>
+            <p className="text-gray-600 text-lg">Snag the hottest deals of the season</p>
+          </div>
+          
+          {/* Image Grid */}
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4 md:gap-6">
+            {[
+              'https://cdn.fcglcdn.com/brainbees/images/cattemplate/winter_moas_desktop_fashion_page_061225_16.jpg',
+              'https://cdn.fcglcdn.com/brainbees/images/cattemplate/winter_moas_desktop_fashion_page_061225_17.jpg',
+              'https://cdn.fcglcdn.com/brainbees/images/cattemplate/winter_moas_desktop_fashion_page_061225_18.jpg',
+              'https://cdn.fcglcdn.com/brainbees/images/cattemplate/winter_moas_desktop_fashion_page_061225_19.jpg',
+              'https://cdn.fcglcdn.com/brainbees/images/cattemplate/winter_moas_desktop_fashion_page_061225_20.jpg',
+              'https://cdn.fcglcdn.com/brainbees/images/cattemplate/winter_moas_desktop_fashion_page_061225_21.jpg',
+              'https://cdn.fcglcdn.com/brainbees/images/cattemplate/winter_moas_desktop_fashion_page_061225_22.jpg',
+              'https://cdn.fcglcdn.com/brainbees/images/cattemplate/winter_moas_desktop_fashion_page_061225_23.jpg'
+            ].map((imageUrl, index) => (
+              <Link
+                key={index}
+                href="/products"
+                className="relative w-full aspect-[3/4] rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 cursor-pointer group"
+              >
+                <Image
+                  src={imageUrl}
+                  alt={`Winter Collection ${index + 1}`}
+                  fill
+                  sizes="(max-width: 768px) 50vw, (max-width: 1024px) 25vw, 12.5vw"
+                  className="object-contain group-hover:scale-105 transition-transform duration-300"
+                />
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Occasion Wear Section */}
+      <section className="py-12 bg-white">
+        <div className="container-custom">
+          <div className="mb-8">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
+              Occasion <span className="text-pink-600">Wear</span>
+            </h2>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Ethnic Wear Banner */}
+            <Link
+              href="/products?category=ethnic-wear"
+              className="relative rounded-2xl overflow-hidden h-[250px] md:h-[300px] shadow-lg hover:shadow-2xl transition-all duration-500 group cursor-pointer"
+            >
+              <Image
+                src="https://cdn.fcglcdn.com/brainbees/images/cattemplate/winter_moas_desktop_fashion_page_061225_34.jpg"
+                alt="Ethnic Wear"
+                fill
+                sizes="(max-width: 768px) 100vw, 50vw"
+                className="object-cover group-hover:scale-105 transition-transform duration-700"
+              />
+            </Link>
+
+            {/* Party Wear Banner */}
+            <Link
+              href="/products?category=party-wear"
+              className="relative rounded-2xl overflow-hidden h-[250px] md:h-[300px] shadow-lg hover:shadow-2xl transition-all duration-500 group cursor-pointer"
+            >
+              <Image
+                src="https://cdn.fcglcdn.com/brainbees/images/cattemplate/winter_moas_desktop_fashion_page_061225_35.jpg"
+                alt="Party Wear"
+                fill
+                sizes="(max-width: 768px) 100vw, 50vw"
+                className="object-cover group-hover:scale-105 transition-transform duration-700"
+              />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Baby Diapers & More Section */}
+      <section className="py-12 bg-gray-50">
+        <div className="container-custom">
+          <div className="mb-8">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
+              BABY DIAPERS <span className="text-pink-600">& MORE</span>
+            </h2>
+          </div>
+          
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 md:gap-6">
+            {babyCategories.map((category, index) => (
+              <Link
+                key={index}
+                href={category.href}
+                className="bg-white rounded-xl p-6 shadow-md hover:shadow-2xl transition-all duration-500 transform hover:scale-105 hover:-translate-y-2 group border border-gray-100 hover:border-pink-200 cursor-pointer text-center"
+              >
+                <div className="mb-4 text-5xl group-hover:scale-110 transition-transform duration-500">
+                  {category.icon}
+                </div>
+                <h3 className="text-sm font-semibold text-gray-900 group-hover:text-pink-600 transition-colors duration-300 line-clamp-2 min-h-[40px]">
+                  {category.name} →
+                </h3>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Fashion Trends Section with Real Categories */}
+      {allCategories.length > 0 && (
+        <section className="py-12 bg-white">
+          <div className="container-custom">
+            <div className="mb-8">
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
+                Shop by <span className="text-pink-600">Category</span>
+              </h2>
+              <p className="text-gray-600 text-lg">Explore our full range of products</p>
+            </div>
+            
+            <div className="overflow-x-auto pb-4 -mx-4 px-4">
+              <div className="flex gap-4 md:gap-6 min-w-max md:grid md:grid-cols-4 lg:grid-cols-8 md:min-w-0">
+                {allCategories.slice(0, 16).map((category: any) => (
+                  <Link
+                    key={category.id}
+                    href={`/categories/${category.slug}`}
+                    className="flex-shrink-0 w-36 md:w-auto bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-6 hover:shadow-2xl transition-all duration-500 transform hover:scale-105 hover:-translate-y-1 text-center group border-2 border-gray-200 hover:border-pink-300 cursor-pointer overflow-hidden"
+                  >
+                    {/* Hover Effect Background */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-pink-50 to-purple-50 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    
+                    <div className="relative z-10">
+                      <div className="mb-3">
+                        {category.image ? (
+                          <div className="relative w-full h-20 mb-2">
+                            <Image
+                              src={category.image}
+                              alt={category.name}
+                              fill
+                              className="object-contain group-hover:scale-110 transition-transform duration-500"
+                            />
+                          </div>
+                        ) : (
+                          <div className="text-4xl mb-2 group-hover:scale-125 transition-transform duration-500">
+                            {category.icon || '🛍️'}
                           </div>
                         )}
-                        
-                        {/* Bottom Info */}
-                        <div className="relative z-10">
-                          <h3 className="text-xl md:text-2xl font-bold text-white mb-2 drop-shadow-lg line-clamp-2">
-                            {product.name}
-                          </h3>
-                          <div className="inline-block bg-white text-gray-900 px-6 py-2 rounded-full font-bold text-sm group-hover:bg-gray-100 transition-colors shadow-lg">
-                            Explore Now
-                          </div>
-                        </div>
                       </div>
-                    </Link>
-                  );
-                })}
+                      <h3 className="font-bold text-sm text-gray-900 group-hover:text-pink-600 transition-colors duration-300 line-clamp-2 min-h-[40px]">
+                        {category.name}
+                      </h3>
+                    </div>
+                  </Link>
+                ))}
               </div>
-            )}
+            </div>
 
-            {/* Full Width View All Button */}
-            <div className="text-center">
+            <div className="text-center mt-8">
               <Link
-                href="/products?featured=true"
-                className="inline-flex items-center justify-center w-full md:w-auto min-w-[300px] bg-white border-2 border-pink-600 text-pink-600 px-12 py-4 rounded-full text-lg font-bold hover:bg-pink-600 hover:text-white transition-all duration-300 shadow-md hover:shadow-xl group"
+                href="/products"
+                className="inline-flex items-center justify-center bg-pink-600 text-white px-12 py-4 rounded-full text-lg font-bold hover:bg-pink-700 transition-all duration-300 shadow-md hover:shadow-xl group"
               >
-                View All Boutiques
+                View All Products
                 <ChevronRight className="w-6 h-6 ml-2 group-hover:translate-x-1 transition-transform" />
               </Link>
             </div>
@@ -243,269 +366,109 @@ export default async function Home() {
         </section>
       )}
 
-      {/* Affordable Winter Must-haves / Sale Products Section */}
-      {saleProducts.length > 0 && (
-        <section className="py-12 bg-gray-50">
-          <div className="container-custom">
-            <div className="mb-8">
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
-                Affordable <span className="text-pink-600">Winter Must-haves!</span>
-              </h2>
-              <p className="text-gray-600 text-lg">Snag the hottest deals of the season</p>
-            </div>
-            
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 md:gap-6">
-              {saleProducts.slice(0, 12).map((product: any) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
-            </div>
-
-            <div className="text-center mt-6">
-              <Link 
-                href="/products?sale=true"
-                className="inline-flex items-center text-pink-600 font-semibold hover:text-pink-700"
-              >
-                View All Boutiques <ChevronRight className="w-5 h-5 ml-1" />
-              </Link>
-            </div>
+      {/* Additional Premium Boutiques Section */}
+      <section className="py-12 bg-gray-50">
+        <div className="container-custom">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">SEASONAL SPECIALS</h2>
           </div>
-        </section>
-      )}
-
-      {/* Winter Deals You Can't Miss */}
-      {winterProducts.length > 0 && (
-        <section className="py-12 bg-white">
-          <div className="container-custom">
-            <div className="mb-8">
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
-                Winter Deals <span className="text-pink-600">You Can't Miss!</span>
-              </h2>
-              <p className="text-gray-600 text-lg">Get the trendiest cold-weather looks at great prices.</p>
-            </div>
-            
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 md:gap-6">
-              {winterProducts.slice(0, 12).map((product: any) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* Occasion Wear Section */}
-      {(ethnicProducts.length > 0 || partyWearProducts.length > 0) && (
-        <section className="py-12 bg-gray-50">
-          <div className="container-custom">
-            <div className="mb-8">
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
-                Occasion <span className="text-pink-600">Wear</span>
-              </h2>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-              {/* Ethnic Wear Banner - Large Card */}
-              {ethnicProducts.length > 0 && (
-                <Link
-                  href="/categories/ethnic-wear"
-                  className="relative rounded-2xl overflow-hidden h-[400px] md:h-[450px] shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:scale-[1.02] group cursor-pointer"
-                >
-                  {ethnicProducts[0]?.images?.[0]?.url ? (
-                    <div className="absolute inset-0">
-                      <Image
-                        src={ethnicProducts[0].images[0].url}
-                        alt="Ethnic Wear"
-                        fill
-                        className="object-cover group-hover:scale-110 transition-transform duration-700"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
-                    </div>
-                  ) : (
-                    <div className="absolute inset-0 bg-gradient-to-br from-pink-300 via-pink-400 to-pink-500">
-                      <div className="absolute inset-0 opacity-20" style={{backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.4\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")'}}></div>
-                    </div>
-                  )}
-                  
-                  <div className="absolute inset-0 p-8 flex flex-col justify-between">
-                    {/* Top Badge */}
-                    <div className="inline-flex items-center">
-                      <div className="relative">
-                        <div className="bg-pink-600 text-white px-6 py-3 rounded-full shadow-xl">
-                          <span className="font-bold text-lg">The Wedding Store</span>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    {/* Bottom Content */}
-                    <div className="relative z-10">
-                      <h3 className="text-3xl md:text-5xl font-bold text-white mb-3 drop-shadow-2xl" style={{fontFamily: 'Georgia, serif'}}>
-                        Envision<br />
-                        <span className="italic">Your Elegance</span>
-                      </h3>
-                      <p className="text-white text-base md:text-lg mb-4 drop-shadow-lg">The Ultimate Wedding Fashion Guide</p>
-                      <div className="flex flex-col gap-3">
-                        <div className="text-white text-xl md:text-2xl font-bold drop-shadow-lg">
-                          Flat <span className="text-yellow-300">40</span>% Off
-                        </div>
-                        <div className="inline-block bg-white text-gray-900 px-8 py-3 rounded-full font-bold text-base group-hover:bg-yellow-300 transition-colors shadow-xl w-fit">
-                          SHOP NOW →
-                        </div>
-                      </div>
-                    </div>
-                    
-                    {/* Decorative Elements */}
-                    <div className="absolute bottom-8 right-8 text-6xl opacity-20 group-hover:opacity-30 transition-opacity">
-                      🦢
-                    </div>
-                  </div>
-                </Link>
-              )}
-
-              {/* Party Wear Banner - Large Card */}
-              {partyWearProducts.length > 0 && (
-                <Link
-                  href="/categories/party-wear"
-                  className="relative rounded-2xl overflow-hidden h-[400px] md:h-[450px] shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:scale-[1.02] group cursor-pointer"
-                >
-                  {partyWearProducts[0]?.images?.[0]?.url ? (
-                    <div className="absolute inset-0">
-                      <Image
-                        src={partyWearProducts[0].images[0].url}
-                        alt="Party Wear"
-                        fill
-                        className="object-cover group-hover:scale-110 transition-transform duration-700"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
-                    </div>
-                  ) : (
-                    <div className="absolute inset-0 bg-gradient-to-br from-red-400 via-red-500 to-orange-500">
-                      <div className="absolute top-0 left-0 w-full h-full" style={{backgroundImage: 'radial-gradient(circle at 20% 50%, rgba(255,255,255,0.2) 0%, transparent 50%)'}}></div>
-                    </div>
-                  )}
-                  
-                  <div className="absolute inset-0 p-8 flex flex-col justify-between">
-                    {/* Top Badge */}
-                    <div className="inline-flex items-center">
-                      <div className="relative">
-                        <div className="bg-red-600 text-white px-6 py-3 rounded-full shadow-xl animate-pulse">
-                          <span className="font-bold text-lg">🎄 Christmas Special</span>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    {/* Bottom Content */}
-                    <div className="relative z-10">
-                      <div className="mb-3 inline-block">
-                        <div className="text-white text-sm font-semibold mb-2">Launching Christmas Collection</div>
-                      </div>
-                      <h3 className="text-3xl md:text-5xl font-bold text-white mb-3 drop-shadow-2xl" style={{fontFamily: 'Georgia, serif'}}>
-                        Unwrap The Joy Of<br />
-                        <span className="text-yellow-300 italic">Christmas</span>
-                      </h3>
-                      <div className="flex flex-col gap-3">
-                        <div className="inline-block bg-red-700 text-white px-8 py-3 rounded-lg font-bold text-2xl shadow-xl w-fit">
-                          FLAT <span className="text-5xl">40</span><span className="text-3xl">%</span> OFF
-                        </div>
-                        <div className="inline-block bg-white text-red-600 px-8 py-3 rounded-full font-bold text-base group-hover:bg-yellow-300 group-hover:text-gray-900 transition-colors shadow-xl w-fit">
-                          Explore Now →
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </Link>
-              )}
-            </div>
-
-            {/* Occasion Wear Products Grid */}
-            {(ethnicProducts.length > 0 || partyWearProducts.length > 0) && (
-              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                {[...ethnicProducts.slice(0, 6), ...partyWearProducts.slice(0, 6)].slice(0, 12).map((product: any) => (
-                  <ProductCard key={product.id} product={product} />
-                ))}
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <Link
+              href="/products?category=summer-collection"
+              className="relative rounded-2xl overflow-hidden h-[400px] shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:scale-[1.02] group cursor-pointer"
+            >
+              <div className="absolute inset-0 bg-gradient-to-br from-orange-400 to-yellow-500">
+                <div className="absolute inset-0 opacity-10" style={{backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.4\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")'}}></div>
               </div>
-            )}
-          </div>
-        </section>
-      )}
-
-      {/* Stride in Style - Categories Section */}
-      {allCategories.length > 0 && (
-        <section className="py-12 bg-white">
-          <div className="container-custom">
-            <div className="mb-8">
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
-                Stride in <span className="text-pink-600">Style</span>
-              </h2>
-              <p className="text-gray-600 text-lg">Shop the sale!</p>
-            </div>
-            
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 md:gap-6">
-              {allCategories.slice(0, 12).map((category: any) => (
-                <Link
-                  key={category.id}
-                  href={`/categories/${category.slug}`}
-                  className="relative bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-6 md:p-8 hover:shadow-2xl transition-all duration-500 transform hover:scale-105 hover:-translate-y-1 text-center group border-2 border-gray-200 hover:border-pink-300 cursor-pointer overflow-hidden"
-                >
-                  {/* Hover Effect Background */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-pink-50 to-purple-50 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                  
-                  {/* Lock Icon Badge */}
-                  <div className="absolute top-3 right-3 bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center shadow-lg group-hover:bg-pink-500 transition-colors duration-300">
-                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
-                    </svg>
-                  </div>
-                  
-                  <div className="relative z-10">
-                    <div className="mb-4">
-                      {category.image ? (
-                        <div className="relative w-full h-28 md:h-32 mb-3">
-                          <Image
-                            src={category.image}
-                            alt={category.name}
-                            fill
-                            className="object-contain group-hover:scale-110 transition-transform duration-500"
-                          />
-                        </div>
-                      ) : (
-                        <div className="text-5xl md:text-6xl mb-3 group-hover:scale-125 transition-transform duration-500">
-                          {category.icon || '🛍️'}
-                        </div>
-                      )}
+              
+              <div className="absolute inset-0 p-6 md:p-8 flex flex-col justify-between">
+                <div className="flex justify-between items-start">
+                  <div className="inline-flex items-center justify-center bg-orange-600 text-white rounded-full w-20 h-20 md:w-24 md:h-24 shadow-lg transform group-hover:rotate-12 transition-transform duration-300">
+                    <div className="text-center px-2">
+                      <div className="text-xs md:text-sm font-bold leading-tight">SUMMER VIBES</div>
                     </div>
-                    <h3 className="font-bold text-sm md:text-base text-gray-900 group-hover:text-pink-600 transition-colors duration-300 line-clamp-2">
-                      {category.name}
-                    </h3>
                   </div>
-                  
-                  {/* Shine Effect on Hover */}
-                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700">
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-20 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+                </div>
+                
+                <div className="relative z-10">
+                  <h3 className="text-2xl md:text-3xl font-bold text-white mb-2 drop-shadow-lg">
+                    Summer Collection
+                  </h3>
+                  <p className="text-white text-sm md:text-base mb-4 opacity-90">Stay Cool & Stylish</p>
+                  <div className="flex flex-wrap items-center gap-3">
+                    <div className="inline-block bg-orange-700 text-white px-6 py-3 rounded-full font-bold text-base md:text-lg shadow-lg">
+                      UPTO 50% OFF
+                    </div>
                   </div>
-                </Link>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
+                </div>
+              </div>
+            </Link>
 
-      {/* Baby Diapers & More Section */}
-      {babyProducts.length > 0 && (
-        <section className="py-12 bg-gray-50">
-          <div className="container-custom">
-            <div className="mb-8">
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
-                BABY DIAPERS <span className="text-pink-600">& MORE</span>
-              </h2>
-            </div>
-            
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 md:gap-6">
-              {babyProducts.slice(0, 12).map((product: any) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
-            </div>
+            <Link
+              href="/products?category=festive-wear"
+              className="relative rounded-2xl overflow-hidden h-[400px] shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:scale-[1.02] group cursor-pointer"
+            >
+              <div className="absolute inset-0 bg-gradient-to-br from-purple-500 to-indigo-600">
+                <div className="absolute inset-0 opacity-10" style={{backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.4\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")'}}></div>
+              </div>
+              
+              <div className="absolute inset-0 p-6 md:p-8 flex flex-col justify-between">
+                <div className="flex justify-between items-start">
+                  <div className="inline-flex items-center justify-center bg-purple-700 text-white rounded-full w-20 h-20 md:w-24 md:h-24 shadow-lg transform group-hover:rotate-12 transition-transform duration-300">
+                    <div className="text-center px-2">
+                      <div className="text-xs md:text-sm font-bold leading-tight">FESTIVE SPECIAL</div>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="relative z-10">
+                  <h3 className="text-2xl md:text-3xl font-bold text-white mb-2 drop-shadow-lg">
+                    Festive Collection
+                  </h3>
+                  <p className="text-white text-sm md:text-base mb-4 opacity-90">Celebrate in Style</p>
+                  <div className="flex flex-wrap items-center gap-3">
+                    <div className="inline-block bg-purple-700 text-white px-6 py-3 rounded-full font-bold text-base md:text-lg shadow-lg">
+                      UPTO 55% OFF
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </Link>
+
+            <Link
+              href="/products?category=casual-wear"
+              className="relative rounded-2xl overflow-hidden h-[400px] shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:scale-[1.02] group cursor-pointer"
+            >
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-400 to-cyan-500">
+                <div className="absolute inset-0 opacity-10" style={{backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.4\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")'}}></div>
+              </div>
+              
+              <div className="absolute inset-0 p-6 md:p-8 flex flex-col justify-between">
+                <div className="flex justify-between items-start">
+                  <div className="inline-flex items-center justify-center bg-blue-600 text-white rounded-full w-20 h-20 md:w-24 md:h-24 shadow-lg transform group-hover:rotate-12 transition-transform duration-300">
+                    <div className="text-center px-2">
+                      <div className="text-xs md:text-sm font-bold leading-tight">EVERYDAY STYLE</div>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="relative z-10">
+                  <h3 className="text-2xl md:text-3xl font-bold text-white mb-2 drop-shadow-lg">
+                    Casual Comfort
+                  </h3>
+                  <p className="text-white text-sm md:text-base mb-4 opacity-90">Everyday Essentials</p>
+                  <div className="flex flex-wrap items-center gap-3">
+                    <div className="inline-block bg-blue-700 text-white px-6 py-3 rounded-full font-bold text-base md:text-lg shadow-lg">
+                      UPTO 45% OFF
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </Link>
           </div>
-        </section>
-      )}
+        </div>
+      </section>
 
       {/* New Arrivals Section */}
       {newArrivals.length > 0 && (
@@ -563,8 +526,55 @@ export default async function Home() {
         </section>
       )}
 
-      {/* Why Shop With Us */}
+      {/* Sale Products Section */}
+      {saleProducts.length > 0 && (
+        <section className="py-12 bg-white">
+          <div className="container-custom">
+            <div className="mb-8">
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
+                Hot <span className="text-pink-600">Deals!</span>
+              </h2>
+              <p className="text-gray-600 text-lg">Limited time offers you can't miss</p>
+            </div>
+            
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 md:gap-6">
+              {saleProducts.slice(0, 12).map((product: any) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+
+            <div className="text-center mt-6">
+              <Link 
+                href="/products?sale=true"
+                className="inline-flex items-center text-pink-600 font-semibold hover:text-pink-700"
+              >
+                View All Deals <ChevronRight className="w-5 h-5 ml-1" />
+              </Link>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Franchise Opportunity Banner */}
       <section className="py-12 bg-white">
+        <div className="container-custom">
+          <Link 
+            href="/franchise" 
+            className="block relative w-full h-[140px] md:h-[200px] rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 group border-4 border-orange-400"
+          >
+            <Image
+              src="https://cdn.fcglcdn.com/brainbees/images/intellitots_franchise_16may24.webp"
+              alt="Franchise Opportunity - Be a Franchise Owner"
+              fill
+              sizes="100vw"
+              className="object-cover group-hover:scale-105 transition-transform duration-700"
+            />
+          </Link>
+        </div>
+      </section>
+
+      {/* Why Shop With Us */}
+      <section className="py-12 bg-gradient-to-br from-pink-50 to-purple-50">
         <div className="container-custom">
           <div className="text-center mb-10">
             <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">Why Shop With Us</h2>
@@ -597,26 +607,6 @@ export default async function Home() {
               </div>
               <h3 className="font-bold text-gray-900 mb-2">Quality Products</h3>
               <p className="text-sm text-gray-600">Tested & certified</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Newsletter */}
-      <section className="py-12 bg-gradient-to-r from-pink-600 to-purple-600">
-        <div className="container-custom">
-          <div className="max-w-2xl mx-auto text-center text-white">
-            <h2 className="text-2xl md:text-3xl font-bold mb-3">Join Our Newsletter</h2>
-            <p className="mb-6">Get exclusive deals and updates directly to your inbox!</p>
-            <div className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
-              <input 
-                type="email" 
-                placeholder="Enter your email" 
-                className="flex-1 px-4 py-3 rounded-lg text-gray-900"
-              />
-              <button className="bg-white text-pink-600 px-6 py-3 rounded-lg font-bold hover:bg-gray-100 transition-colors">
-                Subscribe
-              </button>
             </div>
           </div>
         </div>
