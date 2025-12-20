@@ -12,9 +12,24 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    const userId = (session.user as any).id;
+    console.log('Cart GET - User ID:', userId);
+
+    // Verify user exists
+    const user = await prisma.user.findUnique({
+      where: { id: userId }
+    });
+
+    if (!user) {
+      console.error('User not found in database:', userId);
+      return NextResponse.json({ 
+        error: 'User not found. Please log out and log in again.' 
+      }, { status: 404 });
+    }
+
     // Get or create cart
     let cart = await prisma.cart.findUnique({
-      where: { userId: (session.user as any).id },
+      where: { userId },
       include: {
         items: {
           include: {
@@ -32,9 +47,10 @@ export async function GET(request: NextRequest) {
     });
 
     if (!cart) {
+      console.log('Creating new cart for user:', userId);
       cart = await prisma.cart.create({
         data: {
-          userId: (session.user as any).id,
+          userId,
         },
         include: {
           items: {
@@ -56,7 +72,9 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(cart);
   } catch (error) {
     console.error('Error fetching cart:', error);
-    return NextResponse.json({ error: 'Failed to fetch cart' }, { status: 500 });
+    return NextResponse.json({ 
+      error: 'Failed to fetch cart. Please try refreshing the page.' 
+    }, { status: 500 });
   }
 }
 
@@ -75,6 +93,17 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Product ID required' }, { status: 400 });
     }
 
+    const userId = (session.user as any).id;
+
+    // Verify user exists
+    const user = await prisma.user.findUnique({
+      where: { id: userId }
+    });
+
+    if (!user) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
+    }
+
     // Check if product exists and is active
     const product = await prisma.product.findUnique({
       where: { id: productId }
@@ -86,12 +115,12 @@ export async function POST(request: NextRequest) {
 
     // Get or create cart
     let cart = await prisma.cart.findUnique({
-      where: { userId: (session.user as any).id }
+      where: { userId }
     });
 
     if (!cart) {
       cart = await prisma.cart.create({
-        data: { userId: (session.user as any).id }
+        data: { userId }
       });
     }
 

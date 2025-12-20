@@ -24,6 +24,29 @@ async function getHomeData() {
   }
 }
 
+async function getHomeSections() {
+  try {
+    const baseUrl = process.env.VERCEL_URL 
+      ? `https://${process.env.VERCEL_URL}` 
+      : (process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000');
+    
+    const res = await fetch(`${baseUrl}/api/home-sections`, {
+      cache: 'no-store'
+    });
+    
+    if (!res.ok) {
+      console.error('Failed to fetch home sections');
+      return [];
+    }
+    
+    const data = await res.json();
+    return data.sections || [];
+  } catch (error) {
+    console.error('Error fetching home sections:', error);
+    return [];
+  }
+}
+
 // Helper function to calculate discount percentage
 function calculateDiscount(price: number, comparePrice: number | null): number {
   if (!comparePrice || comparePrice <= price) return 0;
@@ -83,6 +106,7 @@ function ProductCard({ product }: { product: any }) {
 
 export default async function Home() {
   const homeData = await getHomeData();
+  const dynamicSections = await getHomeSections();
   
   const {
     featuredCategories = [],
@@ -97,42 +121,6 @@ export default async function Home() {
     partyWearProducts = [],
   } = homeData;
 
-  // Category data for sections
-  const premiumBoutiques = [
-    {
-      title: "Mom Of All Sale I Up To 14 Y",
-      subtitle: "Upto 60% Off",
-      badge: "MOM OF ALL SALES",
-      bgColor: "from-pink-400 to-pink-600",
-      href: "/products?age=0-14"
-    },
-    {
-      title: "Unwrap The Joy Of Christmas",
-      subtitle: "Explore Now",
-      badge: "CHRISTMAS SPECIAL",
-      bgColor: "from-red-500 to-red-700",
-      href: "/products?category=christmas"
-    },
-    {
-      title: "Envision Your Elegance",
-      subtitle: "Flat 40% Off",
-      badge: "THE WEDDING STORE",
-      bgColor: "from-emerald-400 to-emerald-600",
-      href: "/products?category=wedding"
-    }
-  ];
-
-  const winterCategories = [
-    { name: "Hoodies", discount: "50", image: "https://cdn.fcglcdn.com/brainbees/images/cattemplate/winter_moas_desktop_fashion_page_061225_16.jpg", href: "/products?category=hoodies" },
-    { name: "Sweatshirts", discount: "50", image: "https://cdn.fcglcdn.com/brainbees/images/cattemplate/winter_moas_desktop_fashion_page_061225_17.jpg", href: "/products?category=sweatshirts" },
-    { name: "Winter Sets", discount: "50", image: "https://cdn.fcglcdn.com/brainbees/images/cattemplate/winter_moas_desktop_fashion_page_061225_18.jpg", href: "/products?category=winter-sets" },
-    { name: "Pullovers", discount: "50", image: "https://cdn.fcglcdn.com/brainbees/images/cattemplate/winter_moas_desktop_fashion_page_061225_19.jpg", href: "/products?category=pullovers" },
-    { name: "Jackets", discount: "50", image: "https://cdn.fcglcdn.com/brainbees/images/cattemplate/winter_moas_desktop_fashion_page_061225_20.jpg", href: "/products?category=jackets" },
-    { name: "Coats", discount: "50", image: "https://cdn.fcglcdn.com/brainbees/images/cattemplate/winter_moas_desktop_fashion_page_061225_21.jpg", href: "/products?category=coats" },
-    { name: "Sweaters", discount: "50", image: "https://cdn.fcglcdn.com/brainbees/images/cattemplate/winter_moas_desktop_fashion_page_061225_22.jpg", href: "/products?category=sweaters" },
-    { name: "Winter Accessories", discount: "60", image: "https://cdn.fcglcdn.com/brainbees/images/cattemplate/winter_moas_desktop_fashion_page_061225_23.jpg", href: "/products?category=accessories" }
-  ];
-
   const babyCategories = [
     { name: "Baby Diapers", icon: "🍼", href: "/products?category=diapers" },
     { name: "Baby Wipes", icon: "🧻", href: "/products?category=wipes" },
@@ -143,6 +131,185 @@ export default async function Home() {
     { name: "Potty Training", icon: "🚽", href: "/products?category=potty-training" }
   ];
 
+  // Render section based on type
+  function renderSection(section: any) {
+    const activeItems = section.items.filter((item: any) => item.isActive);
+    if (activeItems.length === 0) return null;
+
+    switch (section.sectionType) {
+      case 'GRID':
+        return (
+          <section key={section.id} className="py-12 bg-white">
+            <div className="container-custom">
+              <div className="text-center mb-8">
+                <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">{section.title}</h2>
+                {section.subtitle && <p className="text-gray-600 text-lg">{section.subtitle}</p>}
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {activeItems.slice(0, 6).map((item: any) => (
+                  <div key={item.id} className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 group">
+                    <Link href={item.link || '/products'} className="block">
+                      <div className="relative h-[350px] md:h-[450px] overflow-hidden rounded-t-2xl">
+                        <Image
+                          src={item.image}
+                          alt={item.title}
+                          fill
+                          sizes="(max-width: 768px) 100vw, 33vw"
+                          className="object-cover group-hover:scale-105 transition-transform duration-700"
+                        />
+                        {item.badge && (
+                          <div className="absolute top-4 left-4 bg-red-600 text-white text-xs font-bold px-3 py-1.5 rounded-full z-10 shadow-lg">
+                            {item.badge}
+                          </div>
+                        )}
+                      </div>
+                      <div className="p-6 bg-gray-50">
+                        <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-2">{item.title}</h3>
+                        {item.subtitle && <p className="text-gray-600 text-sm md:text-base mb-0">{item.subtitle}</p>}
+                      </div>
+                    </Link>
+                  </div>
+                ))}
+              </div>
+              
+              {activeItems.length > 6 && (
+                <div className="text-center mt-8">
+                  <Link
+                    href={`/home-sections/${section.slug}`}
+                    className="inline-flex items-center justify-center bg-pink-600 text-white px-8 py-3 rounded-full text-base font-bold hover:bg-pink-700 transition-all duration-300 shadow-md hover:shadow-xl group"
+                  >
+                    Explore More Products
+                    <ChevronRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+                  </Link>
+                </div>
+              )}
+            </div>
+          </section>
+        );
+
+      case 'CAROUSEL':
+        return (
+          <section key={section.id} className="py-12 bg-gray-50">
+            <div className="container-custom">
+              <div className="mb-8">
+                <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">{section.title}</h2>
+                {section.subtitle && <p className="text-gray-600 text-lg">{section.subtitle}</p>}
+              </div>
+              
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 md:gap-6">
+                {activeItems.slice(0, 6).map((item: any) => (
+                  <Link
+                    key={item.id}
+                    href={item.link || '/products'}
+                    className="relative w-full aspect-[3/4] rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 cursor-pointer group"
+                  >
+                    <Image
+                      src={item.image}
+                      alt={item.title}
+                      fill
+                      sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 16.66vw"
+                      className="object-contain group-hover:scale-105 transition-transform duration-300"
+                    />
+                    {item.discount && (
+                      <div className="absolute top-3 left-3 bg-red-600 text-white text-xs font-bold px-3 py-1.5 rounded-full z-10 shadow-lg">
+                        {item.discount}% OFF
+                      </div>
+                    )}
+                  </Link>
+                ))}
+              </div>
+              
+              {activeItems.length > 6 && (
+                <div className="text-center mt-8">
+                  <Link
+                    href={`/home-sections/${section.slug}`}
+                    className="inline-flex items-center justify-center bg-pink-600 text-white px-8 py-3 rounded-full text-base font-bold hover:bg-pink-700 transition-all duration-300 shadow-md hover:shadow-xl group"
+                  >
+                    Explore More Products
+                    <ChevronRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+                  </Link>
+                </div>
+              )}
+            </div>
+          </section>
+        );
+
+      case 'TWO_COLUMN':
+        return (
+          <section key={section.id} className="py-12 bg-white">
+            <div className="container-custom">
+              <div className="mb-8">
+                <h2 className="text-3xl md:text-4xl font-bold text-gray-900">{section.title}</h2>
+                {section.subtitle && <p className="text-gray-600 text-lg">{section.subtitle}</p>}
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {activeItems.slice(0, 6).map((item: any) => (
+                  <Link
+                    key={item.id}
+                    href={item.link || '/products'}
+                    className="relative rounded-2xl overflow-hidden h-[250px] md:h-[300px] shadow-lg hover:shadow-2xl transition-all duration-500 group cursor-pointer"
+                  >
+                    <Image
+                      src={item.image}
+                      alt={item.title}
+                      fill
+                      sizes="(max-width: 768px) 100vw, 50vw"
+                      className="object-cover group-hover:scale-105 transition-transform duration-700"
+                    />
+                    {item.badge && (
+                      <div className="absolute top-4 left-4 bg-black bg-opacity-70 text-white text-sm font-bold px-4 py-2 rounded-lg z-10">
+                        {item.badge}
+                      </div>
+                    )}
+                  </Link>
+                ))}
+              </div>
+              
+              {activeItems.length > 6 && (
+                <div className="text-center mt-8">
+                  <Link
+                    href={`/home-sections/${section.slug}`}
+                    className="inline-flex items-center justify-center bg-pink-600 text-white px-8 py-3 rounded-full text-base font-bold hover:bg-pink-700 transition-all duration-300 shadow-md hover:shadow-xl group"
+                  >
+                    Explore More Products
+                    <ChevronRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+                  </Link>
+                </div>
+              )}
+            </div>
+          </section>
+        );
+
+      case 'FULL_WIDTH':
+        return (
+          <section key={section.id} className="py-12 bg-white">
+            <div className="container-custom">
+              {activeItems.map((item: any) => (
+                <Link
+                  key={item.id}
+                  href={item.link || '/products'}
+                  className="block relative w-full h-[140px] md:h-[200px] rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 group border-4 border-orange-400"
+                >
+                  <Image
+                    src={item.image}
+                    alt={item.title}
+                    fill
+                    sizes="100vw"
+                    className="object-cover group-hover:scale-105 transition-transform duration-700"
+                  />
+                </Link>
+              ))}
+            </div>
+          </section>
+        );
+
+      default:
+        return null;
+    }
+  }
+
   return (
     <main className="min-h-screen bg-white">
       {/* Hero Carousel */}
@@ -150,132 +317,8 @@ export default async function Home() {
         <HeroCarousel />
       </section>
 
-      {/* Premium Boutiques Section */}
-      <section className="py-12 bg-white">
-        <div className="container-custom">
-          <div className="text-center mb-8">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">PREMIUM BOUTIQUES</h2>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {premiumBoutiques.map((boutique, index) => {
-              const boutiqueImages = [
-                'https://cdn.fcglcdn.com/brainbees/images/boutique/670x670/38293.webp',
-                'https://cdn.fcglcdn.com/brainbees/images/boutique/670x670/38171.webp',
-                'https://cdn.fcglcdn.com/brainbees/images/boutique/670x670/38147.webp'
-              ];
-              
-              return (
-                <div key={index} className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 group">
-                  <Link href={boutique.href} className="block">
-                    {/* Image Section */}
-                    <div className="relative h-[350px] md:h-[450px] overflow-hidden rounded-t-2xl">
-                      <Image
-                        src={boutiqueImages[index]}
-                        alt={boutique.title}
-                        fill
-                        sizes="(max-width: 768px) 100vw, 33vw"
-                        className="object-cover group-hover:scale-105 transition-transform duration-700"
-                      />
-                    </div>
-                    
-                    {/* Text Content Below */}
-                    <div className="p-6 bg-gray-50">
-                      <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-2">
-                        {boutique.title}
-                      </h3>
-                      <p className="text-gray-600 text-sm md:text-base mb-0">
-                        {boutique.subtitle}
-                      </p>
-                    </div>
-                  </Link>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* Affordable Winter Must-haves Section */}
-      <section className="py-12 bg-gray-50">
-        <div className="container-custom">
-          <div className="mb-8">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
-              Affordable <span className="text-pink-600">Winter Must-haves!</span>
-            </h2>
-            <p className="text-gray-600 text-lg">Snag the hottest deals of the season</p>
-          </div>
-          
-          {/* Image Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4 md:gap-6">
-            {[
-              'https://cdn.fcglcdn.com/brainbees/images/cattemplate/winter_moas_desktop_fashion_page_061225_16.jpg',
-              'https://cdn.fcglcdn.com/brainbees/images/cattemplate/winter_moas_desktop_fashion_page_061225_17.jpg',
-              'https://cdn.fcglcdn.com/brainbees/images/cattemplate/winter_moas_desktop_fashion_page_061225_18.jpg',
-              'https://cdn.fcglcdn.com/brainbees/images/cattemplate/winter_moas_desktop_fashion_page_061225_19.jpg',
-              'https://cdn.fcglcdn.com/brainbees/images/cattemplate/winter_moas_desktop_fashion_page_061225_20.jpg',
-              'https://cdn.fcglcdn.com/brainbees/images/cattemplate/winter_moas_desktop_fashion_page_061225_21.jpg',
-              'https://cdn.fcglcdn.com/brainbees/images/cattemplate/winter_moas_desktop_fashion_page_061225_22.jpg',
-              'https://cdn.fcglcdn.com/brainbees/images/cattemplate/winter_moas_desktop_fashion_page_061225_23.jpg'
-            ].map((imageUrl, index) => (
-              <Link
-                key={index}
-                href="/products"
-                className="relative w-full aspect-[3/4] rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 cursor-pointer group"
-              >
-                <Image
-                  src={imageUrl}
-                  alt={`Winter Collection ${index + 1}`}
-                  fill
-                  sizes="(max-width: 768px) 50vw, (max-width: 1024px) 25vw, 12.5vw"
-                  className="object-contain group-hover:scale-105 transition-transform duration-300"
-                />
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Occasion Wear Section */}
-      <section className="py-12 bg-white">
-        <div className="container-custom">
-          <div className="mb-8">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
-              Occasion <span className="text-pink-600">Wear</span>
-            </h2>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Ethnic Wear Banner */}
-            <Link
-              href="/products?category=ethnic-wear"
-              className="relative rounded-2xl overflow-hidden h-[250px] md:h-[300px] shadow-lg hover:shadow-2xl transition-all duration-500 group cursor-pointer"
-            >
-              <Image
-                src="https://cdn.fcglcdn.com/brainbees/images/cattemplate/winter_moas_desktop_fashion_page_061225_34.jpg"
-                alt="Ethnic Wear"
-                fill
-                sizes="(max-width: 768px) 100vw, 50vw"
-                className="object-cover group-hover:scale-105 transition-transform duration-700"
-              />
-            </Link>
-
-            {/* Party Wear Banner */}
-            <Link
-              href="/products?category=party-wear"
-              className="relative rounded-2xl overflow-hidden h-[250px] md:h-[300px] shadow-lg hover:shadow-2xl transition-all duration-500 group cursor-pointer"
-            >
-              <Image
-                src="https://cdn.fcglcdn.com/brainbees/images/cattemplate/winter_moas_desktop_fashion_page_061225_35.jpg"
-                alt="Party Wear"
-                fill
-                sizes="(max-width: 768px) 100vw, 50vw"
-                className="object-cover group-hover:scale-105 transition-transform duration-700"
-              />
-            </Link>
-          </div>
-        </div>
-      </section>
+      {/* Dynamic Admin-Managed Sections */}
+      {dynamicSections.map((section: any) => renderSection(section))}
 
       {/* Baby Diapers & More Section */}
       <section className="py-12 bg-gray-50">
@@ -304,6 +347,8 @@ export default async function Home() {
           </div>
         </div>
       </section>
+
+
 
       {/* Fashion Trends Section with Real Categories */}
       {allCategories.length > 0 && (

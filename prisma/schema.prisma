@@ -572,6 +572,58 @@ model Banner {
   @@index([displayOrder])
 }
 
+model HomeSection {
+  id           String   @id @default(cuid())
+  name         String   // e.g., "Premium Boutiques", "Winter Must-haves", "Occasion Wear"
+  slug         String   @unique // e.g., "premium-boutiques", "winter-must-haves"
+  title        String   // Display title on homepage
+  subtitle     String?  // Optional subtitle
+  displayOrder Int      @default(0)
+  isActive     Boolean  @default(true)
+  
+  sectionType  SectionType @default(GRID) // How items should be displayed
+  
+  items        HomeSectionItem[]
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([slug])
+  @@index([isActive])
+  @@index([displayOrder])
+}
+
+enum SectionType {
+  GRID          // Grid layout (e.g., 3 columns for boutiques)
+  CAROUSEL      // Horizontal scrollable
+  TWO_COLUMN    // 2 column layout (e.g., occasion wear)
+  FULL_WIDTH    // Full width banner
+}
+
+model HomeSectionItem {
+  id          String  @id @default(cuid())
+  sectionId   String
+  section     HomeSection @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  
+  title       String
+  subtitle    String?
+  image       String   // Image URL
+  link        String   // Redirect URL
+  
+  badge       String?  // Optional badge text (e.g., "NEW", "SALE")
+  discount    String?  // Optional discount text (e.g., "50% OFF")
+  
+  displayOrder Int     @default(0)
+  isActive     Boolean @default(true)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([sectionId])
+  @@index([isActive])
+  @@index([displayOrder])
+}
+
 model SiteSettings {
   id    String @id @default(cuid())
   key   String @unique
