@@ -85,7 +85,7 @@ export default function ManageSectionItemsPage({ params }: { params: Promise<{ i
     e.preventDefault();
     
     const formDataToSend = new FormData();
-    formDataToSend.append('sectionId', params.id);
+    formDataToSend.append('sectionId', sectionId);
     formDataToSend.append('title', formData.title);
     formDataToSend.append('subtitle', formData.subtitle);
     formDataToSend.append('link', formData.link);
