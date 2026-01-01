@@ -108,6 +108,9 @@ export default async function Home() {
   const homeData = await getHomeData();
   const dynamicSections = await getHomeSections();
   
+  console.log('Dynamic sections count:', dynamicSections.length);
+  console.log('Dynamic sections:', JSON.stringify(dynamicSections, null, 2));
+  
   const {
     featuredCategories = [],
     allCategories = [],
@@ -133,8 +136,14 @@ export default async function Home() {
 
   // Render section based on type
   function renderSection(section: any) {
+    console.log('Rendering section:', section.name, 'Type:', section.sectionType);
     const activeItems = section.items.filter((item: any) => item.isActive);
-    if (activeItems.length === 0) return null;
+    console.log('Active items:', activeItems.length);
+    
+    if (activeItems.length === 0) {
+      console.log('No active items, skipping section');
+      return null;
+    }
 
     switch (section.sectionType) {
       case 'GRID':
