@@ -30,16 +30,21 @@ async function getHomeSections() {
       ? `https://${process.env.VERCEL_URL}` 
       : (process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000');
     
+    console.log('Fetching home sections from:', `${baseUrl}/api/home-sections`);
+    
     const res = await fetch(`${baseUrl}/api/home-sections`, {
       cache: 'no-store'
     });
     
+    console.log('Home sections response status:', res.status);
+    
     if (!res.ok) {
-      console.error('Failed to fetch home sections');
+      console.error('Failed to fetch home sections, status:', res.status);
       return [];
     }
     
     const data = await res.json();
+    console.log('Home sections data:', data);
     return data.sections || [];
   } catch (error) {
     console.error('Error fetching home sections:', error);
@@ -124,16 +129,6 @@ export default async function Home() {
     partyWearProducts = [],
   } = homeData;
 
-  const babyCategories = [
-    { name: "Baby Diapers", icon: "🍼", href: "/products?category=diapers" },
-    { name: "Baby Wipes", icon: "🧻", href: "/products?category=wipes" },
-    { name: "Cloth Diapers & Nappies", icon: "👶", href: "/products?category=cloth-diapers" },
-    { name: "Diaper Rash Cream", icon: "🧴", href: "/products?category=rash-cream" },
-    { name: "Diaper Changing Pads & Mats", icon: "📋", href: "/products?category=changing-pads" },
-    { name: "Diaper Bag", icon: "🎒", href: "/products?category=diaper-bags" },
-    { name: "Potty Training", icon: "🚽", href: "/products?category=potty-training" }
-  ];
-
   // Render section based on type
   function renderSection(section: any) {
     console.log('Rendering section:', section.name, 'Type:', section.sectionType);
@@ -158,7 +153,7 @@ export default async function Home() {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {activeItems.slice(0, 6).map((item: any) => (
                   <div key={item.id} className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 group">
-                    <Link href={item.link || '/products'} className="block">
+                    <Link href={item.link} className="block">
                       <div className="relative h-[350px] md:h-[450px] overflow-hidden rounded-t-2xl">
                         <Image
                           src={item.image}
@@ -210,7 +205,7 @@ export default async function Home() {
                 {activeItems.slice(0, 6).map((item: any) => (
                   <Link
                     key={item.id}
-                    href={item.link || '/products'}
+                    href={item.link}
                     className="relative w-full aspect-[3/4] rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 cursor-pointer group"
                   >
                     <Image
@@ -257,7 +252,7 @@ export default async function Home() {
                 {activeItems.slice(0, 6).map((item: any) => (
                   <Link
                     key={item.id}
-                    href={item.link || '/products'}
+                    href={item.link}
                     className="relative rounded-2xl overflow-hidden h-[250px] md:h-[300px] shadow-lg hover:shadow-2xl transition-all duration-500 group cursor-pointer"
                   >
                     <Image
@@ -298,7 +293,7 @@ export default async function Home() {
               {activeItems.map((item: any) => (
                 <Link
                   key={item.id}
-                  href={item.link || '/products'}
+                  href={item.link}
                   className="block relative w-full h-[140px] md:h-[200px] rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 group border-4 border-orange-400"
                 >
                   <Image
@@ -328,36 +323,6 @@ export default async function Home() {
 
       {/* Dynamic Admin-Managed Sections */}
       {dynamicSections.map((section: any) => renderSection(section))}
-
-      {/* Baby Diapers & More Section */}
-      <section className="py-12 bg-gray-50">
-        <div className="container-custom">
-          <div className="mb-8">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
-              BABY DIAPERS <span className="text-pink-600">& MORE</span>
-            </h2>
-          </div>
-          
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 md:gap-6">
-            {babyCategories.map((category, index) => (
-              <Link
-                key={index}
-                href={category.href}
-                className="bg-white rounded-xl p-6 shadow-md hover:shadow-2xl transition-all duration-500 transform hover:scale-105 hover:-translate-y-2 group border border-gray-100 hover:border-pink-200 cursor-pointer text-center"
-              >
-                <div className="mb-4 text-5xl group-hover:scale-110 transition-transform duration-500">
-                  {category.icon}
-                </div>
-                <h3 className="text-sm font-semibold text-gray-900 group-hover:text-pink-600 transition-colors duration-300 line-clamp-2 min-h-[40px]">
-                  {category.name} →
-                </h3>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
-
 
       {/* Fashion Trends Section with Real Categories */}
       {allCategories.length > 0 && (

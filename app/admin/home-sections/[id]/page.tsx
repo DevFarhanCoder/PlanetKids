@@ -11,7 +11,8 @@ interface HomeSectionItem {
   title: string;
   subtitle: string | null;
   image: string;
-  link: string;
+  link: string | null;
+  categoryId: string | null;
   badge: string | null;
   discount: string | null;
   displayOrder: number;
@@ -25,11 +26,25 @@ interface HomeSection {
   sectionType: string;
 }
 
+interface Category {
+  id: string;
+  name: string;
+  slug: string;
+}
+
+interface Product {
+  id: string;
+  name: string;
+  slug: string;
+}
+
 export default function ManageSectionItemsPage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter();
   const [sectionId, setSectionId] = useState<string>('');
   const [section, setSection] = useState<HomeSection | null>(null);
   const [items, setItems] = useState<HomeSectionItem[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [editingItem, setEditingItem] = useState<HomeSectionItem | null>(null);
@@ -37,7 +52,9 @@ export default function ManageSectionItemsPage({ params }: { params: Promise<{ i
   const [formData, setFormData] = useState({
     title: '',
     subtitle: '',
-    link: '',
+    linkType: 'category' as 'category' | 'product',
+    categoryId: '',
+    productId: '',
     badge: '',
     discount: '',
     displayOrder: 0,
@@ -55,8 +72,32 @@ export default function ManageSectionItemsPage({ params }: { params: Promise<{ i
     if (sectionId) {
       fetchSection();
       fetchItems();
+      fetchCategories();
+      fetchProducts();
     }
   }, [sectionId]);
+
+  const fetchCategories = async () => {
+    try {
+      const res = await fetch('/api/categories');
+      const data = await res.json();
+      // Filter only subcategories (those with a parentId)
+      const subcategories = (data.categories || []).filter((cat: Category) => (cat as any).parentId !== null);
+      setCategories(subcategories);
+    } catch (error) {
+      console.error('Error fetching categories:', error);
+    }
+  };
+
+  const fetchProducts = async () => {
+    try {
+      const res = await fetch('/api/products');
+      const data = await res.json();
+      setProducts(data.products || []);
+    } catch (error) {
+      console.error('Error fetching products:', error);
+    }
+  };
 
   const fetchSection = async () => {
     try {
@@ -88,7 +129,9 @@ export default function ManageSectionItemsPage({ params }: { params: Promise<{ i
     formDataToSend.append('sectionId', sectionId);
     formDataToSend.append('title', formData.title);
     formDataToSend.append('subtitle', formData.subtitle);
-    formDataToSend.append('link', formData.link);
+    formDataToSend.append('linkType', formData.linkType);
+    formDataToSend.append('categoryId', formData.categoryId);
+    formDataToSend.append('productId', formData.productId);
     formDataToSend.append('badge', formData.badge);
     formDataToSend.append('discount', formData.discount);
     formDataToSend.append('displayOrder', formData.displayOrder.toString());
@@ -151,7 +194,9 @@ export default function ManageSectionItemsPage({ params }: { params: Promise<{ i
     setFormData({
       title: '',
       subtitle: '',
-      link: '',
+      linkType: 'category',
+      categoryId: '',
+      productId: '',
       badge: '',
       discount: '',
       displayOrder: 0,
@@ -166,7 +211,9 @@ export default function ManageSectionItemsPage({ params }: { params: Promise<{ i
     setFormData({
       title: item.title,
       subtitle: item.subtitle || '',
-      link: item.link,
+      linkType: item.categoryId ? 'category' : 'product',
+      categoryId: item.categoryId || '',
+      productId: (item as any).productId || '',
       badge: item.badge || '',
       discount: item.discount || '',
       displayOrder: item.displayOrder,
@@ -259,7 +306,10 @@ export default function ManageSectionItemsPage({ params }: { params: Promise<{ i
                 )}
               </div>
               <div className="text-xs text-gray-500 mb-3">
-                Order: {item.displayOrder} | Link: {item.link}
+                Order: {item.displayOrder}
+                {item.categoryId && (
+                  <> | Category: {categories.find(c => c.id === item.categoryId)?.name || 'Unknown'}</>
+                )}
               </div>
               <div className="flex gap-2">
                 <button
@@ -348,17 +398,77 @@ export default function ManageSectionItemsPage({ params }: { params: Promise<{ i
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Redirect Link *
+                <label className="block text-sm font-medium text-gray-700 mb-3">
+                  Link To *
                 </label>
-                <input
-                  type="text"
-                  required
-                  value={formData.link}
-                  onChange={(e) => setFormData({ ...formData, link: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500"
-                  placeholder="e.g., /products?category=sale"
-                />
+                <div className="flex gap-4 mb-4">
+                  <label className="flex items-center">
+                    <input
+                      type="radio"
+                      value="category"
+                      checked={formData.linkType === 'category'}
+                      onChange={(e) => setFormData({ ...formData, linkType: 'category', productId: '' })}
+                      className="mr-2"
+                    />
+                    <span>Category</span>
+                  </label>
+                  <label className="flex items-center">
+                    <input
+                      type="radio"
+                      value="product"
+                      checked={formData.linkType === 'product'}
+                      onChange={(e) => setFormData({ ...formData, linkType: 'product', categoryId: '' })}
+                      className="mr-2"
+                    />
+                    <span>Specific Product</span>
+                  </label>
+                </div>
+
+                {formData.linkType === 'category' ? (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Select Category *
+                    </label>
+                    <select
+                      required={formData.linkType === 'category'}
+                      value={formData.categoryId}
+                      onChange={(e) => setFormData({ ...formData, categoryId: e.target.value })}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500"
+                    >
+                      <option value="">Select a category</option>
+                      {categories.map((category) => (
+                        <option key={category.id} value={category.id}>
+                          {category.name}
+                        </option>
+                      ))}
+                    </select>
+                    <p className="text-xs text-gray-500 mt-1">
+                      Will link to: /categories/[category-slug]
+                    </p>
+                  </div>
+                ) : (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Select Product *
+                    </label>
+                    <select
+                      required={formData.linkType === 'product'}
+                      value={formData.productId}
+                      onChange={(e) => setFormData({ ...formData, productId: e.target.value })}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500"
+                    >
+                      <option value="">Select a product</option>
+                      {products.map((product) => (
+                        <option key={product.id} value={product.id}>
+                          {product.name}
+                        </option>
+                      ))}
+                    </select>
+                    <p className="text-xs text-gray-500 mt-1">
+                      Will link to: /products/[product-slug]
+                    </p>
+                  </div>
+                )}
               </div>
 
               <div className="grid grid-cols-2 gap-4">

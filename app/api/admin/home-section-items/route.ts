@@ -19,6 +19,14 @@ export async function GET(request: NextRequest) {
 
     const items = await prisma.homeSectionItem.findMany({
       where: { sectionId },
+      include: {
+        category: {
+          select: { id: true, name: true, slug: true }
+        },
+        product: {
+          select: { id: true, name: true, slug: true }
+        }
+      },
       orderBy: { displayOrder: 'asc' }
     });
 
@@ -43,14 +51,42 @@ export async function POST(request: NextRequest) {
     const sectionId = formData.get('sectionId') as string;
     const title = formData.get('title') as string;
     const subtitle = formData.get('subtitle') as string;
-    const link = formData.get('link') as string;
+    const linkType = formData.get('linkType') as string;
+    const categoryId = formData.get('categoryId') as string;
+    const productId = formData.get('productId') as string;
     const badge = formData.get('badge') as string;
     const discount = formData.get('discount') as string;
     const displayOrder = parseInt(formData.get('displayOrder') as string || '0');
     const isActive = formData.get('isActive') === 'true';
 
-    if (!sectionId || !title || !link) {
-      return NextResponse.json({ error: 'Section ID, title, and link are required' }, { status: 400 });
+    if (!sectionId || !title) {
+      return NextResponse.json({ error: 'Section ID and title are required' }, { status: 400 });
+    }
+
+    if (!categoryId && !productId) {
+      return NextResponse.json({ error: 'Either category or product must be selected' }, { status: 400 });
+    }
+
+    // Generate link based on type
+    let link = '';
+    if (linkType === 'product' && productId) {
+      const product = await prisma.product.findUnique({
+        where: { id: productId },
+        select: { slug: true }
+      });
+      if (!product) {
+        return NextResponse.json({ error: 'Product not found' }, { status: 404 });
+      }
+      link = `/products/${product.slug}`;
+    } else if (linkType === 'category' && categoryId) {
+      const category = await prisma.category.findUnique({
+        where: { id: categoryId },
+        select: { slug: true }
+      });
+      if (!category) {
+        return NextResponse.json({ error: 'Category not found' }, { status: 404 });
+      }
+      link = `/categories/${category.slug}`;
     }
 
     // Handle image upload
@@ -98,6 +134,8 @@ export async function POST(request: NextRequest) {
         subtitle: subtitle || null,
         image: imageUrl,
         link,
+        categoryId: categoryId || null,
+        productId: productId || null,
         badge: badge || null,
         discount: discount || null,
         displayOrder,
@@ -126,7 +164,9 @@ export async function PUT(request: NextRequest) {
     const id = formData.get('id') as string;
     const title = formData.get('title') as string;
     const subtitle = formData.get('subtitle') as string;
-    const link = formData.get('link') as string;
+    const linkType = formData.get('linkType') as string;
+    const categoryId = formData.get('categoryId') as string;
+    const productId = formData.get('productId') as string;
     const badge = formData.get('badge') as string;
     const discount = formData.get('discount') as string;
     const displayOrder = formData.get('displayOrder') ? parseInt(formData.get('displayOrder') as string) : undefined;
@@ -134,6 +174,33 @@ export async function PUT(request: NextRequest) {
 
     if (!id) {
       return NextResponse.json({ error: 'Item ID is required' }, { status: 400 });
+    }
+
+    // Generate link if category or product is provided
+    let link: string | undefined;
+    let finalCategoryId: string | null = null;
+    let finalProductId: string | null = null;
+
+    if (linkType === 'product' && productId) {
+      const product = await prisma.product.findUnique({
+        where: { id: productId },
+        select: { slug: true }
+      });
+      if (!product) {
+        return NextResponse.json({ error: 'Product not found' }, { status: 404 });
+      }
+      link = `/products/${product.slug}`;
+      finalProductId = productId;
+    } else if (linkType === 'category' && categoryId) {
+      const category = await prisma.category.findUnique({
+        where: { id: categoryId },
+        select: { slug: true }
+      });
+      if (!category) {
+        return NextResponse.json({ error: 'Category not found' }, { status: 404 });
+      }
+      link = `/categories/${category.slug}`;
+      finalCategoryId = categoryId;
     }
 
     // Handle image upload if new image provided
@@ -163,6 +230,10 @@ export async function PUT(request: NextRequest) {
         ...(subtitle !== undefined && { subtitle: subtitle || null }),
         ...(imageUrl && { image: imageUrl }),
         ...(link && { link }),
+        ...(finalCategoryId !== null && { categoryId: finalCategoryId }),
+        ...(finalProductId !== null && { productId: finalProductId }),
+        ...(linkType === 'category' && { productId: null }),
+        ...(linkType === 'product' && { categoryId: null }),
         ...(badge !== undefined && { badge: badge || null }),
         ...(discount !== undefined && { discount: discount || null }),
         ...(displayOrder !== undefined && { displayOrder }),

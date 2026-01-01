@@ -102,6 +102,7 @@ model Category {
   children Category[] @relation("CategoryHierarchy")
 
   products ProductCategory[]
+  homeSectionItems HomeSectionItem[]
 
   displayOrder Int     @default(0)
   isActive     Boolean @default(true)
@@ -163,6 +164,7 @@ model Product {
   cartItems     CartItem[]
   wishlistItems WishlistItem[]
   comparisons   Comparison[]
+  homeSectionItems HomeSectionItem[]
 
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
@@ -608,7 +610,13 @@ model HomeSectionItem {
   title       String
   subtitle    String?
   image       String   // Image URL
-  link        String   // Redirect URL
+  link        String?  // Redirect URL (optional, generated from category or product)
+  
+  categoryId  String?  // Link to category
+  category    Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  
+  productId   String?  // Link to specific product
+  product     Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
   
   badge       String?  // Optional badge text (e.g., "NEW", "SALE")
   discount    String?  // Optional discount text (e.g., "50% OFF")
@@ -620,6 +628,8 @@ model HomeSectionItem {
   updatedAt DateTime @updatedAt
 
   @@index([sectionId])
+  @@index([categoryId])
+  @@index([productId])
   @@index([isActive])
   @@index([displayOrder])
 }

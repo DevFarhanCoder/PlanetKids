@@ -1,6 +1,8 @@
 'use client';
 
 import { useState } from 'react';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import {
@@ -65,16 +67,67 @@ interface Props {
 }
 
 export default function ProductDetailClient({ product, relatedProducts }: Props) {
+  const { data: session } = useSession();
+  const router = useRouter();
   const [quantity, setQuantity] = useState(1);
   const [selectedImage, setSelectedImage] = useState(0);
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [activeTab, setActiveTab] = useState<'description' | 'details' | 'shipping'>('description');
+  const [addingToCart, setAddingToCart] = useState(false);
 
   const discount = product.compareAtPrice
     ? Math.round(((product.compareAtPrice - product.price) / product.compareAtPrice) * 100)
     : 0;
 
   const mainCategory = product.categories[0]?.category.parent?.name || product.categories[0]?.category.name || 'Products';
+
+  const handleAddToCart = async () => {
+    if (!session) {
+      router.push('/login?callbackUrl=' + encodeURIComponent(window.location.pathname));
+      return;
+    }
+
+    setAddingToCart(true);
+    try {
+      const response = await fetch('/api/cart', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          productId: product.id,
+          quantity: quantity,
+        }),
+      });
+
+      if (response.ok) {
+        // Dispatch cart updated event
+        window.dispatchEvent(new Event('cartUpdated'));
+        
+        // Show success message
+        alert('✅ Product added to cart successfully!');
+      } else {
+        const data = await response.json();
+        alert(data.error || 'Failed to add to cart');
+      }
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+      alert('Failed to add product to cart. Please try again.');
+    } finally {
+      setAddingToCart(false);
+    }
+  };
+
+  const handleBuyNow = async () => {
+    if (!session) {
+      router.push('/login?callbackUrl=' + encodeURIComponent(window.location.pathname));
+      return;
+    }
+
+    // Add to cart first
+    await handleAddToCart();
+    
+    // Redirect to cart page
+    router.push('/cart');
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -269,11 +322,12 @@ export default function ProductDetailClient({ product, relatedProducts }: Props)
             {/* Action Buttons */}
             <div className="flex gap-4">
               <button
-                disabled={product.quantity === 0}
+                onClick={handleAddToCart}
+                disabled={product.quantity === 0 || addingToCart}
                 className="flex-1 bg-primary text-white px-8 py-4 rounded-lg font-semibold hover:bg-primary-600 transition-colors flex items-center justify-center gap-2 disabled:bg-gray-300 disabled:cursor-not-allowed"
               >
                 <ShoppingCart className="w-5 h-5" />
-                Add to Cart
+                {addingToCart ? 'Adding...' : 'Add to Cart'}
               </button>
               <button
                 onClick={() => setIsWishlisted(!isWishlisted)}
@@ -292,7 +346,11 @@ export default function ProductDetailClient({ product, relatedProducts }: Props)
 
             {/* Buy Now Button */}
             {product.quantity > 0 && (
-              <button className="w-full bg-gradient-to-r from-pink-500 to-purple-500 text-white px-8 py-4 rounded-lg font-semibold hover:from-pink-600 hover:to-purple-600 transition-all">
+              <button 
+                onClick={handleBuyNow}
+                disabled={addingToCart}
+                className="w-full bg-gradient-to-r from-pink-500 to-purple-500 text-white px-8 py-4 rounded-lg font-semibold hover:from-pink-600 hover:to-purple-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              >
                 Buy Now
               </button>
             )}
