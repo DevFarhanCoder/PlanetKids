@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import { uploadToCloudinary } from '@/lib/cloudinary';
 import { writeFile, mkdir } from 'fs/promises';
 import { join } from 'path';
 import { existsSync } from 'fs';
@@ -57,19 +58,33 @@ export async function POST(request: NextRequest) {
     const image = formData.get('image') as File;
     
     if (image && image.size > 0) {
-      const bytes = await image.arrayBuffer();
-      const buffer = Buffer.from(bytes);
-      
-      const uploadsDir = join(process.cwd(), 'public', 'uploads', 'home-sections');
-      if (!existsSync(uploadsDir)) {
-        await mkdir(uploadsDir, { recursive: true });
+      try {
+        // Use Cloudinary for production (Vercel serverless)
+        if (process.env.CLOUDINARY_CLOUD_NAME) {
+          imageUrl = await uploadToCloudinary(image, 'home-sections');
+        } else {
+          // Local development - use file system
+          const bytes = await image.arrayBuffer();
+          const buffer = Buffer.from(bytes);
+          
+          const uploadsDir = join(process.cwd(), 'public', 'uploads', 'home-sections');
+          if (!existsSync(uploadsDir)) {
+            await mkdir(uploadsDir, { recursive: true });
+          }
+          
+          const filename = `${Date.now()}-${image.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
+          const filepath = join(uploadsDir, filename);
+          
+          await writeFile(filepath, buffer);
+          imageUrl = `/uploads/home-sections/${filename}`;
+        }
+      } catch (uploadError: any) {
+        console.error('Image upload error:', uploadError);
+        return NextResponse.json({ 
+          error: 'Failed to upload image',
+          details: uploadError.message 
+        }, { status: 500 });
       }
-      
-      const filename = `${Date.now()}-${image.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
-      const filepath = join(uploadsDir, filename);
-      
-      await writeFile(filepath, buffer);
-      imageUrl = `/uploads/home-sections/${filename}`;
     }
 
     if (!imageUrl) {
