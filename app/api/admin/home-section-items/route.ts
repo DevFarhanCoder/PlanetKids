@@ -59,14 +59,14 @@ export async function POST(request: NextRequest) {
     
     if (image && image.size > 0) {
       try {
+        const bytes = await image.arrayBuffer();
+        const buffer = Buffer.from(bytes);
+        
         // Use Cloudinary for production (Vercel serverless)
         if (process.env.CLOUDINARY_CLOUD_NAME) {
-          imageUrl = await uploadToCloudinary(image, 'home-sections');
+          imageUrl = await uploadToCloudinary(buffer, 'home-sections');
         } else {
           // Local development - use file system
-          const bytes = await image.arrayBuffer();
-          const buffer = Buffer.from(bytes);
-          
           const uploadsDir = join(process.cwd(), 'public', 'uploads', 'home-sections');
           if (!existsSync(uploadsDir)) {
             await mkdir(uploadsDir, { recursive: true });
