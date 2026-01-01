@@ -54,10 +54,20 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ section }, { status: 201 });
   } catch (error: any) {
     console.error('Error creating home section:', error);
+    console.error('Error details:', {
+      message: error.message,
+      code: error.code,
+      meta: error.meta,
+      stack: error.stack
+    });
     if (error.code === 'P2002') {
       return NextResponse.json({ error: 'A section with this slug already exists' }, { status: 400 });
     }
-    return NextResponse.json({ error: 'Failed to create home section' }, { status: 500 });
+    return NextResponse.json({ 
+      error: 'Failed to create home section',
+      details: error.message,
+      code: error.code 
+    }, { status: 500 });
   }
 }
 
