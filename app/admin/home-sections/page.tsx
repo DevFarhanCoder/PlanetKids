@@ -59,9 +59,12 @@ export default function HomeSectionsPage() {
       const res = await fetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify(body)
       });
 
+      const data = await res.json();
+      
       if (res.ok) {
         alert(editingSection ? 'Section updated successfully!' : 'Section created successfully!');
         setShowModal(false);
@@ -69,8 +72,8 @@ export default function HomeSectionsPage() {
         resetForm();
         fetchSections();
       } else {
-        const data = await res.json();
-        alert(data.error || 'Failed to save section');
+        console.error('Error response:', data);
+        alert(data.error || data.details || 'Failed to save section');
       }
     } catch (error) {
       console.error('Error saving section:', error);
