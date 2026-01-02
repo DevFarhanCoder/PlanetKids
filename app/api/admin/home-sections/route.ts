@@ -10,6 +10,14 @@ export async function GET(request: NextRequest) {
       include: {
         items: {
           where: { isActive: true },
+          include: {
+            category: {
+              select: { id: true, name: true, slug: true }
+            },
+            product: {
+              select: { id: true, name: true, slug: true }
+            }
+          },
           orderBy: { displayOrder: 'asc' }
         }
       },

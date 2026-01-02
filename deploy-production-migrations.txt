@@ -1,0 +1,17 @@
+Steps to deploy Prisma migrations to production:
+
+1. Set your production DATABASE_URL:
+   In PowerShell:
+   $env:DATABASE_URL="your-production-database-url-here"
+
+2. Run the migration:
+   npx prisma migrate deploy
+
+3. Verify the migration:
+   npx prisma db pull
+   
+Or use Vercel CLI:
+   vercel env pull
+   npx prisma migrate deploy
+
+Important: Make sure you're using the PRODUCTION database URL, not localhost!
