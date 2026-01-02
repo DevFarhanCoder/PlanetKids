@@ -26,26 +26,30 @@ async function getHomeData() {
 
 async function getHomeSections() {
   try {
-    const baseUrl = process.env.VERCEL_URL 
-      ? `https://${process.env.VERCEL_URL}` 
-      : (process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000');
+    // Directly query database instead of making HTTP call
+    const { prisma } = await import('@/lib/prisma');
     
-    console.log('Fetching home sections from:', `${baseUrl}/api/home-sections`);
-    
-    const res = await fetch(`${baseUrl}/api/home-sections`, {
-      cache: 'no-store'
+    const sections = await prisma.homeSection.findMany({
+      where: { isActive: true },
+      include: {
+        items: {
+          where: { isActive: true },
+          include: {
+            category: {
+              select: { id: true, name: true, slug: true }
+            },
+            product: {
+              select: { id: true, name: true, slug: true }
+            }
+          },
+          orderBy: { displayOrder: 'asc' }
+        }
+      },
+      orderBy: { displayOrder: 'asc' }
     });
     
-    console.log('Home sections response status:', res.status);
-    
-    if (!res.ok) {
-      console.error('Failed to fetch home sections, status:', res.status);
-      return [];
-    }
-    
-    const data = await res.json();
-    console.log('Home sections data:', data);
-    return data.sections || [];
+    console.log('Home sections fetched:', sections.length);
+    return sections;
   } catch (error) {
     console.error('Error fetching home sections:', error);
     return [];
