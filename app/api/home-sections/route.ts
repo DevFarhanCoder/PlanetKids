@@ -19,6 +19,14 @@ export async function GET(request: NextRequest) {
         include: {
           items: {
             where: { isActive: true },
+            include: {
+              category: {
+                select: { id: true, name: true, slug: true }
+              },
+              product: {
+                select: { id: true, name: true, slug: true }
+              }
+            },
             orderBy: { displayOrder: 'asc' }
           }
         }
@@ -37,11 +45,22 @@ export async function GET(request: NextRequest) {
       include: {
         items: {
           where: { isActive: true },
+          include: {
+            category: {
+              select: { id: true, name: true, slug: true }
+            },
+            product: {
+              select: { id: true, name: true, slug: true }
+            }
+          },
           orderBy: { displayOrder: 'asc' }
         }
       },
       orderBy: { displayOrder: 'asc' }
     });
+
+    console.log('Home sections fetched:', sections.length);
+    console.log('First section items:', sections[0]?.items?.length || 0);
 
     return NextResponse.json({ sections });
   } catch (error) {
