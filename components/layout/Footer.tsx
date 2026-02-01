@@ -1,26 +1,40 @@
-import React from 'react';
-import Link from 'next/link';
-import { Facebook, Instagram, Twitter, Youtube, Mail, Phone, MapPin } from 'lucide-react';
+import React from "react";
+import Link from "next/link";
+import Image from "next/image";
+import {
+  Facebook,
+  Instagram,
+  Twitter,
+  Youtube,
+  Mail,
+  Phone,
+  MapPin,
+} from "lucide-react";
 
 export default function Footer() {
   return (
-    <footer className="bg-gray-900 text-gray-300">
+    <footer className="bg-gradient-to-br from-gray-50 via-orange-50 to-pink-50 text-gray-700">
       {/* Newsletter Section */}
-      <div className="bg-gradient-to-r from-primary to-secondary py-12">
+      <div className="bg-gradient-to-r from-primary-500 via-orange-500 to-pink-500 py-16">
         <div className="container-custom">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-8">
             <div className="text-white text-center md:text-left">
-              <h3 className="text-2xl font-bold mb-2">Join Our Community of 100K+ Parents!</h3>
-              <p className="text-white/90">Get exclusive deals, new arrivals, and parenting tips delivered to your inbox.</p>
+              <h3 className="text-3xl font-black mb-3">
+                Join Our Happy Parents Club! 🎉
+              </h3>
+              <p className="text-white/95 text-lg font-semibold">
+                Get exclusive deals, new arrivals, and parenting tips delivered
+                to your inbox.
+              </p>
             </div>
-            <div className="flex gap-2 w-full md:w-auto">
+            <div className="flex gap-3 w-full md:w-auto">
               <input
                 type="email"
                 placeholder="Enter your email"
-                className="flex-1 md:w-80 px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-white"
+                className="flex-1 md:w-80 px-6 py-4 rounded-2xl focus:outline-none focus:ring-4 focus:ring-white/50 shadow-soft-lg font-semibold placeholder:text-gray-500"
               />
-              <button className="btn-secondary whitespace-nowrap">
-                Subscribe
+              <button className="btn-secondary whitespace-nowrap shadow-soft-lg">
+                Subscribe Now
               </button>
             </div>
           </div>
@@ -28,125 +42,267 @@ export default function Footer() {
       </div>
 
       {/* Main Footer Content */}
-      <div className="container-custom py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+      <div className="container-custom py-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
           {/* About Section */}
           <div>
-            <div className="flex items-center gap-2 mb-4">
-              <span className="text-3xl">🌍</span>
-              <span className="text-2xl font-bold text-white">PlanetKids</span>
+            <div className="flex items-center gap-3 mb-5">
+              <div className="relative w-12 h-12 flex items-center justify-center">
+                <Image
+                  src="/myplanetkidslogo.png"
+                  alt="MyPlanetKids"
+                  width={48}
+                  height={48}
+                  className="object-contain"
+                />
+              </div>
+              <span className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-secondary-600">
+                MyPlanetKids
+              </span>
             </div>
-            <p className="text-sm mb-4">
-              Your trusted destination for quality kids products. From toys to learning kits, we have everything to nurture your child's growth and happiness.
+            <p className="text-sm mb-5 leading-relaxed font-medium">
+              Your trusted destination for quality kids products. From toys to
+              learning kits, we have everything to nurture your child's growth
+              and happiness.
             </p>
             <div className="flex gap-3">
-              <a href="#" className="w-10 h-10 bg-gray-800 hover:bg-primary rounded-full flex items-center justify-center transition-colors">
-                <Facebook className="w-5 h-5" />
+              <a
+                href="#"
+                className="w-12 h-12 bg-white hover:bg-gradient-to-r hover:from-primary-400 hover:to-primary-500 rounded-2xl flex items-center justify-center transition-all shadow-soft hover:shadow-soft-lg transform hover:-translate-y-1 group"
+              >
+                <Facebook className="w-5 h-5 text-gray-700 group-hover:text-white transition-colors" />
               </a>
-              <a href="#" className="w-10 h-10 bg-gray-800 hover:bg-primary rounded-full flex items-center justify-center transition-colors">
-                <Instagram className="w-5 h-5" />
+              <a
+                href="#"
+                className="w-12 h-12 bg-white hover:bg-gradient-to-r hover:from-pink-400 hover:to-pink-500 rounded-2xl flex items-center justify-center transition-all shadow-soft hover:shadow-soft-lg transform hover:-translate-y-1 group"
+              >
+                <Instagram className="w-5 h-5 text-gray-700 group-hover:text-white transition-colors" />
               </a>
-              <a href="#" className="w-10 h-10 bg-gray-800 hover:bg-primary rounded-full flex items-center justify-center transition-colors">
-                <Twitter className="w-5 h-5" />
+              <a
+                href="#"
+                className="w-12 h-12 bg-white hover:bg-gradient-to-r hover:from-primary-400 hover:to-lavender-400 rounded-2xl flex items-center justify-center transition-all shadow-soft hover:shadow-soft-lg transform hover:-translate-y-1 group"
+              >
+                <Twitter className="w-5 h-5 text-gray-700 group-hover:text-white transition-colors" />
               </a>
-              <a href="#" className="w-10 h-10 bg-gray-800 hover:bg-primary rounded-full flex items-center justify-center transition-colors">
-                <Youtube className="w-5 h-5" />
+              <a
+                href="#"
+                className="w-12 h-12 bg-white hover:bg-gradient-to-r hover:from-secondary-400 hover:to-secondary-500 rounded-2xl flex items-center justify-center transition-all shadow-soft hover:shadow-soft-lg transform hover:-translate-y-1 group"
+              >
+                <Youtube className="w-5 h-5 text-gray-700 group-hover:text-white transition-colors" />
               </a>
             </div>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h4 className="text-white font-bold text-lg mb-4">Quick Links</h4>
-            <ul className="space-y-2">
-              <li><Link href="/about" className="hover:text-white transition-colors">About Us</Link></li>
-              <li><Link href="/contact" className="hover:text-white transition-colors">Contact Us</Link></li>
-              <li><Link href="/track-order" className="hover:text-white transition-colors">Track Order</Link></li>
-              <li><Link href="/bulk-order" className="hover:text-white transition-colors">Bulk Orders</Link></li>
-              <li><Link href="/blog" className="hover:text-white transition-colors">Blog</Link></li>
-              <li><Link href="/careers" className="hover:text-white transition-colors">Careers</Link></li>
+            <h4 className="text-gray-900 font-black text-xl mb-5">
+              Quick Links
+            </h4>
+            <ul className="space-y-3">
+              <li>
+                <Link
+                  href="/about"
+                  className="hover:text-primary-600 transition-colors font-semibold hover:pl-2 inline-block transform transition-all"
+                >
+                  About Us
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/contact"
+                  className="hover:text-primary-600 transition-colors font-semibold hover:pl-2 inline-block transform transition-all"
+                >
+                  Contact Us
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/track-order"
+                  className="hover:text-primary-600 transition-colors font-semibold hover:pl-2 inline-block transform transition-all"
+                >
+                  Track Order
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/bulk-order"
+                  className="hover:text-primary-600 transition-colors font-semibold hover:pl-2 inline-block transform transition-all"
+                >
+                  Bulk Orders
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/blog"
+                  className="hover:text-primary-600 transition-colors font-semibold hover:pl-2 inline-block transform transition-all"
+                >
+                  Blog
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/careers"
+                  className="hover:text-primary-600 transition-colors font-semibold hover:pl-2 inline-block transform transition-all"
+                >
+                  Careers
+                </Link>
+              </li>
             </ul>
           </div>
 
           {/* Customer Service */}
           <div>
-            <h4 className="text-white font-bold text-lg mb-4">Customer Service</h4>
-            <ul className="space-y-2">
-              <li><Link href="/shipping-policy" className="hover:text-white transition-colors">Shipping Policy</Link></li>
-              <li><Link href="/return-policy" className="hover:text-white transition-colors">Return & Refund Policy</Link></li>
-              <li><Link href="/privacy-policy" className="hover:text-white transition-colors">Privacy Policy</Link></li>
-              <li><Link href="/terms" className="hover:text-white transition-colors">Terms & Conditions</Link></li>
-              <li><Link href="/faq" className="hover:text-white transition-colors">FAQs</Link></li>
-              <li><Link href="/size-guide" className="hover:text-white transition-colors">Size Guide</Link></li>
+            <h4 className="text-gray-900 font-black text-xl mb-5">
+              Customer Service
+            </h4>
+            <ul className="space-y-3">
+              <li>
+                <Link
+                  href="/shipping-policy"
+                  className="hover:text-primary-600 transition-colors font-semibold hover:pl-2 inline-block transform transition-all"
+                >
+                  Shipping Policy
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/return-policy"
+                  className="hover:text-primary-600 transition-colors font-semibold hover:pl-2 inline-block transform transition-all"
+                >
+                  Return & Refund
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/privacy-policy"
+                  className="hover:text-primary-600 transition-colors font-semibold hover:pl-2 inline-block transform transition-all"
+                >
+                  Privacy Policy
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/terms"
+                  className="hover:text-primary-600 transition-colors font-semibold hover:pl-2 inline-block transform transition-all"
+                >
+                  Terms & Conditions
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/faq"
+                  className="hover:text-primary-600 transition-colors font-semibold hover:pl-2 inline-block transform transition-all"
+                >
+                  FAQs
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/size-guide"
+                  className="hover:text-primary-600 transition-colors font-semibold hover:pl-2 inline-block transform transition-all"
+                >
+                  Size Guide
+                </Link>
+              </li>
             </ul>
           </div>
 
           {/* Contact Info */}
           <div>
-            <h4 className="text-white font-bold text-lg mb-4">Contact Us</h4>
+            <h4 className="text-gray-900 font-black text-xl mb-5">
+              Contact Us
+            </h4>
             <ul className="space-y-4">
               <li className="flex items-start gap-3">
-                <MapPin className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
-                <span className="text-sm">123 Kids Street, Toy Town, Mumbai - 400001, India</span>
+                <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center flex-shrink-0 shadow-soft">
+                  <MapPin className="w-5 h-5 text-primary-600" />
+                </div>
+                <span className="text-sm font-medium">
+                  123 Kids Street, Toy Town, Mumbai - 400001, India
+                </span>
               </li>
               <li className="flex items-center gap-3">
-                <Phone className="w-5 h-5 text-primary flex-shrink-0" />
-                <a href="tel:+911234567890" className="text-sm hover:text-white transition-colors">+91 123 456 7890</a>
+                <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center flex-shrink-0 shadow-soft">
+                  <Phone className="w-5 h-5 text-secondary-500" />
+                </div>
+                <a
+                  href="tel:+911234567890"
+                  className="text-sm hover:text-primary-600 transition-colors font-semibold"
+                >
+                  +91 123 456 7890
+                </a>
               </li>
               <li className="flex items-center gap-3">
-                <Mail className="w-5 h-5 text-primary flex-shrink-0" />
-                <a href="mailto:support@planetkids.com" className="text-sm hover:text-white transition-colors">support@planetkids.com</a>
+                <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center flex-shrink-0 shadow-soft">
+                  <Mail className="w-5 h-5 text-accent-500" />
+                </div>
+                <a
+                  href="mailto:support@myplanetkids.com"
+                  className="text-sm hover:text-primary-600 transition-colors font-semibold"
+                >
+                  support@myplanetkids.com
+                </a>
               </li>
             </ul>
-            <div className="mt-6">
-              <p className="text-sm font-semibold text-white mb-2">Customer Support Hours:</p>
-              <p className="text-sm">Mon - Sat: 9:00 AM - 8:00 PM</p>
-              <p className="text-sm">Sunday: 10:00 AM - 6:00 PM</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Trust Badges */}
-      <div className="border-t border-gray-800">
-        <div className="container-custom py-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-            <div>
-              <div className="text-3xl mb-2">🚚</div>
-              <p className="text-sm font-semibold text-white">Free Shipping</p>
-              <p className="text-xs">On Prepaid Orders</p>
-            </div>
-            <div>
-              <div className="text-3xl mb-2">🔒</div>
-              <p className="text-sm font-semibold text-white">Secure Payments</p>
-              <p className="text-xs">100% Safe Transactions</p>
-            </div>
-            <div>
-              <div className="text-3xl mb-2">🔄</div>
-              <p className="text-sm font-semibold text-white">Easy Returns</p>
-              <p className="text-xs">7-Day Return Policy</p>
-            </div>
-            <div>
-              <div className="text-3xl mb-2">⭐</div>
-              <p className="text-sm font-semibold text-white">Quality Assured</p>
-              <p className="text-xs">Verified Products</p>
+            <div className="mt-6 bg-white rounded-2xl p-4 shadow-soft">
+              <p className="text-sm font-black text-gray-900 mb-2">
+                Customer Support Hours:
+              </p>
+              <p className="text-sm font-semibold">
+                Mon - Sat: 9:00 AM - 8:00 PM
+              </p>
+              <p className="text-sm font-semibold">
+                Sunday: 10:00 AM - 6:00 PM
+              </p>
             </div>
           </div>
         </div>
       </div>
 
       {/* Bottom Bar */}
-      <div className="border-t border-gray-800">
+      <div className="border-t border-gray-200 bg-white/50">
         <div className="container-custom py-6">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-sm">
-            <p>&copy; 2025 PlanetKids. All rights reserved.</p>
+            <p className="font-semibold text-gray-700">
+              &copy; 2025 MyPlanetKids. All rights reserved. Made with ❤️ for
+              kids.
+            </p>
             <div className="flex items-center gap-4">
-              <span className="text-xs">We Accept:</span>
-              <div className="flex gap-2">
-                <div className="bg-white px-3 py-1 rounded text-xs font-semibold text-gray-900">VISA</div>
-                <div className="bg-white px-3 py-1 rounded text-xs font-semibold text-gray-900">MC</div>
-                <div className="bg-white px-3 py-1 rounded text-xs font-semibold text-gray-900">UPI</div>
-                <div className="bg-white px-3 py-1 rounded text-xs font-semibold text-gray-900">COD</div>
+              <span className="text-xs font-bold text-gray-700">
+                We Accept:
+              </span>
+              <div className="flex gap-3 items-center">
+                <Image
+                  src="/payment-icons/visa.svg"
+                  alt="Visa"
+                  width={50}
+                  height={32}
+                  className="h-8 w-auto object-contain"
+                />
+                <Image
+                  src="/payment-icons/mastercard.svg"
+                  alt="Mastercard"
+                  width={50}
+                  height={32}
+                  className="h-8 w-auto object-contain"
+                />
+                <Image
+                  src="/payment-icons/rupay.svg"
+                  alt="RuPay"
+                  width={50}
+                  height={32}
+                  className="h-8 w-auto object-contain"
+                />
+                <Image
+                  src="/payment-icons/upi.svg"
+                  alt="UPI"
+                  width={50}
+                  height={32}
+                  className="h-8 w-auto object-contain"
+                />
+                <div className="bg-gradient-to-r from-success-500 to-success-600 px-3 py-2 rounded-lg text-xs font-black text-white">
+                  COD
+                </div>
               </div>
             </div>
           </div>

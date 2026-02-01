@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Nunito:wght@400;600;700;800&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Nunito:wght@400;600;700;800;900&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -6,30 +6,24 @@
 
 :root {
   --foreground-rgb: 45, 55, 72;
-  --background: 247, 250, 252;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background: 29, 24, 116;
-  }
+  --background: 255, 255, 255;
 }
 
 body {
   color: rgb(var(--foreground-rgb));
   background: rgb(var(--background));
+  font-family: "Nunito", "Inter", sans-serif;
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
-  
+
   .no-scrollbar::-webkit-scrollbar {
     display: none;
   }
-  
+
   .no-scrollbar {
     -ms-overflow-style: none;
     scrollbar-width: none;
@@ -37,41 +31,63 @@ body {
 }
 
 @layer components {
-  /* Custom button styles */
+  /* Modern Button Styles - Rich Golden Theme */
   .btn-primary {
-    @apply bg-primary hover:bg-primary-600 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 shadow-md hover:shadow-lg;
+    @apply bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white font-bold py-3 px-8 rounded-2xl transition-all duration-300 shadow-soft hover:shadow-soft-lg transform hover:-translate-y-0.5;
   }
-  
+
   .btn-secondary {
-    @apply bg-secondary hover:bg-secondary-600 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 shadow-md hover:shadow-lg;
+    @apply bg-gradient-to-r from-secondary-500 to-secondary-600 hover:from-secondary-600 hover:to-secondary-700 text-white font-bold py-3 px-8 rounded-2xl transition-all duration-300 shadow-soft hover:shadow-soft-lg transform hover:-translate-y-0.5;
   }
-  
+
+  .btn-accent {
+    @apply bg-gradient-to-r from-accent-400 to-accent-600 hover:from-accent-500 hover:to-accent-700 text-white font-bold py-3 px-8 rounded-2xl transition-all duration-300 shadow-soft hover:shadow-soft-lg transform hover:-translate-y-0.5;
+  }
+
   .btn-outline {
-    @apply border-2 border-primary text-primary hover:bg-primary hover:text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300;
+    @apply border-2 border-primary-500 text-primary-700 hover:bg-primary-500 hover:text-white font-bold py-3 px-8 rounded-2xl transition-all duration-300;
   }
-  
-  /* Product card styles */
+
+  .btn-pink {
+    @apply bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white font-bold py-3 px-8 rounded-2xl transition-all duration-300 shadow-soft hover:shadow-soft-lg transform hover:-translate-y-0.5;
+  }
+
+  /* Product card styles with soft shadows */
   .product-card {
-    @apply bg-white rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100;
+    @apply bg-white rounded-3xl shadow-soft hover:shadow-soft-xl transition-all duration-500 overflow-hidden border border-gray-100 hover:border-primary-200;
   }
-  
-  /* Badge styles */
+
+  /* Badge styles with vibrant colors */
   .badge-sale {
-    @apply bg-accent text-white text-xs font-bold px-2 py-1 rounded-full;
+    @apply bg-gradient-to-r from-secondary-500 to-secondary-600 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-md;
   }
-  
+
   .badge-new {
-    @apply bg-primary text-white text-xs font-bold px-2 py-1 rounded-full;
+    @apply bg-gradient-to-r from-success-500 to-success-600 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-md;
   }
-  
-  /* Input styles */
+
+  .badge-hot {
+    @apply bg-gradient-to-r from-primary-500 to-orange-500 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-md;
+  }
+
+  /* Input styles with rounded corners */
   .input-field {
-    @apply w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all;
+    @apply w-full px-5 py-3 border-2 border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-primary-500 transition-all bg-white;
   }
-  
+
   /* Container */
   .container-custom {
     @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  /* Category Card */
+  .category-card {
+    @apply bg-gradient-to-br from-primary-50 to-orange-50 rounded-3xl p-6 shadow-soft hover:shadow-soft-lg transition-all duration-300 transform hover:-translate-y-1 cursor-pointer border-2 border-transparent hover:border-primary-300;
+  }
+
+  /* Banner Styles */
+  .banner-card {
+    @apply rounded-3xl overflow-hidden shadow-soft-lg hover:shadow-soft-xl transition-all duration-300 transform hover:scale-[1.02];
   }
 }
 
@@ -83,4 +99,24 @@ body {
 
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
+}
+
+/* Custom scrollbar for webkit browsers */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #f59e0b, #ec4899);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #d97706, #db2777);
 }
