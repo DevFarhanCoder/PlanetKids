@@ -356,6 +356,107 @@ export default async function Home() {
         <HeroCarousel />
       </section>
 
+      {/* Shop by Age Section */}
+      <section className="py-12 md:py-16 bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50">
+        <div className="container-custom">
+          <div className="mb-8 md:mb-12 text-center">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-gray-900 mb-2 md:mb-3">
+              Shop by{" "}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600">
+                Age
+              </span>
+            </h2>
+            <p className="text-gray-600 text-base md:text-lg font-semibold">
+              Find the perfect toys for your child's age group
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+            {/* 0-2 Years */}
+            <Link href="/age/0-2" className="group cursor-pointer block">
+              <div className="bg-white rounded-2xl p-6 transition-all duration-500 transform hover:scale-105 hover:-translate-y-2 hover:shadow-2xl text-center overflow-hidden border-2 border-purple-200 hover:border-purple-400">
+                <div className="relative w-full aspect-square mb-4 rounded-xl overflow-hidden">
+                  <Image
+                    src="/toys/Planet_Kids_Toys/1. Baby and Infant Toys/Soft Toys/1.jpg"
+                    alt="0-2 Years"
+                    fill
+                    className="object-cover group-hover:scale-110 transition-transform duration-500"
+                    sizes="(max-width: 768px) 50vw, 25vw"
+                  />
+                </div>
+                <h3 className="font-black text-lg md:text-xl text-gray-900 group-hover:text-purple-600 transition-colors duration-300 mb-1">
+                  0-2 Years
+                </h3>
+                <p className="text-sm text-gray-600 font-medium">
+                  Babies & Toddlers
+                </p>
+              </div>
+            </Link>
+
+            {/* 3-5 Years */}
+            <Link href="/age/3-5" className="group cursor-pointer block">
+              <div className="bg-white rounded-2xl p-6 transition-all duration-500 transform hover:scale-105 hover:-translate-y-2 hover:shadow-2xl text-center overflow-hidden border-2 border-pink-200 hover:border-pink-400">
+                <div className="relative w-full aspect-square mb-4 rounded-xl overflow-hidden">
+                  <Image
+                    src="/toys/Planet_Kids_Toys/2. Preschool and Learning Toys/1.jpg"
+                    alt="3-5 Years"
+                    fill
+                    className="object-cover group-hover:scale-110 transition-transform duration-500"
+                    sizes="(max-width: 768px) 50vw, 25vw"
+                  />
+                </div>
+                <h3 className="font-black text-lg md:text-xl text-gray-900 group-hover:text-pink-600 transition-colors duration-300 mb-1">
+                  3-5 Years
+                </h3>
+                <p className="text-sm text-gray-600 font-medium">
+                  Preschoolers
+                </p>
+              </div>
+            </Link>
+
+            {/* 6-8 Years */}
+            <Link href="/age/6-8" className="group cursor-pointer block">
+              <div className="bg-white rounded-2xl p-6 transition-all duration-500 transform hover:scale-105 hover:-translate-y-2 hover:shadow-2xl text-center overflow-hidden border-2 border-blue-200 hover:border-blue-400">
+                <div className="relative w-full aspect-square mb-4 rounded-xl overflow-hidden">
+                  <Image
+                    src="/toys/Planet_Kids_Toys/4. Action Figures and Superheroes/Marvel/1.jpg"
+                    alt="6-8 Years"
+                    fill
+                    className="object-cover group-hover:scale-110 transition-transform duration-500"
+                    sizes="(max-width: 768px) 50vw, 25vw"
+                  />
+                </div>
+                <h3 className="font-black text-lg md:text-xl text-gray-900 group-hover:text-blue-600 transition-colors duration-300 mb-1">
+                  6-8 Years
+                </h3>
+                <p className="text-sm text-gray-600 font-medium">
+                  Early School Age
+                </p>
+              </div>
+            </Link>
+
+            {/* 9-12 Years */}
+            <Link href="/age/9-12" className="group cursor-pointer block">
+              <div className="bg-white rounded-2xl p-6 transition-all duration-500 transform hover:scale-105 hover:-translate-y-2 hover:shadow-2xl text-center overflow-hidden border-2 border-green-200 hover:border-green-400">
+                <div className="relative w-full aspect-square mb-4 rounded-xl overflow-hidden">
+                  <Image
+                    src="/toys/Planet_Kids_Toys/8. Remote Controls and Battery Toys'/RC cars/1.jpg"
+                    alt="9-12 Years"
+                    fill
+                    className="object-cover group-hover:scale-110 transition-transform duration-500"
+                    sizes="(max-width: 768px) 50vw, 25vw"
+                  />
+                </div>
+                <h3 className="font-black text-lg md:text-xl text-gray-900 group-hover:text-green-600 transition-colors duration-300 mb-1">
+                  9-12 Years
+                </h3>
+                <p className="text-sm text-gray-600 font-medium">Pre-Teens</p>
+              </div>
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* Baby & Infant Toys - Soft Toys Category */}
       <CategoryShowcase
         title="Baby & Infant Toys"

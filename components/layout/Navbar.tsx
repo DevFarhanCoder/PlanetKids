@@ -183,7 +183,7 @@ export default function Navbar() {
       {/* Top Bar with Gradient */}
       <div className="bg-gradient-to-r from-primary-500 via-orange-500 to-pink-500 py-2">
         <div className="container-custom">
-          <div className="flex items-center justify-center text-xs font-semibold text-white">
+          <div className="flex items-center justify-between text-xs font-semibold text-white">
             <span className="flex items-center gap-2">
               <span className="hidden sm:inline">✨ COD Available at ₹60</span>
               <span className="hidden md:inline">
@@ -191,6 +191,20 @@ export default function Navbar() {
               </span>
               <span>| Free Shipping Above ₹999</span>
             </span>
+            <div className="hidden md:flex items-center gap-4">
+              <Link
+                href="/contact"
+                className="text-xs font-bold text-white hover:text-yellow-200 transition-colors"
+              >
+                Contact Us
+              </Link>
+              <Link
+                href="/about"
+                className="text-xs font-bold text-white hover:text-yellow-200 transition-colors"
+              >
+                About Us
+              </Link>
+            </div>
           </div>
         </div>
       </div>
@@ -210,7 +224,10 @@ export default function Navbar() {
               />
             </div>
             <div>
-              <h1 className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-secondary-600">
+              <h1
+                className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-secondary-600"
+                style={{ fontFamily: "Comic Sans MS, cursive, sans-serif" }}
+              >
                 MyPlanetKids
               </h1>
               <p className="text-xs font-semibold text-gray-500">
@@ -460,6 +477,24 @@ export default function Navbar() {
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 ✨ New Arrivals
+              </Link>
+            </div>
+
+            {/* Quick Links */}
+            <div className="pt-4 border-t space-y-2">
+              <Link
+                href="/contact"
+                className="block py-3 px-4 text-gray-700 hover:text-primary-700 hover:bg-primary-50 rounded-xl transition-all font-semibold"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Contact Us
+              </Link>
+              <Link
+                href="/about"
+                className="block py-3 px-4 text-gray-700 hover:text-primary-700 hover:bg-primary-50 rounded-xl transition-all font-semibold"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                About Us
               </Link>
             </div>
 

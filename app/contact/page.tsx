@@ -2,29 +2,44 @@ export default function Contact() {
   return (
     <div className="container-custom py-16">
       <h1 className="text-4xl font-bold mb-8">Contact Us</h1>
-      
+
       <div className="grid md:grid-cols-2 gap-12">
         <div>
           <h2 className="text-2xl font-semibold mb-6">Get in Touch</h2>
-          
+
           <div className="space-y-6">
             <div>
               <h3 className="font-semibold text-lg mb-2">📧 Email</h3>
-              <p className="text-gray-600">support@planetkids.com</p>
+              <a
+                href="mailto:Planetkids1133@gmail.com"
+                className="text-gray-600 hover:text-primary-600 transition-colors"
+              >
+                Planetkids1133@gmail.com
+              </a>
             </div>
 
             <div>
               <h3 className="font-semibold text-lg mb-2">📞 Phone</h3>
-              <p className="text-gray-600">+91 1234567890</p>
-              <p className="text-sm text-gray-500">Mon-Sat: 9:00 AM - 6:00 PM</p>
+              <a
+                href="tel:+919326287112"
+                className="text-gray-600 hover:text-primary-600 transition-colors"
+              >
+                9326287112
+              </a>
+              <p className="text-sm text-gray-500">
+                Mon-Sat: 9:00 AM - 8:00 PM
+              </p>
             </div>
 
             <div>
               <h3 className="font-semibold text-lg mb-2">📍 Address</h3>
               <p className="text-gray-600">
-                PlanetKids Store<br />
-                123, Shopping Complex<br />
-                Your City, State - 123456<br />
+                Shop no 8/9, Sector 11
+                <br />
+                Shanti Nagar, Mira Road East
+                <br />
+                Mira Bhayandar, Maharashtra 401107
+                <br />
                 India
               </p>
             </div>
@@ -32,8 +47,9 @@ export default function Contact() {
             <div>
               <h3 className="font-semibold text-lg mb-2">🕐 Business Hours</h3>
               <p className="text-gray-600">
-                Monday - Saturday: 9:00 AM - 6:00 PM<br />
-                Sunday: Closed
+                Monday - Saturday: 9:00 AM - 8:00 PM
+                <br />
+                Sunday: 10:00 AM - 6:00 PM
               </p>
             </div>
           </div>
@@ -41,7 +57,7 @@ export default function Contact() {
 
         <div>
           <h2 className="text-2xl font-semibold mb-6">Send Us a Message</h2>
-          
+
           <form className="space-y-4">
             <div>
               <label className="block text-sm font-medium mb-2">Name</label>
