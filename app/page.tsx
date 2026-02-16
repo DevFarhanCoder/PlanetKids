@@ -1335,24 +1335,6 @@ export default async function Home() {
         </section>
       )}
 
-      {/* Franchise Opportunity Banner */}
-      <section className="py-12 bg-white">
-        <div className="container-custom">
-          <Link
-            href="/franchise"
-            className="block relative w-full h-[140px] md:h-[200px] rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 group border-4 border-orange-400"
-          >
-            <Image
-              src="https://cdn.fcglcdn.com/brainbees/images/intellitots_franchise_16may24.webp"
-              alt="Franchise Opportunity - Be a Franchise Owner"
-              fill
-              sizes="100vw"
-              className="object-cover group-hover:scale-105 transition-transform duration-700"
-            />
-          </Link>
-        </div>
-      </section>
-
       {/* Trust Badges - Modern Design */}
       <section className="py-12 bg-white border-y border-gray-200">
         <div className="container-custom">

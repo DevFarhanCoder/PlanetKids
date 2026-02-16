@@ -138,22 +138,6 @@ export default function Footer() {
                   Bulk Orders
                 </Link>
               </li>
-              <li>
-                <Link
-                  href="/blog"
-                  className="hover:text-primary-600 transition-colors font-semibold hover:pl-2 inline-block transform transition-all"
-                >
-                  Blog
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/careers"
-                  className="hover:text-primary-600 transition-colors font-semibold hover:pl-2 inline-block transform transition-all"
-                >
-                  Careers
-                </Link>
-              </li>
             </ul>
           </div>
 
@@ -201,14 +185,6 @@ export default function Footer() {
                   className="hover:text-primary-600 transition-colors font-semibold hover:pl-2 inline-block transform transition-all"
                 >
                   FAQs
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/size-guide"
-                  className="hover:text-primary-600 transition-colors font-semibold hover:pl-2 inline-block transform transition-all"
-                >
-                  Size Guide
                 </Link>
               </li>
             </ul>
