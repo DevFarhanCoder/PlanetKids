@@ -1,9 +1,8 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import Link from 'next/link';
-import { Plus, Edit, Trash2, FolderTree } from 'lucide-react';
-import Image from 'next/image';
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { Plus, Edit2, Trash2, Save, X } from "lucide-react";
 
 interface Category {
   id: string;
@@ -12,14 +11,16 @@ interface Category {
   description: string | null;
   imageUrl: string | null;
   parentId: string | null;
-  parent: { name: string } | null;
-  children: Category[];
+  displayOrder: number;
   _count: { products: number };
 }
 
 export default function AdminCategories() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editValue, setEditValue] = useState("");
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     fetchCategories();
@@ -27,34 +28,95 @@ export default function AdminCategories() {
 
   const fetchCategories = async () => {
     try {
-      const res = await fetch('/api/categories');
+      const res = await fetch("/api/categories?parentOnly=true");
       const data = await res.json();
-      setCategories(data.categories || []);
+      // Sort by displayOrder
+      const sorted = (data.categories || []).sort(
+        (a: Category, b: Category) => a.displayOrder - b.displayOrder,
+      );
+      setCategories(sorted);
     } catch (error) {
-      console.error('Error fetching categories:', error);
+      console.error("Error fetching categories:", error);
     } finally {
       setLoading(false);
     }
   };
 
-  const deleteCategory = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this category?')) return;
+  const startEdit = (category: Category) => {
+    setEditingId(category.id);
+    setEditValue(category.name);
+  };
+
+  const cancelEdit = () => {
+    setEditingId(null);
+    setEditValue("");
+  };
+
+  const generateSlug = (name: string) => {
+    return name
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/(^-|-$)/g, "");
+  };
+
+  const saveEdit = async (categoryId: string) => {
+    if (!editValue.trim()) {
+      alert("Category name cannot be empty");
+      return;
+    }
+
+    setSaving(true);
+    try {
+      const newSlug = generateSlug(editValue);
+      const res = await fetch(`/api/categories?id=${categoryId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: editValue, slug: newSlug }),
+      });
+
+      if (res.ok) {
+        setEditingId(null);
+        setEditValue("");
+        fetchCategories();
+      } else {
+        alert("Failed to update category");
+      }
+    } catch (error) {
+      console.error("Error updating category:", error);
+      alert("Failed to update category");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const deleteCategory = async (id: string, name: string) => {
+    if (
+      !confirm(
+        `Are you sure you want to delete "${name}"? This action cannot be undone.`,
+      )
+    )
+      return;
 
     try {
-      const res = await fetch(`/api/categories?id=${id}`, { method: 'DELETE' });
+      const res = await fetch(`/api/categories?id=${id}`, { method: "DELETE" });
       if (res.ok) {
         fetchCategories();
       } else {
-        alert('Failed to delete category');
+        const error = await res.json();
+        alert(error.error || "Failed to delete category");
       }
     } catch (error) {
-      console.error('Error deleting category:', error);
-      alert('Failed to delete category');
+      console.error("Error deleting category:", error);
+      alert("Failed to delete category");
     }
   };
 
   if (loading) {
-    return <div className="flex justify-center p-12"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div></div>;
+    return (
+      <div className="flex justify-center items-center p-12">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500"></div>
+      </div>
+    );
   }
 
   return (
@@ -63,105 +125,161 @@ export default function AdminCategories() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Categories</h1>
-          <p className="text-gray-600 mt-1">Manage product categories and subcategories</p>
+          <p className="text-gray-600 mt-1">
+            Manage product categories and subcategories
+          </p>
         </div>
         <Link
           href="/admin/categories/add"
-          className="flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-lg font-semibold hover:bg-primary-600 transition-colors"
+          className="flex items-center gap-2 bg-orange-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-orange-600 transition-colors"
         >
           <Plus className="w-5 h-5" />
           Add Category
         </Link>
       </div>
 
-      {/* Categories Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {categories.map((category) => (
-          <div key={category.id} className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow">
-            {/* Category Image */}
-            <div className="h-48 bg-gradient-to-br from-blue-100 to-purple-100 relative">
-              {category.imageUrl ? (
-                <Image
-                  src={category.imageUrl}
-                  alt={category.name}
-                  fill
-                  className="object-cover"
-                />
-              ) : (
-                <div className="flex items-center justify-center h-full">
-                  <FolderTree className="w-16 h-16 text-gray-300" />
-                </div>
-              )}
-            </div>
-
-            {/* Category Info */}
-            <div className="p-6">
-              <div className="flex items-start justify-between mb-2">
-                <h3 className="text-xl font-semibold text-gray-900">{category.name}</h3>
-                <span className="px-2 py-1 text-xs font-medium bg-blue-100 text-blue-700 rounded-full">
-                  {category._count.products} products
-                </span>
-              </div>
-              
-              {category.parent && (
-                <p className="text-sm text-gray-500 mb-2">
-                  Parent: {category.parent.name}
-                </p>
-              )}
-
-              {category.description && (
-                <p className="text-sm text-gray-600 mb-4 line-clamp-2">{category.description}</p>
-              )}
-
-              {category.children.length > 0 && (
-                <div className="mb-4">
-                  <p className="text-xs font-medium text-gray-500 mb-2">Subcategories:</p>
-                  <div className="flex flex-wrap gap-2">
-                    {category.children.map((child) => (
-                      <span key={child.id} className="px-2 py-1 text-xs bg-gray-100 text-gray-700 rounded">
-                        {child.name}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Actions */}
-              <div className="flex gap-2 pt-4 border-t border-gray-100">
-                <Link
-                  href={`/admin/categories/edit/${category.id}`}
-                  className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors"
+      {/* Categories Ordered List */}
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead className="bg-gray-50 border-b border-gray-200">
+              <tr>
+                <th className="text-left px-6 py-4 text-sm font-semibold text-gray-900 w-16">
+                  #
+                </th>
+                <th className="text-left px-6 py-4 text-sm font-semibold text-gray-900">
+                  Category Name
+                </th>
+                <th className="text-left px-6 py-4 text-sm font-semibold text-gray-900 w-32">
+                  Products
+                </th>
+                <th className="text-right px-6 py-4 text-sm font-semibold text-gray-900 w-48">
+                  Actions
+                </th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-200">
+              {/* Existing Categories */}
+              {categories.map((category, index) => (
+                <tr
+                  key={category.id}
+                  className="hover:bg-gray-50 transition-colors"
                 >
-                  <Edit className="w-4 h-4" />
-                  Edit
-                </Link>
-                <button
-                  onClick={() => deleteCategory(category.id)}
-                  className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors"
-                >
-                  <Trash2 className="w-4 h-4" />
-                  Delete
-                </button>
-              </div>
-            </div>
+                  <td className="px-6 py-4">
+                    <span className="text-sm font-semibold text-gray-900">
+                      {index + 1}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4">
+                    {editingId === category.id ? (
+                      <input
+                        type="text"
+                        value={editValue}
+                        onChange={(e) => setEditValue(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") saveEdit(category.id);
+                          if (e.key === "Escape") cancelEdit();
+                        }}
+                        className="w-full px-3 py-2 border border-orange-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                        autoFocus
+                        disabled={saving}
+                      />
+                    ) : (
+                      <div className="flex items-center gap-2">
+                        <span className="text-base font-medium text-gray-900">
+                          {category.name}
+                        </span>
+                        <span className="text-xs text-gray-400">
+                          ({category.slug})
+                        </span>
+                      </div>
+                    )}
+                  </td>
+                  <td className="px-6 py-4">
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                      {category._count.products} items
+                    </span>
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="flex items-center justify-end gap-2">
+                      {editingId === category.id ? (
+                        <>
+                          <button
+                            onClick={() => saveEdit(category.id)}
+                            disabled={saving || !editValue.trim()}
+                            className="flex items-center gap-1 px-3 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
+                          >
+                            <Save className="w-4 h-4" />
+                            Save
+                          </button>
+                          <button
+                            onClick={cancelEdit}
+                            disabled={saving}
+                            className="flex items-center gap-1 px-3 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors disabled:opacity-50 text-sm font-medium"
+                          >
+                            <X className="w-4 h-4" />
+                            Cancel
+                          </button>
+                        </>
+                      ) : (
+                        <>
+                          <button
+                            onClick={() => startEdit(category)}
+                            className="flex items-center gap-1 px-3 py-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors text-sm font-medium"
+                          >
+                            <Edit2 className="w-4 h-4" />
+                            Edit
+                          </button>
+                          <button
+                            onClick={() =>
+                              deleteCategory(category.id, category.name)
+                            }
+                            className="flex items-center gap-1 px-3 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors text-sm font-medium"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                            Delete
+                          </button>
+                        </>
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {categories.length === 0 && (
+          <div className="text-center py-12">
+            <p className="text-gray-500 mb-4">
+              No categories yet. Click the "Add Category" button above to create
+              your first category.
+            </p>
           </div>
-        ))}
+        )}
       </div>
 
-      {categories.length === 0 && (
-        <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
-          <FolderTree className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">No categories yet</h3>
-          <p className="text-gray-600 mb-6">Get started by creating your first category</p>
-          <Link
-            href="/admin/categories/add"
-            className="inline-flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-lg font-semibold hover:bg-primary-600 transition-colors"
-          >
-            <Plus className="w-5 h-5" />
-            Add Category
-          </Link>
-        </div>
-      )}
+      {/* Info Card */}
+      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+        <h3 className="text-sm font-semibold text-blue-900 mb-2">
+          💡 Quick Tips
+        </h3>
+        <ul className="text-sm text-blue-800 space-y-1">
+          <li>
+            • Click <strong>+ Add Category</strong> button to create a new
+            category
+          </li>
+          <li>
+            • Click <strong>Edit</strong> to rename a category
+          </li>
+          <li>
+            • Press <strong>Enter</strong> to save, <strong>Esc</strong> to
+            cancel
+          </li>
+          <li>• Changes are reflected on the website immediately</li>
+          <li>• Categories are displayed in the order shown here</li>
+        </ul>
+      </div>
     </div>
   );
 }
