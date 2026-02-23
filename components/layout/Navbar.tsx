@@ -213,26 +213,15 @@ export default function Navbar() {
       <div className="container-custom">
         <div className="flex items-center justify-between py-4">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-3 group">
-            <div className="relative w-12 h-12 flex items-center justify-center">
+          <Link href="/" className="flex items-center group">
+            <div className="relative w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 flex items-center justify-center">
               <Image
                 src="/myplanetkidslogo.png"
                 alt="MyPlanetKids"
-                width={48}
-                height={48}
+                width={96}
+                height={96}
                 className="object-contain group-hover:scale-105 transition-transform"
               />
-            </div>
-            <div>
-              <h1
-                className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-secondary-600"
-                style={{ fontFamily: "Comic Sans MS, cursive, sans-serif" }}
-              >
-                MyPlanetKids
-              </h1>
-              <p className="text-xs font-semibold text-gray-500">
-                Where Joy Meets Learning
-              </p>
             </div>
           </Link>
 
