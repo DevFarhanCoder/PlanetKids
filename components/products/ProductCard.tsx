@@ -223,7 +223,7 @@ export default function ProductCard({
         )}
 
         {/* Price */}
-        <div className="flex items-center gap-2 flex-wrap">
+        <div className="flex items-center gap-2 flex-wrap mb-2">
           <span className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-orange-600">
             ₹{price.toLocaleString("en-IN")}
           </span>
@@ -239,6 +239,14 @@ export default function ProductCard({
               )}
             </>
           )}
+        </div>
+
+        {/* Return Policy Badge */}
+        <div className="flex items-center gap-1.5 text-xs text-green-600 font-semibold">
+          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          7-Day Return Policy
         </div>
       </div>
     </Link>

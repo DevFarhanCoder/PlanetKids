@@ -102,7 +102,7 @@ function ProductCard({ product }: { product: any }) {
         <h3 className="text-sm md:text-base font-bold text-gray-900 line-clamp-2 mb-2 group-hover:text-primary-700 transition-colors duration-300 min-h-[40px]">
           {product.name}
         </h3>
-        <div className="flex items-center gap-2 flex-wrap">
+        <div className="flex items-center gap-2 flex-wrap mb-2">
           <span className="text-base md:text-xl font-black text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-orange-600">
             ₹{Number(product.price).toLocaleString()}
           </span>
@@ -112,6 +112,24 @@ function ProductCard({ product }: { product: any }) {
                 ₹{Number(product.compareAtPrice).toLocaleString()}
               </span>
             )}
+        </div>
+        {/* Return Policy Badge */}
+        <div className="flex items-center gap-1 text-[10px] md:text-xs text-green-600 font-semibold">
+          <svg
+            className="w-3 h-3 md:w-3.5 md:h-3.5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+          <span className="hidden sm:inline">7-Day Return</span>
+          <span className="sm:hidden">Returnable</span>
         </div>
       </div>
     </Link>
@@ -371,87 +389,302 @@ export default async function Home() {
             </p>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-            {/* 0-2 Years */}
-            <Link href="/age/0-2" className="group cursor-pointer block">
-              <div className="bg-white rounded-2xl p-6 transition-all duration-500 transform hover:scale-105 hover:-translate-y-2 hover:shadow-2xl text-center overflow-hidden border-2 border-purple-200 hover:border-purple-400">
-                <div className="relative w-full aspect-square mb-4 rounded-xl overflow-hidden">
+          {/* Horizontal Scroll Container */}
+          <div className="relative">
+            <div className="flex gap-4 md:gap-6 overflow-x-auto pb-4 scrollbar-hide snap-x snap-mandatory">
+              {/* 0-2 Years */}
+              <Link
+                href="/age/0-2"
+                className="group cursor-pointer block flex-shrink-0 w-[140px] sm:w-[180px] md:w-[220px] snap-center"
+              >
+                <div className="bg-white rounded-2xl p-4 md:p-6 transition-all duration-500 transform hover:scale-105 hover:-translate-y-2 hover:shadow-2xl text-center overflow-hidden border-2 border-purple-200 hover:border-purple-400 h-full">
+                  <div className="relative w-full aspect-square mb-3 md:mb-4 rounded-xl overflow-hidden">
+                    <Image
+                      src="/toys/Planet_Kids_Toys/1. Baby and Infant Toys/Soft Toys/1.jpg"
+                      alt="0-2 Years"
+                      fill
+                      className="object-cover group-hover:scale-110 transition-transform duration-500"
+                      sizes="220px"
+                    />
+                  </div>
+                  <h3 className="font-black text-base md:text-lg text-gray-900 group-hover:text-purple-600 transition-colors duration-300 mb-1">
+                    0-2 Years
+                  </h3>
+                  <p className="text-xs md:text-sm text-gray-600 font-medium">
+                    Babies & Toddlers
+                  </p>
+                </div>
+              </Link>
+
+              {/* 3-5 Years */}
+              <Link
+                href="/age/3-5"
+                className="group cursor-pointer block flex-shrink-0 w-[140px] sm:w-[180px] md:w-[220px] snap-center"
+              >
+                <div className="bg-white rounded-2xl p-4 md:p-6 transition-all duration-500 transform hover:scale-105 hover:-translate-y-2 hover:shadow-2xl text-center overflow-hidden border-2 border-pink-200 hover:border-pink-400 h-full">
+                  <div className="relative w-full aspect-square mb-3 md:mb-4 rounded-xl overflow-hidden">
+                    <Image
+                      src="/toys/Planet_Kids_Toys/2. Preschool and Learning Toys/1.jpg"
+                      alt="3-5 Years"
+                      fill
+                      className="object-cover group-hover:scale-110 transition-transform duration-500"
+                      sizes="220px"
+                    />
+                  </div>
+                  <h3 className="font-black text-base md:text-lg text-gray-900 group-hover:text-pink-600 transition-colors duration-300 mb-1">
+                    3-5 Years
+                  </h3>
+                  <p className="text-xs md:text-sm text-gray-600 font-medium">
+                    Preschoolers
+                  </p>
+                </div>
+              </Link>
+
+              {/* 6-8 Years */}
+              <Link
+                href="/age/6-8"
+                className="group cursor-pointer block flex-shrink-0 w-[140px] sm:w-[180px] md:w-[220px] snap-center"
+              >
+                <div className="bg-white rounded-2xl p-4 md:p-6 transition-all duration-500 transform hover:scale-105 hover:-translate-y-2 hover:shadow-2xl text-center overflow-hidden border-2 border-blue-200 hover:border-blue-400 h-full">
+                  <div className="relative w-full aspect-square mb-3 md:mb-4 rounded-xl overflow-hidden">
+                    <Image
+                      src="/toys/Planet_Kids_Toys/4. Action Figures and Superheroes/Marvel/1.jpg"
+                      alt="6-8 Years"
+                      fill
+                      className="object-cover group-hover:scale-110 transition-transform duration-500"
+                      sizes="220px"
+                    />
+                  </div>
+                  <h3 className="font-black text-base md:text-lg text-gray-900 group-hover:text-blue-600 transition-colors duration-300 mb-1">
+                    6-8 Years
+                  </h3>
+                  <p className="text-xs md:text-sm text-gray-600 font-medium">
+                    Early School Age
+                  </p>
+                </div>
+              </Link>
+
+              {/* 9-12 Years */}
+              <Link
+                href="/age/9-12"
+                className="group cursor-pointer block flex-shrink-0 w-[140px] sm:w-[180px] md:w-[220px] snap-center"
+              >
+                <div className="bg-white rounded-2xl p-4 md:p-6 transition-all duration-500 transform hover:scale-105 hover:-translate-y-2 hover:shadow-2xl text-center overflow-hidden border-2 border-green-200 hover:border-green-400 h-full">
+                  <div className="relative w-full aspect-square mb-3 md:mb-4 rounded-xl overflow-hidden">
+                    <Image
+                      src="/toys/Planet_Kids_Toys/8. Remote Controls and Battery Toys'/RC cars/1.jpg"
+                      alt="9-12 Years"
+                      fill
+                      className="object-cover group-hover:scale-110 transition-transform duration-500"
+                      sizes="220px"
+                    />
+                  </div>
+                  <h3 className="font-black text-base md:text-lg text-gray-900 group-hover:text-green-600 transition-colors duration-300 mb-1">
+                    9-12 Years
+                  </h3>
+                  <p className="text-xs md:text-sm text-gray-600 font-medium">
+                    Pre-Teens
+                  </p>
+                </div>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Shop by Category Section with Real Product Images */}
+      <section className="py-12 md:py-16 bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50">
+        <div className="container mx-auto px-4 md:px-6 lg:px-8 max-w-[1400px]">
+          <div className="mb-8 md:mb-12 text-center">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-gray-900 mb-2 md:mb-3">
+              Shop by{" "}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-secondary-600">
+                Category
+              </span>
+            </h2>
+            <p className="text-gray-600 text-base md:text-lg font-semibold">
+              Explore our full range of products
+            </p>
+          </div>
+
+          <div className="flex overflow-x-auto md:grid md:grid-cols-6 lg:grid-cols-8 gap-3 md:gap-4 lg:gap-6 pb-4 scrollbar-hide snap-x snap-mandatory md:snap-none">
+            {/* Baby & Infant Toys */}
+            <Link
+              href="/categories/baby-infant-toys"
+              className="group cursor-pointer block flex-shrink-0 w-32 md:w-auto snap-center"
+            >
+              <div className="bg-white rounded-xl md:rounded-2xl p-3 md:p-4 lg:p-6 transition-all duration-500 transform hover:scale-105 hover:-translate-y-1 hover:shadow-lg text-center overflow-hidden border border-gray-100 hover:border-primary-300">
+                <div className="relative w-full aspect-square mb-2 md:mb-3">
                   <Image
                     src="/toys/Planet_Kids_Toys/1. Baby and Infant Toys/Soft Toys/1.jpg"
-                    alt="0-2 Years"
+                    alt="Baby & Infant Toys"
                     fill
-                    className="object-cover group-hover:scale-110 transition-transform duration-500"
-                    sizes="(max-width: 768px) 50vw, 25vw"
+                    className="object-contain group-hover:scale-110 transition-transform duration-500"
+                    sizes="(max-width: 640px) 25vw, (max-width: 768px) 16.66vw, 12.5vw"
                   />
                 </div>
-                <h3 className="font-black text-lg md:text-xl text-gray-900 group-hover:text-purple-600 transition-colors duration-300 mb-1">
-                  0-2 Years
+                <h3 className="font-bold text-[10px] sm:text-xs md:text-sm text-gray-900 group-hover:text-primary-600 transition-colors duration-300 line-clamp-2 leading-tight h-8 md:h-auto">
+                  Baby & Infant Toys
                 </h3>
-                <p className="text-sm text-gray-600 font-medium">
-                  Babies & Toddlers
-                </p>
               </div>
             </Link>
 
-            {/* 3-5 Years */}
-            <Link href="/age/3-5" className="group cursor-pointer block">
-              <div className="bg-white rounded-2xl p-6 transition-all duration-500 transform hover:scale-105 hover:-translate-y-2 hover:shadow-2xl text-center overflow-hidden border-2 border-pink-200 hover:border-pink-400">
-                <div className="relative w-full aspect-square mb-4 rounded-xl overflow-hidden">
+            {/* Preschool & Learning */}
+            <Link
+              href="/categories/preschool-learning-toys"
+              className="group cursor-pointer block flex-shrink-0 w-32 md:w-auto snap-center"
+            >
+              <div className="bg-white rounded-xl md:rounded-2xl p-3 md:p-4 lg:p-6 transition-all duration-500 transform hover:scale-105 hover:-translate-y-1 hover:shadow-lg text-center overflow-hidden border border-gray-100 hover:border-primary-300">
+                <div className="relative w-full aspect-square mb-2 md:mb-3">
                   <Image
                     src="/toys/Planet_Kids_Toys/2. Preschool and Learning Toys/1.jpg"
-                    alt="3-5 Years"
+                    alt="Preschool & Learning"
                     fill
-                    className="object-cover group-hover:scale-110 transition-transform duration-500"
-                    sizes="(max-width: 768px) 50vw, 25vw"
+                    className="object-contain group-hover:scale-110 transition-transform duration-500"
+                    sizes="(max-width: 640px) 25vw, (max-width: 768px) 16.66vw, 12.5vw"
                   />
                 </div>
-                <h3 className="font-black text-lg md:text-xl text-gray-900 group-hover:text-pink-600 transition-colors duration-300 mb-1">
-                  3-5 Years
+                <h3 className="font-bold text-[10px] sm:text-xs md:text-sm text-gray-900 group-hover:text-primary-600 transition-colors duration-300 line-clamp-2 leading-tight h-8 md:h-auto">
+                  Preschool & Learning
                 </h3>
-                <p className="text-sm text-gray-600 font-medium">
-                  Preschoolers
-                </p>
               </div>
             </Link>
 
-            {/* 6-8 Years */}
-            <Link href="/age/6-8" className="group cursor-pointer block">
-              <div className="bg-white rounded-2xl p-6 transition-all duration-500 transform hover:scale-105 hover:-translate-y-2 hover:shadow-2xl text-center overflow-hidden border-2 border-blue-200 hover:border-blue-400">
-                <div className="relative w-full aspect-square mb-4 rounded-xl overflow-hidden">
+            {/* Building & Construction */}
+            <Link
+              href="/categories/building-construction-toys"
+              className="group cursor-pointer block flex-shrink-0 w-32 md:w-auto snap-center"
+            >
+              <div className="bg-white rounded-xl md:rounded-2xl p-3 md:p-4 lg:p-6 transition-all duration-500 transform hover:scale-105 hover:-translate-y-1 hover:shadow-lg text-center overflow-hidden border border-gray-100 hover:border-primary-300">
+                <div className="relative w-full aspect-square mb-2 md:mb-3">
+                  <Image
+                    src="/toys/Planet_Kids_Toys/2. Preschool and Learning Toys/Alphabet Toys/1.jpg"
+                    alt="Building & Construction"
+                    fill
+                    className="object-contain group-hover:scale-110 transition-transform duration-500"
+                    sizes="(max-width: 640px) 25vw, (max-width: 768px) 16.66vw, 12.5vw"
+                  />
+                </div>
+                <h3 className="font-bold text-[10px] sm:text-xs md:text-sm text-gray-900 group-hover:text-primary-600 transition-colors duration-300 line-clamp-2 leading-tight h-8 md:h-auto">
+                  Building & Construction
+                </h3>
+              </div>
+            </Link>
+
+            {/* Action Figures & Superheroes */}
+            <Link
+              href="/categories/action-figures"
+              className="group cursor-pointer block flex-shrink-0 w-32 md:w-auto snap-center"
+            >
+              <div className="bg-white rounded-xl md:rounded-2xl p-3 md:p-4 lg:p-6 transition-all duration-500 transform hover:scale-105 hover:-translate-y-1 hover:shadow-lg text-center overflow-hidden border border-gray-100 hover:border-primary-300">
+                <div className="relative w-full aspect-square mb-2 md:mb-3">
                   <Image
                     src="/toys/Planet_Kids_Toys/4. Action Figures and Superheroes/Marvel/1.jpg"
-                    alt="6-8 Years"
+                    alt="Action Figures"
                     fill
-                    className="object-cover group-hover:scale-110 transition-transform duration-500"
-                    sizes="(max-width: 768px) 50vw, 25vw"
+                    className="object-contain group-hover:scale-110 transition-transform duration-500"
+                    sizes="(max-width: 640px) 25vw, (max-width: 768px) 16.66vw, 12.5vw"
                   />
                 </div>
-                <h3 className="font-black text-lg md:text-xl text-gray-900 group-hover:text-blue-600 transition-colors duration-300 mb-1">
-                  6-8 Years
+                <h3 className="font-bold text-[10px] sm:text-xs md:text-sm text-gray-900 group-hover:text-primary-600 transition-colors duration-300 line-clamp-2 leading-tight h-8 md:h-auto">
+                  Action Figures
                 </h3>
-                <p className="text-sm text-gray-600 font-medium">
-                  Early School Age
-                </p>
               </div>
             </Link>
 
-            {/* 9-12 Years */}
-            <Link href="/age/9-12" className="group cursor-pointer block">
-              <div className="bg-white rounded-2xl p-6 transition-all duration-500 transform hover:scale-105 hover:-translate-y-2 hover:shadow-2xl text-center overflow-hidden border-2 border-green-200 hover:border-green-400">
-                <div className="relative w-full aspect-square mb-4 rounded-xl overflow-hidden">
+            {/* Dolls & Doll Accessories */}
+            <Link
+              href="/categories/fashion-dolls"
+              className="group cursor-pointer block flex-shrink-0 w-32 md:w-auto snap-center"
+            >
+              <div className="bg-white rounded-xl md:rounded-2xl p-3 md:p-4 lg:p-6 transition-all duration-500 transform hover:scale-105 hover:-translate-y-1 hover:shadow-lg text-center overflow-hidden border border-gray-100 hover:border-primary-300">
+                <div className="relative w-full aspect-square mb-2 md:mb-3">
                   <Image
-                    src="/toys/Planet_Kids_Toys/8. Remote Controls and Battery Toys'/RC cars/1.jpg"
-                    alt="9-12 Years"
+                    src="/toys/Planet_Kids_Toys/5. Dolls and Doll Accessories/Fashion dolls/1.jpg"
+                    alt="Dolls & Accessories"
                     fill
-                    className="object-cover group-hover:scale-110 transition-transform duration-500"
-                    sizes="(max-width: 768px) 50vw, 25vw"
+                    className="object-contain group-hover:scale-110 transition-transform duration-500"
+                    sizes="(max-width: 640px) 25vw, (max-width: 768px) 16.66vw, 12.5vw"
                   />
                 </div>
-                <h3 className="font-black text-lg md:text-xl text-gray-900 group-hover:text-green-600 transition-colors duration-300 mb-1">
-                  9-12 Years
+                <h3 className="font-bold text-[10px] sm:text-xs md:text-sm text-gray-900 group-hover:text-primary-600 transition-colors duration-300 line-clamp-2 leading-tight h-8 md:h-auto">
+                  Dolls & Accessories
                 </h3>
-                <p className="text-sm text-gray-600 font-medium">Pre-Teens</p>
               </div>
+            </Link>
+
+            {/* Outdoor & Sports */}
+            <Link
+              href="/categories/outdoor-sports-toys"
+              className="group cursor-pointer block flex-shrink-0 w-32 md:w-auto snap-center"
+            >
+              <div className="bg-white rounded-xl md:rounded-2xl p-3 md:p-4 lg:p-6 transition-all duration-500 transform hover:scale-105 hover:-translate-y-1 hover:shadow-lg text-center overflow-hidden border border-gray-100 hover:border-primary-300">
+                <div className="relative w-full aspect-square mb-2 md:mb-3">
+                  <Image
+                    src="/toys/Planet_Kids_Toys/6. Outdoor and Sports Toys/1.jpg"
+                    alt="Outdoor & Sports"
+                    fill
+                    className="object-contain group-hover:scale-110 transition-transform duration-500"
+                    sizes="(max-width: 640px) 25vw, (max-width: 768px) 16.66vw, 12.5vw"
+                  />
+                </div>
+                <h3 className="font-bold text-[10px] sm:text-xs md:text-sm text-gray-900 group-hover:text-primary-600 transition-colors duration-300 line-clamp-2 leading-tight h-8 md:h-auto">
+                  Outdoor & Sports
+                </h3>
+              </div>
+            </Link>
+
+            {/* Ride-On Toys & Scooters */}
+            <Link
+              href="/categories/push-cars"
+              className="group cursor-pointer block flex-shrink-0 w-32 md:w-auto snap-center"
+            >
+              <div className="bg-white rounded-xl md:rounded-2xl p-3 md:p-4 lg:p-6 transition-all duration-500 transform hover:scale-105 hover:-translate-y-1 hover:shadow-lg text-center overflow-hidden border border-gray-100 hover:border-primary-300">
+                <div className="relative w-full aspect-square mb-2 md:mb-3">
+                  <Image
+                    src="/toys/Planet_Kids_Toys/7. Ride On Toys and Scooters/push cars/1.jpg"
+                    alt="Ride-On Toys"
+                    fill
+                    className="object-contain group-hover:scale-110 transition-transform duration-500"
+                    sizes="(max-width: 640px) 25vw, (max-width: 768px) 16.66vw, 12.5vw"
+                  />
+                </div>
+                <h3 className="font-bold text-[10px] sm:text-xs md:text-sm text-gray-900 group-hover:text-primary-600 transition-colors duration-300 line-clamp-2 leading-tight h-8 md:h-auto">
+                  Ride-On Toys
+                </h3>
+              </div>
+            </Link>
+
+            {/* Soft Toys & Plush */}
+            <Link
+              href="/categories/teddy-bears"
+              className="group cursor-pointer block flex-shrink-0 w-32 md:w-auto snap-center"
+            >
+              <div className="bg-white rounded-xl md:rounded-2xl p-3 md:p-4 lg:p-6 transition-all duration-500 transform hover:scale-105 hover:-translate-y-1 hover:shadow-lg text-center overflow-hidden border border-gray-100 hover:border-primary-300">
+                <div className="relative w-full aspect-square mb-2 md:mb-3">
+                  <Image
+                    src="/toys/Planet_Kids_Toys/10. Soft Toys and Plush/Teddy bears/3.jpg"
+                    alt="Soft Toys"
+                    fill
+                    className="object-contain group-hover:scale-110 transition-transform duration-500"
+                    sizes="(max-width: 640px) 25vw, (max-width: 768px) 16.66vw, 12.5vw"
+                  />
+                </div>
+                <h3 className="font-bold text-[10px] sm:text-xs md:text-sm text-gray-900 group-hover:text-primary-600 transition-colors duration-300 line-clamp-2 leading-tight h-8 md:h-auto">
+                  Soft Toys & Plush
+                </h3>
+              </div>
+            </Link>
+          </div>
+
+          {/* View All Products Button - Centered */}
+          <div className="text-center mt-8 md:mt-10">
+            <Link
+              href="/products"
+              className="inline-flex items-center justify-center bg-gradient-to-r from-gray-800 to-gray-900 text-white px-10 md:px-14 py-3 md:py-4 rounded-full text-base md:text-lg font-bold hover:from-gray-900 hover:to-black transition-all duration-300 shadow-lg hover:shadow-xl group transform hover:scale-105"
+            >
+              View All Products
+              <ChevronRight className="w-5 h-5 md:w-6 md:h-6 ml-2 group-hover:translate-x-1 transition-transform" />
             </Link>
           </div>
         </div>
@@ -610,107 +843,6 @@ export default async function Home() {
         ]}
       />
 
-      {/* Board Games & Puzzles Category */}
-      <CategoryShowcase
-        title="Board Games & Puzzles"
-        discount="BUY 2 GET 1 FREE"
-        bgColor="bg-white"
-        items={[
-          {
-            id: "19",
-            name: "Jigsaw Puzzles",
-            image:
-              "/toys/Planet_Kids_Toys/9. Board Games and Puzzles/jigsaw puzzles/1.jpg",
-            link: "/categories/jigsaw-puzzles",
-          },
-          {
-            id: "20",
-            name: "Chess Sets",
-            image:
-              "/toys/Planet_Kids_Toys/9. Board Games and Puzzles/Chess/1.jpg",
-            link: "/categories/chess",
-          },
-          {
-            id: "21",
-            name: "Indian Map Puzzle",
-            image:
-              "/toys/Planet_Kids_Toys/9. Board Games and Puzzles/jigsaw puzzles/Indian Map Puzzle.jpg",
-            link: "/categories/jigsaw-puzzles",
-          },
-          {
-            id: "22",
-            name: "Business Games",
-            image:
-              "/toys/Planet_Kids_Toys/9. Board Games and Puzzles/Business games.jpg",
-            link: "/categories/board-games",
-          },
-          {
-            id: "23",
-            name: "Chess Puzzle",
-            image:
-              "/toys/Planet_Kids_Toys/9. Board Games and Puzzles/Chess/Chess Puzzle.jpg",
-            link: "/categories/chess",
-          },
-          {
-            id: "24",
-            name: "Outdoor Sports",
-            image: "/toys/Planet_Kids_Toys/6. Outdoor and Sports Toys/1.jpg",
-            link: "/categories/outdoor-sports-toys",
-          },
-        ]}
-      />
-
-      {/* Remote Control & Battery Toys Category */}
-      <CategoryShowcase
-        title="RC & Battery Toys"
-        discount="45"
-        bgColor="bg-gradient-to-br from-purple-50 via-blue-50 to-cyan-50"
-        items={[
-          {
-            id: "25",
-            name: "RC Cars",
-            image:
-              "/toys/Planet_Kids_Toys/8. Remote Controls and Battery Toys'/RC cars/1.jpg",
-            link: "/categories/rc-cars",
-          },
-          {
-            id: "26",
-            name: "RC Cars",
-            image:
-              "/toys/Planet_Kids_Toys/8. Remote Controls and Battery Toys'/RC cars/2.jpg",
-            link: "/categories/rc-cars",
-          },
-          {
-            id: "27",
-            name: "RC Robots",
-            image:
-              "/toys/Planet_Kids_Toys/8. Remote Controls and Battery Toys'/robots/1.jpg",
-            link: "/categories/rc-robots",
-          },
-          {
-            id: "28",
-            name: "RC Vehicles",
-            image:
-              "/toys/Planet_Kids_Toys/8. Remote Controls and Battery Toys'/rechargeable vehicles/1.jpg",
-            link: "/categories/battery-vehicles",
-          },
-          {
-            id: "29",
-            name: "STEM Robotics",
-            image:
-              "/toys/Planet_Kids_Toys/11. Electronic and STEM Toys/robotics/1.jpg",
-            link: "/categories/stem-toys",
-          },
-          {
-            id: "30",
-            name: "Science Kits",
-            image:
-              "/toys/Planet_Kids_Toys/11. Electronic and STEM Toys/Science kits/1.jpg",
-            link: "/categories/science-kits",
-          },
-        ]}
-      />
-
       {/* View All Boutiques Button */}
       <section className="py-8 bg-white">
         <div className="container mx-auto px-4 md:px-6 lg:px-8 max-w-[1400px]">
@@ -729,371 +861,6 @@ export default async function Home() {
       {/* Dynamic Admin-Managed Sections */}
       {dynamicSections.map((section: any) => renderSection(section))}
 
-      {/* Shop by Category Section with Real Product Images */}
-      <section className="py-12 md:py-16 bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50">
-        <div className="container mx-auto px-4 md:px-6 lg:px-8 max-w-[1400px]">
-          <div className="mb-8 md:mb-12 text-center">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-gray-900 mb-2 md:mb-3">
-              Shop by{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-secondary-600">
-                Category
-              </span>
-            </h2>
-            <p className="text-gray-600 text-base md:text-lg font-semibold">
-              Explore our full range of products
-            </p>
-          </div>
-
-          <div className="grid grid-cols-4 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-3 md:gap-4 lg:gap-6">
-            {/* Baby & Infant Toys */}
-            <Link
-              href="/categories/baby-infant-toys"
-              className="group cursor-pointer block"
-            >
-              <div className="bg-white rounded-xl md:rounded-2xl p-3 md:p-4 lg:p-6 transition-all duration-500 transform hover:scale-105 hover:-translate-y-1 hover:shadow-lg text-center overflow-hidden border border-gray-100 hover:border-primary-300">
-                <div className="relative w-full aspect-square mb-2 md:mb-3">
-                  <Image
-                    src="/toys/Planet_Kids_Toys/1. Baby and Infant Toys/Soft Toys/1.jpg"
-                    alt="Baby & Infant Toys"
-                    fill
-                    className="object-contain group-hover:scale-110 transition-transform duration-500"
-                    sizes="(max-width: 640px) 25vw, (max-width: 768px) 16.66vw, 12.5vw"
-                  />
-                </div>
-                <h3 className="font-bold text-[10px] sm:text-xs md:text-sm text-gray-900 group-hover:text-primary-600 transition-colors duration-300 line-clamp-2 leading-tight">
-                  Baby & Infant Toys
-                </h3>
-              </div>
-            </Link>
-
-            {/* Preschool & Learning */}
-            <Link
-              href="/categories/preschool-learning-toys"
-              className="group cursor-pointer block"
-            >
-              <div className="bg-white rounded-xl md:rounded-2xl p-3 md:p-4 lg:p-6 transition-all duration-500 transform hover:scale-105 hover:-translate-y-1 hover:shadow-lg text-center overflow-hidden border border-gray-100 hover:border-primary-300">
-                <div className="relative w-full aspect-square mb-2 md:mb-3">
-                  <Image
-                    src="/toys/Planet_Kids_Toys/2. Preschool and Learning Toys/1.jpg"
-                    alt="Preschool & Learning"
-                    fill
-                    className="object-contain group-hover:scale-110 transition-transform duration-500"
-                    sizes="(max-width: 640px) 25vw, (max-width: 768px) 16.66vw, 12.5vw"
-                  />
-                </div>
-                <h3 className="font-bold text-[10px] sm:text-xs md:text-sm text-gray-900 group-hover:text-primary-600 transition-colors duration-300 line-clamp-2 leading-tight">
-                  Preschool & Learning
-                </h3>
-              </div>
-            </Link>
-
-            {/* Building & Construction */}
-            <Link
-              href="/categories/building-construction-toys"
-              className="group cursor-pointer block"
-            >
-              <div className="bg-white rounded-xl md:rounded-2xl p-3 md:p-4 lg:p-6 transition-all duration-500 transform hover:scale-105 hover:-translate-y-1 hover:shadow-lg text-center overflow-hidden border border-gray-100 hover:border-primary-300">
-                <div className="relative w-full aspect-square mb-2 md:mb-3">
-                  <Image
-                    src="/toys/Planet_Kids_Toys/2. Preschool and Learning Toys/Alphabet Toys/1.jpg"
-                    alt="Building & Construction"
-                    fill
-                    className="object-contain group-hover:scale-110 transition-transform duration-500"
-                    sizes="(max-width: 640px) 25vw, (max-width: 768px) 16.66vw, 12.5vw"
-                  />
-                </div>
-                <h3 className="font-bold text-[10px] sm:text-xs md:text-sm text-gray-900 group-hover:text-primary-600 transition-colors duration-300 line-clamp-2 leading-tight">
-                  Building & Construction
-                </h3>
-              </div>
-            </Link>
-
-            {/* Action Figures & Superheroes */}
-            <Link
-              href="/categories/action-figures"
-              className="group cursor-pointer block"
-            >
-              <div className="bg-white rounded-xl md:rounded-2xl p-3 md:p-4 lg:p-6 transition-all duration-500 transform hover:scale-105 hover:-translate-y-1 hover:shadow-lg text-center overflow-hidden border border-gray-100 hover:border-primary-300">
-                <div className="relative w-full aspect-square mb-2 md:mb-3">
-                  <Image
-                    src="/toys/Planet_Kids_Toys/4. Action Figures and Superheroes/Marvel/1.jpg"
-                    alt="Action Figures"
-                    fill
-                    className="object-contain group-hover:scale-110 transition-transform duration-500"
-                    sizes="(max-width: 640px) 25vw, (max-width: 768px) 16.66vw, 12.5vw"
-                  />
-                </div>
-                <h3 className="font-bold text-[10px] sm:text-xs md:text-sm text-gray-900 group-hover:text-primary-600 transition-colors duration-300 line-clamp-2 leading-tight">
-                  Action Figures
-                </h3>
-              </div>
-            </Link>
-
-            {/* Dolls & Doll Accessories */}
-            <Link
-              href="/categories/fashion-dolls"
-              className="group cursor-pointer block"
-            >
-              <div className="bg-white rounded-xl md:rounded-2xl p-3 md:p-4 lg:p-6 transition-all duration-500 transform hover:scale-105 hover:-translate-y-1 hover:shadow-lg text-center overflow-hidden border border-gray-100 hover:border-primary-300">
-                <div className="relative w-full aspect-square mb-2 md:mb-3">
-                  <Image
-                    src="/toys/Planet_Kids_Toys/5. Dolls and Doll Accessories/Fashion dolls/1.jpg"
-                    alt="Dolls & Accessories"
-                    fill
-                    className="object-contain group-hover:scale-110 transition-transform duration-500"
-                    sizes="(max-width: 640px) 25vw, (max-width: 768px) 16.66vw, 12.5vw"
-                  />
-                </div>
-                <h3 className="font-bold text-[10px] sm:text-xs md:text-sm text-gray-900 group-hover:text-primary-600 transition-colors duration-300 line-clamp-2 leading-tight">
-                  Dolls & Accessories
-                </h3>
-              </div>
-            </Link>
-
-            {/* Outdoor & Sports */}
-            <Link
-              href="/categories/outdoor-sports-toys"
-              className="group cursor-pointer block"
-            >
-              <div className="bg-white rounded-xl md:rounded-2xl p-3 md:p-4 lg:p-6 transition-all duration-500 transform hover:scale-105 hover:-translate-y-1 hover:shadow-lg text-center overflow-hidden border border-gray-100 hover:border-primary-300">
-                <div className="relative w-full aspect-square mb-2 md:mb-3">
-                  <Image
-                    src="/toys/Planet_Kids_Toys/6. Outdoor and Sports Toys/1.jpg"
-                    alt="Outdoor & Sports"
-                    fill
-                    className="object-contain group-hover:scale-110 transition-transform duration-500"
-                    sizes="(max-width: 640px) 25vw, (max-width: 768px) 16.66vw, 12.5vw"
-                  />
-                </div>
-                <h3 className="font-bold text-[10px] sm:text-xs md:text-sm text-gray-900 group-hover:text-primary-600 transition-colors duration-300 line-clamp-2 leading-tight">
-                  Outdoor & Sports
-                </h3>
-              </div>
-            </Link>
-
-            {/* Ride-On Toys & Scooters */}
-            <Link
-              href="/categories/push-cars"
-              className="group cursor-pointer block"
-            >
-              <div className="bg-white rounded-xl md:rounded-2xl p-3 md:p-4 lg:p-6 transition-all duration-500 transform hover:scale-105 hover:-translate-y-1 hover:shadow-lg text-center overflow-hidden border border-gray-100 hover:border-primary-300">
-                <div className="relative w-full aspect-square mb-2 md:mb-3">
-                  <Image
-                    src="/toys/Planet_Kids_Toys/7. Ride On Toys and Scooters/push cars/1.jpg"
-                    alt="Ride-On Toys"
-                    fill
-                    className="object-contain group-hover:scale-110 transition-transform duration-500"
-                    sizes="(max-width: 640px) 25vw, (max-width: 768px) 16.66vw, 12.5vw"
-                  />
-                </div>
-                <h3 className="font-bold text-[10px] sm:text-xs md:text-sm text-gray-900 group-hover:text-primary-600 transition-colors duration-300 line-clamp-2 leading-tight">
-                  Ride-On Toys
-                </h3>
-              </div>
-            </Link>
-
-            {/* Remote Control & Battery */}
-            <Link
-              href="/categories/rc-cars"
-              className="group cursor-pointer block"
-            >
-              <div className="bg-white rounded-xl md:rounded-2xl p-3 md:p-4 lg:p-6 transition-all duration-500 transform hover:scale-105 hover:-translate-y-1 hover:shadow-lg text-center overflow-hidden border border-gray-100 hover:border-primary-300">
-                <div className="relative w-full aspect-square mb-2 md:mb-3">
-                  <Image
-                    src="/toys/Planet_Kids_Toys/8. Remote Controls and Battery Toys'/RC cars/1.jpg"
-                    alt="Remote Control"
-                    fill
-                    className="object-contain group-hover:scale-110 transition-transform duration-500"
-                    sizes="(max-width: 640px) 25vw, (max-width: 768px) 16.66vw, 12.5vw"
-                  />
-                </div>
-                <h3 className="font-bold text-[10px] sm:text-xs md:text-sm text-gray-900 group-hover:text-primary-600 transition-colors duration-300 line-clamp-2 leading-tight">
-                  Remote Control
-                </h3>
-              </div>
-            </Link>
-
-            {/* Board Games & Puzzles */}
-            <Link
-              href="/categories/board-games"
-              className="group cursor-pointer block"
-            >
-              <div className="bg-white rounded-xl md:rounded-2xl p-3 md:p-4 lg:p-6 transition-all duration-500 transform hover:scale-105 hover:-translate-y-1 hover:shadow-lg text-center overflow-hidden border border-gray-100 hover:border-primary-300">
-                <div className="relative w-full aspect-square mb-2 md:mb-3">
-                  <Image
-                    src="/toys/Planet_Kids_Toys/9. Board Games and Puzzles/Chess/1.jpg"
-                    alt="Board Games"
-                    fill
-                    className="object-contain group-hover:scale-110 transition-transform duration-500"
-                    sizes="(max-width: 640px) 25vw, (max-width: 768px) 16.66vw, 12.5vw"
-                  />
-                </div>
-                <h3 className="font-bold text-[10px] sm:text-xs md:text-sm text-gray-900 group-hover:text-primary-600 transition-colors duration-300 line-clamp-2 leading-tight">
-                  Board Games
-                </h3>
-              </div>
-            </Link>
-
-            {/* Soft Toys & Plush */}
-            <Link
-              href="/categories/teddy-bears"
-              className="group cursor-pointer block"
-            >
-              <div className="bg-white rounded-xl md:rounded-2xl p-3 md:p-4 lg:p-6 transition-all duration-500 transform hover:scale-105 hover:-translate-y-1 hover:shadow-lg text-center overflow-hidden border border-gray-100 hover:border-primary-300">
-                <div className="relative w-full aspect-square mb-2 md:mb-3">
-                  <Image
-                    src="/toys/Planet_Kids_Toys/10. Soft Toys and Plush/Teddy bears/3.jpg"
-                    alt="Soft Toys"
-                    fill
-                    className="object-contain group-hover:scale-110 transition-transform duration-500"
-                    sizes="(max-width: 640px) 25vw, (max-width: 768px) 16.66vw, 12.5vw"
-                  />
-                </div>
-                <h3 className="font-bold text-[10px] sm:text-xs md:text-sm text-gray-900 group-hover:text-primary-600 transition-colors duration-300 line-clamp-2 leading-tight">
-                  Soft Toys & Plush
-                </h3>
-              </div>
-            </Link>
-
-            {/* Electronic & STEM */}
-            <Link
-              href="/categories/stem-toys"
-              className="group cursor-pointer block"
-            >
-              <div className="bg-white rounded-xl md:rounded-2xl p-3 md:p-4 lg:p-6 transition-all duration-500 transform hover:scale-105 hover:-translate-y-1 hover:shadow-lg text-center overflow-hidden border border-gray-100 hover:border-primary-300">
-                <div className="relative w-full aspect-square mb-2 md:mb-3">
-                  <Image
-                    src="/toys/Planet_Kids_Toys/11. Electronic and STEM Toys/robotics/1.jpg"
-                    alt="Electronic & STEM"
-                    fill
-                    className="object-contain group-hover:scale-110 transition-transform duration-500"
-                    sizes="(max-width: 640px) 25vw, (max-width: 768px) 16.66vw, 12.5vw"
-                  />
-                </div>
-                <h3 className="font-bold text-[10px] sm:text-xs md:text-sm text-gray-900 group-hover:text-primary-600 transition-colors duration-300 line-clamp-2 leading-tight">
-                  Electronic & STEM
-                </h3>
-              </div>
-            </Link>
-
-            {/* Arts, Craft & DIY */}
-            <Link
-              href="/categories/arts-crafts"
-              className="group cursor-pointer block"
-            >
-              <div className="bg-white rounded-xl md:rounded-2xl p-3 md:p-4 lg:p-6 transition-all duration-500 transform hover:scale-105 hover:-translate-y-1 hover:shadow-lg text-center overflow-hidden border border-gray-100 hover:border-primary-300">
-                <div className="relative w-full aspect-square mb-2 md:mb-3">
-                  <Image
-                    src="/toys/Planet_Kids_Toys/12. Arts, Craft and DIY Sets/Painting Kits/1.jpg"
-                    alt="Arts & Craft"
-                    fill
-                    className="object-contain group-hover:scale-110 transition-transform duration-500"
-                    sizes="(max-width: 640px) 25vw, (max-width: 768px) 16.66vw, 12.5vw"
-                  />
-                </div>
-                <h3 className="font-bold text-[10px] sm:text-xs md:text-sm text-gray-900 group-hover:text-primary-600 transition-colors duration-300 line-clamp-2 leading-tight">
-                  Arts, Craft & DIY
-                </h3>
-              </div>
-            </Link>
-
-            {/* Kitchen & Role Play */}
-            <Link
-              href="/categories/kitchen-role-play"
-              className="group cursor-pointer block"
-            >
-              <div className="bg-white rounded-xl md:rounded-2xl p-3 md:p-4 lg:p-6 transition-all duration-500 transform hover:scale-105 hover:-translate-y-1 hover:shadow-lg text-center overflow-hidden border border-gray-100 hover:border-primary-300">
-                <div className="relative w-full aspect-square mb-2 md:mb-3">
-                  <Image
-                    src="/toys/Planet_Kids_Toys/13. Kitchen and Role Play Toys/Mini kitchen sets/1.jpg"
-                    alt="Kitchen & Role Play"
-                    fill
-                    className="object-contain group-hover:scale-110 transition-transform duration-500"
-                    sizes="(max-width: 640px) 25vw, (max-width: 768px) 16.66vw, 12.5vw"
-                  />
-                </div>
-                <h3 className="font-bold text-[10px] sm:text-xs md:text-sm text-gray-900 group-hover:text-primary-600 transition-colors duration-300 line-clamp-2 leading-tight">
-                  Kitchen & Role Play
-                </h3>
-              </div>
-            </Link>
-
-            {/* Musical Instruments */}
-            <Link
-              href="/categories/musical-instruments"
-              className="group cursor-pointer block"
-            >
-              <div className="bg-white rounded-xl md:rounded-2xl p-3 md:p-4 lg:p-6 transition-all duration-500 transform hover:scale-105 hover:-translate-y-1 hover:shadow-lg text-center overflow-hidden border border-gray-100 hover:border-primary-300">
-                <div className="relative w-full aspect-square mb-2 md:mb-3">
-                  <Image
-                    src="/toys/Planet_Kids_Toys/14. Musical Instruments for kids/Toy guitars/1.jpg"
-                    alt="Musical Instruments"
-                    fill
-                    className="object-contain group-hover:scale-110 transition-transform duration-500"
-                    sizes="(max-width: 640px) 25vw, (max-width: 768px) 16.66vw, 12.5vw"
-                  />
-                </div>
-                <h3 className="font-bold text-[10px] sm:text-xs md:text-sm text-gray-900 group-hover:text-primary-600 transition-colors duration-300 line-clamp-2 leading-tight">
-                  Musical Instruments
-                </h3>
-              </div>
-            </Link>
-
-            {/* Educational Books */}
-            <Link
-              href="/categories/educational-books"
-              className="group cursor-pointer block"
-            >
-              <div className="bg-white rounded-xl md:rounded-2xl p-3 md:p-4 lg:p-6 transition-all duration-500 transform hover:scale-105 hover:-translate-y-1 hover:shadow-lg text-center overflow-hidden border border-gray-100 hover:border-primary-300">
-                <div className="relative w-full aspect-square mb-2 md:mb-3">
-                  <Image
-                    src="/toys/Planet_Kids_Toys/2. Preschool and Learning Toys/Montessori Toys/1.jpg"
-                    alt="Educational Books"
-                    fill
-                    className="object-contain group-hover:scale-110 transition-transform duration-500"
-                    sizes="(max-width: 640px) 25vw, (max-width: 768px) 16.66vw, 12.5vw"
-                  />
-                </div>
-                <h3 className="font-bold text-[10px] sm:text-xs md:text-sm text-gray-900 group-hover:text-primary-600 transition-colors duration-300 line-clamp-2 leading-tight">
-                  Educational Books
-                </h3>
-              </div>
-            </Link>
-
-            {/* Party Favours */}
-            <Link
-              href="/categories/party-favours"
-              className="group cursor-pointer block"
-            >
-              <div className="bg-white rounded-xl md:rounded-2xl p-3 md:p-4 lg:p-6 transition-all duration-500 transform hover:scale-105 hover:-translate-y-1 hover:shadow-lg text-center overflow-hidden border border-gray-100 hover:border-primary-300">
-                <div className="relative w-full aspect-square mb-2 md:mb-3">
-                  <Image
-                    src="/toys/Planet_Kids_Toys/10. Soft Toys and Plush/animals/1.jpg"
-                    alt="Party Favours"
-                    fill
-                    className="object-contain group-hover:scale-110 transition-transform duration-500"
-                    sizes="(max-width: 640px) 25vw, (max-width: 768px) 16.66vw, 12.5vw"
-                  />
-                </div>
-                <h3 className="font-bold text-[10px] sm:text-xs md:text-sm text-gray-900 group-hover:text-primary-600 transition-colors duration-300 line-clamp-2 leading-tight">
-                  Party Favours
-                </h3>
-              </div>
-            </Link>
-          </div>
-
-          <div className="text-center mt-8 md:mt-10">
-            <Link
-              href="/products"
-              className="inline-flex items-center justify-center bg-gradient-to-r from-gray-800 to-gray-900 text-white px-10 md:px-14 py-3 md:py-4 rounded-full text-base md:text-lg font-bold hover:from-gray-900 hover:to-black transition-all duration-300 shadow-lg hover:shadow-xl group transform hover:scale-105"
-            >
-              View All Products
-              <ChevronRight className="w-5 h-5 md:w-6 md:h-6 ml-2 group-hover:translate-x-1 transition-transform" />
-            </Link>
-          </div>
-        </div>
-      </section>
-
       {/* Additional Premium Boutiques Section */}
       <section className="py-16 bg-white">
         <div className="container-custom">
@@ -1106,129 +873,131 @@ export default async function Home() {
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <Link
-              href="/products?category=summer-collection"
-              className="relative rounded-3xl overflow-hidden h-[400px] shadow-soft-lg hover:shadow-soft-xl transition-all duration-500 transform hover:scale-[1.02] group cursor-pointer"
-            >
-              <div className="absolute inset-0 bg-gradient-to-br from-primary-500 to-orange-500">
-                <div
-                  className="absolute inset-0 opacity-10"
-                  style={{
-                    backgroundImage:
-                      "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")",
-                  }}
-                ></div>
-              </div>
+          <div className="relative">
+            <div className="flex gap-6 overflow-x-auto pb-4 scrollbar-hide snap-x snap-mandatory">
+              <Link
+                href="/products?category=summer-collection"
+                className="flex-shrink-0 w-[280px] md:w-[350px] snap-center relative rounded-3xl overflow-hidden h-[350px] md:h-[400px] shadow-soft-lg hover:shadow-soft-xl transition-all duration-500 transform hover:scale-[1.02] group cursor-pointer"
+              >
+                <div className="absolute inset-0 bg-gradient-to-br from-primary-500 to-orange-500">
+                  <div
+                    className="absolute inset-0 opacity-10"
+                    style={{
+                      backgroundImage:
+                        "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")",
+                    }}
+                  ></div>
+                </div>
 
-              <div className="absolute inset-0 p-6 md:p-8 flex flex-col justify-between">
-                <div className="flex justify-between items-start">
-                  <div className="inline-flex items-center justify-center bg-orange-600 text-white rounded-full w-20 h-20 md:w-24 md:h-24 shadow-lg transform group-hover:rotate-12 transition-transform duration-300">
-                    <div className="text-center px-2">
-                      <div className="text-xs md:text-sm font-bold leading-tight">
-                        SUMMER VIBES
+                <div className="absolute inset-0 p-6 md:p-8 flex flex-col justify-between">
+                  <div className="flex justify-between items-start">
+                    <div className="inline-flex items-center justify-center bg-orange-600 text-white rounded-full w-16 h-16 md:w-20 md:h-20 shadow-lg transform group-hover:rotate-12 transition-transform duration-300">
+                      <div className="text-center px-2">
+                        <div className="text-[10px] md:text-xs font-bold leading-tight">
+                          SUMMER VIBES
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="relative z-10">
+                    <h3 className="text-xl md:text-2xl font-bold text-white mb-2 drop-shadow-lg">
+                      Summer Collection
+                    </h3>
+                    <p className="text-white text-sm md:text-base mb-4 opacity-90">
+                      Stay Cool & Stylish
+                    </p>
+                    <div className="flex flex-wrap items-center gap-3">
+                      <div className="inline-block bg-orange-700 text-white px-4 md:px-6 py-2 md:py-3 rounded-full font-bold text-sm md:text-base shadow-lg">
+                        UPTO 50% OFF
                       </div>
                     </div>
                   </div>
                 </div>
+              </Link>
 
-                <div className="relative z-10">
-                  <h3 className="text-2xl md:text-3xl font-bold text-white mb-2 drop-shadow-lg">
-                    Summer Collection
-                  </h3>
-                  <p className="text-white text-sm md:text-base mb-4 opacity-90">
-                    Stay Cool & Stylish
-                  </p>
-                  <div className="flex flex-wrap items-center gap-3">
-                    <div className="inline-block bg-orange-700 text-white px-6 py-3 rounded-full font-bold text-base md:text-lg shadow-lg">
-                      UPTO 50% OFF
+              <Link
+                href="/products?category=festive-wear"
+                className="flex-shrink-0 w-[280px] md:w-[350px] snap-center relative rounded-2xl overflow-hidden h-[350px] md:h-[400px] shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:scale-[1.02] group cursor-pointer"
+              >
+                <div className="absolute inset-0 bg-gradient-to-br from-purple-500 to-indigo-600">
+                  <div
+                    className="absolute inset-0 opacity-10"
+                    style={{
+                      backgroundImage:
+                        "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")",
+                    }}
+                  ></div>
+                </div>
+
+                <div className="absolute inset-0 p-6 md:p-8 flex flex-col justify-between">
+                  <div className="flex justify-between items-start">
+                    <div className="inline-flex items-center justify-center bg-purple-700 text-white rounded-full w-16 h-16 md:w-20 md:h-20 shadow-lg transform group-hover:rotate-12 transition-transform duration-300">
+                      <div className="text-center px-2">
+                        <div className="text-[10px] md:text-xs font-bold leading-tight">
+                          FESTIVE SPECIAL
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </div>
-            </Link>
 
-            <Link
-              href="/products?category=festive-wear"
-              className="relative rounded-2xl overflow-hidden h-[400px] shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:scale-[1.02] group cursor-pointer"
-            >
-              <div className="absolute inset-0 bg-gradient-to-br from-purple-500 to-indigo-600">
-                <div
-                  className="absolute inset-0 opacity-10"
-                  style={{
-                    backgroundImage:
-                      "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")",
-                  }}
-                ></div>
-              </div>
-
-              <div className="absolute inset-0 p-6 md:p-8 flex flex-col justify-between">
-                <div className="flex justify-between items-start">
-                  <div className="inline-flex items-center justify-center bg-purple-700 text-white rounded-full w-20 h-20 md:w-24 md:h-24 shadow-lg transform group-hover:rotate-12 transition-transform duration-300">
-                    <div className="text-center px-2">
-                      <div className="text-xs md:text-sm font-bold leading-tight">
-                        FESTIVE SPECIAL
+                  <div className="relative z-10">
+                    <h3 className="text-xl md:text-2xl font-bold text-white mb-2 drop-shadow-lg">
+                      Festive Collection
+                    </h3>
+                    <p className="text-white text-sm md:text-base mb-4 opacity-90">
+                      Celebrate in Style
+                    </p>
+                    <div className="flex flex-wrap items-center gap-3">
+                      <div className="inline-block bg-purple-700 text-white px-4 md:px-6 py-2 md:py-3 rounded-full font-bold text-sm md:text-base shadow-lg">
+                        UPTO 55% OFF
                       </div>
                     </div>
                   </div>
                 </div>
+              </Link>
 
-                <div className="relative z-10">
-                  <h3 className="text-2xl md:text-3xl font-bold text-white mb-2 drop-shadow-lg">
-                    Festive Collection
-                  </h3>
-                  <p className="text-white text-sm md:text-base mb-4 opacity-90">
-                    Celebrate in Style
-                  </p>
-                  <div className="flex flex-wrap items-center gap-3">
-                    <div className="inline-block bg-purple-700 text-white px-6 py-3 rounded-full font-bold text-base md:text-lg shadow-lg">
-                      UPTO 55% OFF
+              <Link
+                href="/products?category=casual-wear"
+                className="flex-shrink-0 w-[280px] md:w-[350px] snap-center relative rounded-2xl overflow-hidden h-[350px] md:h-[400px] shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:scale-[1.02] group cursor-pointer"
+              >
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-400 to-cyan-500">
+                  <div
+                    className="absolute inset-0 opacity-10"
+                    style={{
+                      backgroundImage:
+                        "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")",
+                    }}
+                  ></div>
+                </div>
+
+                <div className="absolute inset-0 p-6 md:p-8 flex flex-col justify-between">
+                  <div className="flex justify-between items-start">
+                    <div className="inline-flex items-center justify-center bg-blue-600 text-white rounded-full w-16 h-16 md:w-20 md:h-20 shadow-lg transform group-hover:rotate-12 transition-transform duration-300">
+                      <div className="text-center px-2">
+                        <div className="text-[10px] md:text-xs font-bold leading-tight">
+                          EVERYDAY STYLE
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </div>
-            </Link>
 
-            <Link
-              href="/products?category=casual-wear"
-              className="relative rounded-2xl overflow-hidden h-[400px] shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:scale-[1.02] group cursor-pointer"
-            >
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-400 to-cyan-500">
-                <div
-                  className="absolute inset-0 opacity-10"
-                  style={{
-                    backgroundImage:
-                      "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")",
-                  }}
-                ></div>
-              </div>
-
-              <div className="absolute inset-0 p-6 md:p-8 flex flex-col justify-between">
-                <div className="flex justify-between items-start">
-                  <div className="inline-flex items-center justify-center bg-blue-600 text-white rounded-full w-20 h-20 md:w-24 md:h-24 shadow-lg transform group-hover:rotate-12 transition-transform duration-300">
-                    <div className="text-center px-2">
-                      <div className="text-xs md:text-sm font-bold leading-tight">
-                        EVERYDAY STYLE
+                  <div className="relative z-10">
+                    <h3 className="text-xl md:text-2xl font-bold text-white mb-2 drop-shadow-lg">
+                      Casual Comfort
+                    </h3>
+                    <p className="text-white text-sm md:text-base mb-4 opacity-90">
+                      Everyday Essentials
+                    </p>
+                    <div className="flex flex-wrap items-center gap-3">
+                      <div className="inline-block bg-blue-700 text-white px-4 md:px-6 py-2 md:py-3 rounded-full font-bold text-sm md:text-base shadow-lg">
+                        UPTO 45% OFF
                       </div>
                     </div>
                   </div>
                 </div>
-
-                <div className="relative z-10">
-                  <h3 className="text-2xl md:text-3xl font-bold text-white mb-2 drop-shadow-lg">
-                    Casual Comfort
-                  </h3>
-                  <p className="text-white text-sm md:text-base mb-4 opacity-90">
-                    Everyday Essentials
-                  </p>
-                  <div className="flex flex-wrap items-center gap-3">
-                    <div className="inline-block bg-blue-700 text-white px-6 py-3 rounded-full font-bold text-base md:text-lg shadow-lg">
-                      UPTO 45% OFF
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </Link>
+              </Link>
+            </div>
           </div>
         </div>
       </section>

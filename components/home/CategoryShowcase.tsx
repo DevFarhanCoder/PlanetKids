@@ -41,15 +41,15 @@ export default function CategoryShowcase({
           </div>
         </div>
 
-        {/* Category Grid - Fully Responsive: 4 on mobile, 6 on tablet+, proper scrolling */}
-        <div className="grid grid-cols-4 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-6 gap-2 sm:gap-3 md:gap-4 lg:gap-6">
+        {/* Category Grid - Mobile: horizontal scroll, Desktop: 6 column grid */}
+        <div className="flex overflow-x-auto md:grid md:grid-cols-6 lg:grid-cols-6 gap-2 sm:gap-3 md:gap-4 lg:gap-6 pb-4 scrollbar-hide snap-x snap-mandatory md:snap-none">
           {items.map((item) => (
             <Link
               key={item.id}
               href={item.link}
-              className="group cursor-pointer block"
+              className="group cursor-pointer block flex-shrink-0 w-32 sm:w-36 md:w-auto snap-center"
             >
-              <div className="relative rounded-lg sm:rounded-xl md:rounded-2xl lg:rounded-3xl overflow-hidden border-2 md:border-3 lg:border-4 border-gray-200 hover:border-primary-400 transition-all duration-300 shadow-sm hover:shadow-lg transform hover:-translate-y-1 bg-white">
+              <div className="relative rounded-lg sm:rounded-xl md:rounded-2xl lg:rounded-3xl overflow-hidden border-2 md:border-3 lg:border-4 border-gray-200 hover:border-primary-400 transition-all duration-300 shadow-sm hover:shadow-lg transform hover:-translate-y-1 bg-white h-full">
                 {/* Image Container */}
                 <div className="relative aspect-[3/4] bg-gradient-to-br from-gray-50 to-gray-100 overflow-hidden">
                   <Image

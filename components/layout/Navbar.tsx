@@ -38,9 +38,17 @@ export default function Navbar() {
   const [showRightArrow, setShowRightArrow] = useState(true);
   const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 });
   const [mounted, setMounted] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const buttonRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      window.location.href = `/products?search=${encodeURIComponent(searchQuery.trim())}`;
+    }
+  };
 
   useEffect(() => {
     setMounted(true);
@@ -183,14 +191,14 @@ export default function Navbar() {
       {/* Top Bar with Gradient */}
       <div className="bg-gradient-to-r from-primary-500 via-orange-500 to-pink-500 py-2">
         <div className="container-custom">
-          <div className="flex items-center justify-between text-xs font-semibold text-white">
-            <span className="flex items-center gap-2">
-              <span className="hidden sm:inline">✨ COD Available at ₹60</span>
-              <span className="hidden md:inline">
-                | Extra Discounts on Prepaid Orders
-              </span>
-              <span>| Free Shipping Above ₹999</span>
-            </span>
+          <div className="flex flex-col md:flex-row items-center justify-between text-xs font-semibold text-white gap-1 md:gap-0">
+            <div className="flex flex-col md:flex-row items-center md:gap-2 text-center md:text-left">
+              <span>✨ COD Available at ₹60</span>
+              <span className="hidden md:inline">|</span>
+              <span>Extra Discounts on Prepaid Orders</span>
+              <span className="hidden md:inline">|</span>
+              <span>Free Shipping Above ₹999</span>
+            </div>
             <div className="hidden md:flex items-center gap-4">
               <Link
                 href="/contact"
@@ -227,16 +235,21 @@ export default function Navbar() {
 
           {/* Search Bar */}
           <div className="hidden md:flex flex-1 max-w-lg mx-8">
-            <div className="relative w-full">
+            <form onSubmit={handleSearch} className="relative w-full">
               <input
                 type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search toys, learning kits, school essentials..."
                 className="w-full px-5 py-3 pr-12 border-2 border-primary-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-primary-500 transition-all bg-orange-50 placeholder:text-gray-500"
               />
-              <button className="absolute right-3 top-1/2 -translate-y-1/2 bg-gradient-to-r from-secondary-500 to-secondary-600 text-white p-2 rounded-xl hover:shadow-soft transition-all">
+              <button 
+                type="submit"
+                className="absolute right-3 top-1/2 -translate-y-1/2 bg-gradient-to-r from-secondary-500 to-secondary-600 text-white p-2 rounded-xl hover:shadow-soft transition-all"
+              >
                 <Search className="w-5 h-5" />
               </button>
-            </div>
+            </form>
           </div>
 
           {/* Right Actions */}
