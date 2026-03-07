@@ -250,6 +250,7 @@ export default function ProductCard({
           7-Day Return Policy
         </div>
       </div>
+      </div>
     </Link>
   );
 }
