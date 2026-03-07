@@ -189,9 +189,9 @@ export default function Navbar() {
   return (
     <nav className="bg-white shadow-soft sticky top-0 z-50">
       {/* Top Bar with Gradient */}
-      <div className="bg-gradient-to-r from-primary-500 via-orange-500 to-pink-500 py-2">
+      <div className="bg-gradient-to-r from-primary-500 via-orange-500 to-pink-500 py-1.5">
         <div className="container-custom">
-          <div className="flex flex-col md:flex-row items-center justify-between text-xs font-semibold text-white gap-1 md:gap-0">
+          <div className="flex flex-col md:flex-row items-center justify-between text-[10px] md:text-xs font-semibold text-white gap-1 md:gap-0">
             <div className="flex flex-col md:flex-row items-center md:gap-2 text-center md:text-left">
               <span>✨ COD Available at ₹60</span>
               <span className="hidden md:inline">|</span>
@@ -219,48 +219,48 @@ export default function Navbar() {
 
       {/* Main Navigation */}
       <div className="container-custom">
-        <div className="flex items-center justify-between py-4">
+        <div className="flex items-center justify-between py-2 md:py-3">
           {/* Logo */}
           <Link href="/" className="flex items-center group">
-            <div className="relative w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 flex items-center justify-center">
+            <div className="relative w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 flex items-center justify-center">
               <Image
                 src="/myplanetkidslogo.png"
                 alt="MyPlanetKids"
-                width={96}
-                height={96}
+                width={80}
+                height={80}
                 className="object-contain group-hover:scale-105 transition-transform"
               />
             </div>
           </Link>
 
           {/* Search Bar */}
-          <div className="hidden md:flex flex-1 max-w-lg mx-8">
+          <div className="hidden md:flex flex-1 max-w-lg mx-6">
             <form onSubmit={handleSearch} className="relative w-full">
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search toys, learning kits, school essentials..."
-                className="w-full px-5 py-3 pr-12 border-2 border-primary-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-primary-500 transition-all bg-orange-50 placeholder:text-gray-500"
+                className="w-full px-4 py-2 pr-10 border-2 border-primary-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-primary-500 transition-all bg-orange-50 placeholder:text-gray-500 text-sm"
               />
               <button 
                 type="submit"
-                className="absolute right-3 top-1/2 -translate-y-1/2 bg-gradient-to-r from-secondary-500 to-secondary-600 text-white p-2 rounded-xl hover:shadow-soft transition-all"
+                className="absolute right-2 top-1/2 -translate-y-1/2 bg-gradient-to-r from-secondary-500 to-secondary-600 text-white p-1.5 rounded-lg hover:shadow-soft transition-all"
               >
-                <Search className="w-5 h-5" />
+                <Search className="w-4 h-4" />
               </button>
             </form>
           </div>
 
           {/* Right Actions */}
-          <div className="flex items-center gap-4 md:gap-6">
+          <div className="flex items-center gap-2 md:gap-4">
             {/* Wishlist */}
             <Link
               href="/wishlist"
               className="relative text-gray-600 hover:text-pink-500 transition-colors group"
             >
-              <div className="p-2 rounded-xl hover:bg-pink-50 transition-all">
-                <Heart className="w-6 h-6" />
+              <div className="p-1.5 md:p-2 rounded-lg hover:bg-pink-50 transition-all">
+                <Heart className="w-5 h-5 md:w-6 md:h-6" />
                 {wishlistCount > 0 && (
                   <span className="absolute -top-1 -right-1 bg-gradient-to-r from-pink-500 to-pink-600 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center shadow-md">
                     {wishlistCount}
@@ -274,8 +274,8 @@ export default function Navbar() {
               href="/cart"
               className="relative text-gray-600 hover:text-primary-600 transition-colors group"
             >
-              <div className="p-2 rounded-xl hover:bg-primary-50 transition-all">
-                <ShoppingCart className="w-6 h-6" />
+              <div className="p-1.5 md:p-2 rounded-lg hover:bg-primary-50 transition-all">
+                <ShoppingCart className="w-5 h-5 md:w-6 md:h-6" />
                 {cartCount > 0 && (
                   <span className="absolute -top-1 -right-1 bg-gradient-to-r from-primary-500 to-primary-600 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center shadow-md">
                     {cartCount}

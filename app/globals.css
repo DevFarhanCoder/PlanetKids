@@ -52,9 +52,9 @@ body {
     @apply bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white font-bold py-3 px-8 rounded-2xl transition-all duration-300 shadow-soft hover:shadow-soft-lg transform hover:-translate-y-0.5;
   }
 
-  /* Product card styles with soft shadows */
+  /* Product card styles with soft shadows - Kid-friendly with borders */}
   .product-card {
-    @apply bg-white rounded-3xl shadow-soft hover:shadow-soft-xl transition-all duration-500 overflow-hidden border border-gray-100 hover:border-primary-200;
+    @apply bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border-2 border-gray-200 hover:border-primary-400 transform hover:-translate-y-1;
   }
 
   /* Badge styles with vibrant colors */
@@ -80,15 +80,45 @@ body {
     @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
   }
 
-  /* Category Card */
+  /* Category Card - More playful with vibrant colors */
   .category-card {
-    @apply bg-gradient-to-br from-primary-50 to-orange-50 rounded-3xl p-6 shadow-soft hover:shadow-soft-lg transition-all duration-300 transform hover:-translate-y-1 cursor-pointer border-2 border-transparent hover:border-primary-300;
+    @apply bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 rounded-2xl p-5 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 hover:scale-105 cursor-pointer border-2 border-purple-200 hover:border-purple-400;
   }
 
-  /* Banner Styles */
+  /* Banner Styles - More engaging */
   .banner-card {
-    @apply rounded-3xl overflow-hidden shadow-soft-lg hover:shadow-soft-xl transition-all duration-300 transform hover:scale-[1.02];
+    @apply rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-[1.02] border-2 border-transparent hover:border-primary-300;
   }
+}
+
+/* Fun Animations for Kid-Friendly Feel */
+@keyframes bounce-gentle {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes wiggle {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-3deg);
+  }
+  75% {
+    transform: rotate(3deg);
+  }
+}
+
+.animate-bounce-gentle {
+  animation: bounce-gentle 2s ease-in-out infinite;
+}
+
+.animate-wiggle {
+  animation: wiggle 1s ease-in-out infinite;
 }
 
 /* Scrollbar hide utility */

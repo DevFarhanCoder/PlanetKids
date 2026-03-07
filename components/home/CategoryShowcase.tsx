@@ -22,18 +22,18 @@ export default function CategoryShowcase({
   bgColor = "bg-white",
 }: CategoryShowcaseProps) {
   return (
-    <section className={`py-6 md:py-10 lg:py-12 ${bgColor}`}>
+    <section className={`py-6 md:py-8 ${bgColor}`}>
       <div className="container mx-auto px-4 md:px-6 lg:px-8 max-w-[1400px]">
         {/* Section Header */}
-        <div className="mb-6 md:mb-8">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 md:gap-4">
-            <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-black text-gray-900">
+        <div className="mb-4 md:mb-6">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 md:gap-3">
+            <h2 className="text-xl md:text-2xl lg:text-3xl font-black text-gray-900">
               {title}
             </h2>
             {discount && (
               <div className="flex items-center gap-1 md:gap-2">
                 <span className="text-gray-500 hidden sm:inline">|</span>
-                <span className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-primary-500 to-orange-500">
+                <span className="text-xl md:text-2xl lg:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-primary-500 to-orange-500">
                   {discount} % OFF
                 </span>
               </div>

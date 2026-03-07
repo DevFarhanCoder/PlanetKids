@@ -140,14 +140,15 @@ export default function ProductCard({
   };
 
   return (
-    <Link href={`/products/${slug}`} className="product-card group">
-      <div className="relative aspect-square bg-gradient-to-br from-primary-100 to-orange-100 rounded-t-3xl overflow-hidden">
-        {/* Image Placeholder */}
-        <div className="absolute inset-0 flex items-center justify-center">
-          <span className="text-7xl transform group-hover:scale-110 transition-transform duration-500">
-            {image}
-          </span>
-        </div>
+    <Link href={`/products/${slug}`} className="product-card group block">
+      <div className="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border-2 border-gray-200 hover:border-primary-400 h-full">
+        <div className="relative aspect-square bg-gradient-to-br from-primary-50 to-orange-50 overflow-hidden">
+          {/* Image Placeholder */}
+          <div className="absolute inset-0 flex items-center justify-center">
+            <span className="text-7xl transform group-hover:scale-110 transition-transform duration-500">
+              {image}
+            </span>
+          </div>
 
         {/* Badges */}
         <div className="absolute top-3 left-3 flex flex-col gap-2">
@@ -193,13 +194,13 @@ export default function ProductCard({
 
         {/* Hover Overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-      </div>
+        </div>
 
-      {/* Product Info */}
-      <div className="p-5">
-        <h3 className="font-bold text-gray-800 mb-3 line-clamp-2 group-hover:text-primary-700 transition-colors leading-snug text-base">
-          {name}
-        </h3>
+        {/* Product Info */}
+        <div className="p-4">
+          <h3 className="font-bold text-gray-800 mb-2 line-clamp-2 group-hover:text-primary-700 transition-colors leading-snug text-sm md:text-base">
+            {name}
+          </h3>
 
         {/* Rating */}
         {rating > 0 && (
