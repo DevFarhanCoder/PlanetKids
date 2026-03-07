@@ -496,7 +496,7 @@ export default async function Home() {
                 <div className="bg-white rounded-2xl p-4 md:p-6 transition-all duration-500 transform hover:scale-105 hover:-translate-y-2 hover:shadow-2xl text-center overflow-hidden border-2 border-orange-200 hover:border-orange-400 h-full">
                   <div className="relative w-full aspect-square mb-3 md:mb-4 rounded-xl overflow-hidden">
                     <Image
-                      src="/toys/Planet_Kids_Toys/9. Board Games and Puzzles/1.jpg"
+                      src="/toys/Planet_Kids_Toys/9. Board Games and Puzzles/Business games.jpg"
                       alt="12+ Years"
                       fill
                       className="object-cover group-hover:scale-110 transition-transform duration-500"
@@ -1001,7 +1001,6 @@ export default async function Home() {
 
       {/* Additional Premium Boutiques Section */}
       <section className="py-8 md:py-10 bg-white">
-        \n{" "}
         <div className="container-custom">
           <div className="text-center mb-6 md:mb-8">
             <h2 className="text-2xl md:text-3xl lg:text-4xl font-black text-gray-900 mb-2">
