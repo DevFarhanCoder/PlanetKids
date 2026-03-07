@@ -93,7 +93,8 @@ body {
 
 /* Fun Animations for Kid-Friendly Feel */
 @keyframes bounce-gentle {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0);
   }
   50% {
@@ -102,7 +103,8 @@ body {
 }
 
 @keyframes wiggle {
-  0%, 100% {
+  0%,
+  100% {
     transform: rotate(0deg);
   }
   25% {

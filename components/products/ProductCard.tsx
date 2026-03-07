@@ -150,50 +150,50 @@ export default function ProductCard({
             </span>
           </div>
 
-        {/* Badges */}
-        <div className="absolute top-3 left-3 flex flex-col gap-2">
-          {isNew && <div className="badge-new">✨ NEW</div>}
-          {discount && discount > 0 && (
-            <div className="badge-sale">🔥 {discount}% OFF</div>
-          )}
-          {!inStock && (
-            <div className="bg-gray-900 text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-md">
-              OUT OF STOCK
-            </div>
-          )}
-        </div>
+          {/* Badges */}
+          <div className="absolute top-3 left-3 flex flex-col gap-2">
+            {isNew && <div className="badge-new">✨ NEW</div>}
+            {discount && discount > 0 && (
+              <div className="badge-sale">🔥 {discount}% OFF</div>
+            )}
+            {!inStock && (
+              <div className="bg-gray-900 text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-md">
+                OUT OF STOCK
+              </div>
+            )}
+          </div>
 
-        {/* Wishlist Button */}
-        <button
-          onClick={handleWishlistToggle}
-          disabled={isTogglingWishlist}
-          className={`absolute top-3 right-3 w-11 h-11 rounded-2xl flex items-center justify-center transition-all shadow-soft ${
-            isWishlisted
-              ? "bg-gradient-to-r from-pink-500 to-pink-600 text-white scale-110"
-              : "bg-white text-gray-600 hover:bg-pink-50 hover:text-pink-500 hover:scale-110"
-          }`}
-          aria-label="Add to wishlist"
-        >
-          <Heart
-            className="w-5 h-5"
-            fill={isWishlisted ? "currentColor" : "none"}
-          />
-        </button>
-
-        {/* Quick Add to Cart (visible on hover) */}
-        {inStock && (
+          {/* Wishlist Button */}
           <button
-            onClick={handleAddToCart}
-            disabled={isAddingToCart}
-            className="absolute bottom-3 left-3 right-3 btn-secondary py-3 text-sm opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center gap-2 shadow-soft-lg"
+            onClick={handleWishlistToggle}
+            disabled={isTogglingWishlist}
+            className={`absolute top-3 right-3 w-11 h-11 rounded-2xl flex items-center justify-center transition-all shadow-soft ${
+              isWishlisted
+                ? "bg-gradient-to-r from-pink-500 to-pink-600 text-white scale-110"
+                : "bg-white text-gray-600 hover:bg-pink-50 hover:text-pink-500 hover:scale-110"
+            }`}
+            aria-label="Add to wishlist"
           >
-            <ShoppingCart className="w-4 h-4" />
-            {isAddingToCart ? "Adding..." : "Add to Cart"}
+            <Heart
+              className="w-5 h-5"
+              fill={isWishlisted ? "currentColor" : "none"}
+            />
           </button>
-        )}
 
-        {/* Hover Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+          {/* Quick Add to Cart (visible on hover) */}
+          {inStock && (
+            <button
+              onClick={handleAddToCart}
+              disabled={isAddingToCart}
+              className="absolute bottom-3 left-3 right-3 btn-secondary py-3 text-sm opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center gap-2 shadow-soft-lg"
+            >
+              <ShoppingCart className="w-4 h-4" />
+              {isAddingToCart ? "Adding..." : "Add to Cart"}
+            </button>
+          )}
+
+          {/* Hover Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
         </div>
 
         {/* Product Info */}
@@ -202,54 +202,64 @@ export default function ProductCard({
             {name}
           </h3>
 
-        {/* Rating */}
-        {rating > 0 && (
-          <div className="flex items-center gap-1 mb-3">
-            {[...Array(5)].map((_, i) => (
-              <Star
-                key={i}
-                className={`w-4 h-4 ${
-                  i < rating
-                    ? "fill-accent-400 text-accent-400"
-                    : "fill-gray-200 text-gray-200"
-                }`}
-              />
-            ))}
-            {reviewCount > 0 && (
-              <span className="text-sm text-gray-500 font-semibold ml-1">
-                ({reviewCount})
-              </span>
-            )}
-          </div>
-        )}
-
-        {/* Price */}
-        <div className="flex items-center gap-2 flex-wrap mb-2">
-          <span className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-orange-600">
-            ₹{price.toLocaleString("en-IN")}
-          </span>
-          {originalPrice && originalPrice > price && (
-            <>
-              <span className="text-sm text-gray-400 line-through font-semibold">
-                ₹{originalPrice.toLocaleString("en-IN")}
-              </span>
-              {discount && (
-                <span className="text-xs font-black text-success-700 bg-success-100 px-2 py-1 rounded-full">
-                  Save {discount}%
+          {/* Rating */}
+          {rating > 0 && (
+            <div className="flex items-center gap-1 mb-3">
+              {[...Array(5)].map((_, i) => (
+                <Star
+                  key={i}
+                  className={`w-4 h-4 ${
+                    i < rating
+                      ? "fill-accent-400 text-accent-400"
+                      : "fill-gray-200 text-gray-200"
+                  }`}
+                />
+              ))}
+              {reviewCount > 0 && (
+                <span className="text-sm text-gray-500 font-semibold ml-1">
+                  ({reviewCount})
                 </span>
               )}
-            </>
+            </div>
           )}
-        </div>
 
-        {/* Return Policy Badge */}
-        <div className="flex items-center gap-1.5 text-xs text-green-600 font-semibold">
-          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          7-Day Return Policy
+          {/* Price */}
+          <div className="flex items-center gap-2 flex-wrap mb-2">
+            <span className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-orange-600">
+              ₹{price.toLocaleString("en-IN")}
+            </span>
+            {originalPrice && originalPrice > price && (
+              <>
+                <span className="text-sm text-gray-400 line-through font-semibold">
+                  ₹{originalPrice.toLocaleString("en-IN")}
+                </span>
+                {discount && (
+                  <span className="text-xs font-black text-success-700 bg-success-100 px-2 py-1 rounded-full">
+                    Save {discount}%
+                  </span>
+                )}
+              </>
+            )}
+          </div>
+
+          {/* Return Policy Badge */}
+          <div className="flex items-center gap-1.5 text-xs text-green-600 font-semibold">
+            <svg
+              className="w-3.5 h-3.5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+            7-Day Return Policy
+          </div>
         </div>
-      </div>
       </div>
     </Link>
   );
