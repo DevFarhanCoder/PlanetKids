@@ -243,7 +243,7 @@ export default function Navbar() {
                 placeholder="Search toys, learning kits, school essentials..."
                 className="w-full px-4 py-2 pr-10 border-2 border-primary-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-primary-500 transition-all bg-orange-50 placeholder:text-gray-500 text-sm"
               />
-              <button 
+              <button
                 type="submit"
                 className="absolute right-2 top-1/2 -translate-y-1/2 bg-gradient-to-r from-secondary-500 to-secondary-600 text-white p-1.5 rounded-lg hover:shadow-soft transition-all"
               >

@@ -906,8 +906,12 @@ export default async function Home() {
               <div className="relative aspect-video bg-gradient-to-br from-purple-100 to-pink-100">
                 <div className="absolute inset-0 flex items-center justify-center">
                   <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform cursor-pointer">
-                    <svg className="w-8 h-8 text-purple-600 ml-1" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M8 5v14l11-7z"/>
+                    <svg
+                      className="w-8 h-8 text-purple-600 ml-1"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path d="M8 5v14l11-7z" />
                     </svg>
                   </div>
                 </div>
@@ -916,8 +920,12 @@ export default async function Home() {
                 </div>
               </div>
               <div className="p-4">
-                <h3 className="font-bold text-gray-900 mb-1 text-sm md:text-base">Toy Unboxing & Review</h3>
-                <p className="text-xs md:text-sm text-gray-600">Watch kids having fun with our latest toys!</p>
+                <h3 className="font-bold text-gray-900 mb-1 text-sm md:text-base">
+                  Toy Unboxing & Review
+                </h3>
+                <p className="text-xs md:text-sm text-gray-600">
+                  Watch kids having fun with our latest toys!
+                </p>
               </div>
             </div>
 
@@ -926,8 +934,12 @@ export default async function Home() {
               <div className="relative aspect-video bg-gradient-to-br from-blue-100 to-cyan-100">
                 <div className="absolute inset-0 flex items-center justify-center">
                   <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform cursor-pointer">
-                    <svg className="w-8 h-8 text-blue-600 ml-1" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M8 5v14l11-7z"/>
+                    <svg
+                      className="w-8 h-8 text-blue-600 ml-1"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path d="M8 5v14l11-7z" />
                     </svg>
                   </div>
                 </div>
@@ -936,8 +948,12 @@ export default async function Home() {
                 </div>
               </div>
               <div className="p-4">
-                <h3 className="font-bold text-gray-900 mb-1 text-sm md:text-base">Learning Toys Demo</h3>
-                <p className="text-xs md:text-sm text-gray-600">Educational toys that make learning fun!</p>
+                <h3 className="font-bold text-gray-900 mb-1 text-sm md:text-base">
+                  Learning Toys Demo
+                </h3>
+                <p className="text-xs md:text-sm text-gray-600">
+                  Educational toys that make learning fun!
+                </p>
               </div>
             </div>
 
@@ -946,8 +962,12 @@ export default async function Home() {
               <div className="relative aspect-video bg-gradient-to-br from-pink-100 to-rose-100">
                 <div className="absolute inset-0 flex items-center justify-center">
                   <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform cursor-pointer">
-                    <svg className="w-8 h-8 text-pink-600 ml-1" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M8 5v14l11-7z"/>
+                    <svg
+                      className="w-8 h-8 text-pink-600 ml-1"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path d="M8 5v14l11-7z" />
                     </svg>
                   </div>
                 </div>
@@ -956,8 +976,12 @@ export default async function Home() {
                 </div>
               </div>
               <div className="p-4">
-                <h3 className="font-bold text-gray-900 mb-1 text-sm md:text-base">Holiday Gift Guide</h3>
-                <p className="text-xs md:text-sm text-gray-600">Perfect gift ideas for every occasion!</p>
+                <h3 className="font-bold text-gray-900 mb-1 text-sm md:text-base">
+                  Holiday Gift Guide
+                </h3>
+                <p className="text-xs md:text-sm text-gray-600">
+                  Perfect gift ideas for every occasion!
+                </p>
               </div>
             </div>
           </div>
@@ -976,7 +1000,9 @@ export default async function Home() {
       </section>
 
       {/* Additional Premium Boutiques Section */}
-      <section className="py-8 md:py-10 bg-white">\n        <div className="container-custom">
+      <section className="py-8 md:py-10 bg-white">
+        \n{" "}
+        <div className="container-custom">
           <div className="text-center mb-6 md:mb-8">
             <h2 className="text-2xl md:text-3xl lg:text-4xl font-black text-gray-900 mb-2">
               SEASONAL{" "}
