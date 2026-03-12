@@ -298,8 +298,12 @@ export default function CheckoutPage() {
     <div className="min-h-screen bg-gray-50 py-4 md:py-8">
       <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
         <div className="mb-6 md:mb-8">
-          <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-1 md:mb-2">Checkout</h1>
-          <p className="text-sm md:text-base text-gray-600">Complete your order</p>
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-1 md:mb-2">
+            Checkout
+          </h1>
+          <p className="text-sm md:text-base text-gray-600">
+            Complete your order
+          </p>
         </div>
 
         <div className="grid lg:grid-cols-3 gap-4 md:gap-8">

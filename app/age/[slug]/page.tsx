@@ -1,46 +1,55 @@
-import { notFound } from 'next/navigation';
-import { prisma } from '@/lib/prisma';
-import Link from 'next/link';
-import Image from 'next/image';
+import { notFound } from "next/navigation";
+import { prisma } from "@/lib/prisma";
+import Link from "next/link";
+import Image from "next/image";
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-const ageData: Record<string, { name: string; description: string; icon: string; ageRange: string; ageGroups: string[] }> = {
-  '0-2': { 
-    name: '0-2 Years', 
-    description: 'Safe products for babies and toddlers', 
-    icon: '👶', 
-    ageRange: '0-2 years',
-    ageGroups: ['ZERO_TO_ONE', 'ONE_TO_TWO']
+const ageData: Record<
+  string,
+  {
+    name: string;
+    description: string;
+    icon: string;
+    ageRange: string;
+    ageGroups: string[];
+  }
+> = {
+  "0-2": {
+    name: "0-2 Years",
+    description: "Safe products for babies and toddlers",
+    icon: "👶",
+    ageRange: "0-2 years",
+    ageGroups: ["ZERO_TO_ONE", "ONE_TO_TWO"],
   },
-  '3-5': { 
-    name: '3-5 Years', 
-    description: 'Perfect for preschoolers exploring the world', 
-    icon: '🧒', 
-    ageRange: '3-5 years',
-    ageGroups: ['TWO_TO_FOUR', 'FOUR_TO_SIX']
+  "3-5": {
+    name: "3-5 Years",
+    description: "Perfect for preschoolers exploring the world",
+    icon: "🧒",
+    ageRange: "3-5 years",
+    ageGroups: ["TWO_TO_FOUR", "FOUR_TO_SIX"],
   },
-  '6-8': { 
-    name: '6-8 Years', 
-    description: 'Engaging toys for early school age', 
-    icon: '👧', 
-    ageRange: '6-8 years',
-    ageGroups: ['SIX_TO_EIGHT']
+  "6-8": {
+    name: "6-8 Years",
+    description: "Engaging toys for early school age",
+    icon: "👧",
+    ageRange: "6-8 years",
+    ageGroups: ["SIX_TO_EIGHT"],
   },
-  '9-12': { 
-    name: '9-12 Years', 
-    description: 'Advanced products for pre-teens', 
-    icon: '👦', 
-    ageRange: '9-12 years',
-    ageGroups: ['EIGHT_PLUS']
+  "9-12": {
+    name: "9-12 Years",
+    description: "Advanced products for pre-teens",
+    icon: "👦",
+    ageRange: "9-12 years",
+    ageGroups: ["EIGHT_PLUS"],
   },
-  '12-plus': { 
-    name: '12+ Years', 
-    description: 'Perfect for teens and young adults', 
-    icon: '🧑', 
-    ageRange: '12+ years',
-    ageGroups: ['EIGHT_PLUS']
+  "12-plus": {
+    name: "12+ Years",
+    description: "Perfect for teens and young adults",
+    icon: "🧑",
+    ageRange: "12+ years",
+    ageGroups: ["EIGHT_PLUS"],
   },
 };
 
@@ -55,22 +64,22 @@ async function getProductsByAge(slug: string) {
     where: {
       isActive: true,
       ageGroup: {
-        in: ageInfo.ageGroups as any
-      }
+        in: ageInfo.ageGroups as any,
+      },
     },
     include: {
       images: {
         take: 1,
-        orderBy: { order: 'asc' }
-      }
+        orderBy: { order: "asc" },
+      },
     },
     take: 50,
-    orderBy: { createdAt: 'desc' }
+    orderBy: { createdAt: "desc" },
   });
 
   return {
     ageInfo,
-    products: products.map(p => ({
+    products: products.map((p) => ({
       id: p.id,
       name: p.name,
       slug: p.slug,
@@ -80,8 +89,8 @@ async function getProductsByAge(slug: string) {
       averageRating: Number(p.averageRating),
       reviewCount: p.reviewCount,
       isFeatured: p.isFeatured,
-      isNewArrival: p.isNewArrival
-    }))
+      isNewArrival: p.isNewArrival,
+    })),
   };
 }
 
@@ -90,10 +99,14 @@ function calculateDiscount(price: number, comparePrice: number | null): number {
   return Math.round(((comparePrice - price) / comparePrice) * 100);
 }
 
-export default async function AgeGroupPage({ params }: { params: Promise<{ slug: string }> | { slug: string } }) {
+export default async function AgeGroupPage({
+  params,
+}: {
+  params: Promise<{ slug: string }> | { slug: string };
+}) {
   const resolvedParams = params instanceof Promise ? await params : params;
   const data = await getProductsByAge(resolvedParams.slug);
-  
+
   if (!data) {
     notFound();
   }
@@ -116,7 +129,10 @@ export default async function AgeGroupPage({ params }: { params: Promise<{ slug:
         <p className="text-gray-600 mb-8">Showing {products.length} products</p>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
           {products.map((product) => {
-            const discount = calculateDiscount(product.price, product.compareAtPrice);
+            const discount = calculateDiscount(
+              product.price,
+              product.compareAtPrice,
+            );
             return (
               <Link
                 key={product.id}
@@ -152,11 +168,12 @@ export default async function AgeGroupPage({ params }: { params: Promise<{ slug:
                     <span className="text-base md:text-xl font-black text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-orange-600">
                       ₹{product.price.toLocaleString()}
                     </span>
-                    {product.compareAtPrice && product.compareAtPrice > product.price && (
-                      <span className="text-xs md:text-sm text-gray-400 line-through font-semibold">
-                        ₹{product.compareAtPrice.toLocaleString()}
-                      </span>
-                    )}
+                    {product.compareAtPrice &&
+                      product.compareAtPrice > product.price && (
+                        <span className="text-xs md:text-sm text-gray-400 line-through font-semibold">
+                          ₹{product.compareAtPrice.toLocaleString()}
+                        </span>
+                      )}
                   </div>
                 </div>
               </Link>

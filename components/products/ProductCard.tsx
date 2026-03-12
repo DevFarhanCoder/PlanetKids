@@ -24,24 +24,32 @@ interface ProductCardProps {
 export default function ProductCard(props: ProductCardProps) {
   // Support both direct props and product object
   const product = props.product || props;
-  
+
   const id = product.id;
   const name = product.name;
   const slug = product.slug;
   const price = product.price ? Number(product.price) : 0;
-  const originalPrice = product.originalPrice || (product.compareAtPrice ? Number(product.compareAtPrice) : undefined);
-  const image = product.image || (product.images && product.images[0]?.url) || '';
-  const rating = product.rating || (product.averageRating ? Number(product.averageRating) : 0);
+  const originalPrice =
+    product.originalPrice ||
+    (product.compareAtPrice ? Number(product.compareAtPrice) : undefined);
+  const image =
+    product.image || (product.images && product.images[0]?.url) || "";
+  const rating =
+    product.rating ||
+    (product.averageRating ? Number(product.averageRating) : 0);
   const reviewCount = product.reviewCount || 0;
   const isNew = product.isNew || product.isNewArrival || false;
-  
+
   // Calculate discount if not provided
   let discount = product.discount;
   if (!discount && originalPrice && originalPrice > price) {
     discount = Math.round(((originalPrice - price) / originalPrice) * 100);
   }
-  
-  const inStock = product.inStock !== undefined ? product.inStock : (product.isActive !== false);
+
+  const inStock =
+    product.inStock !== undefined
+      ? product.inStock
+      : product.isActive !== false;
   const { data: session } = useSession();
   const router = useRouter();
   const [isWishlisted, setIsWishlisted] = useState(false);
@@ -252,7 +260,7 @@ export default function ProductCard(props: ProductCardProps) {
           </div>
 
           {/* Return Policy Badge */}
-          {(product.isReturnable !== false) && (
+          {product.isReturnable !== false && (
             <div className="flex items-center gap-1.5 text-xs text-green-600 font-semibold">
               <svg
                 className="w-3.5 h-3.5"
@@ -267,11 +275,11 @@ export default function ProductCard(props: ProductCardProps) {
                   d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
                 />
               </svg>
-              {product.returnPolicyNote || '7-Day Return Policy'}
+              {product.returnPolicyNote || "7-Day Return Policy"}
             </div>
           )}
-          
-          {(product.isReturnable === false) && (
+
+          {product.isReturnable === false && (
             <div className="flex items-center gap-1.5 text-xs text-gray-500 font-semibold">
               <svg
                 className="w-3.5 h-3.5"

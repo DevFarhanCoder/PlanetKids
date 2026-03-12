@@ -49,7 +49,7 @@ const ageGroups = [
 export default function ProductsClient({
   products,
   categories,
-  initialSearch = '',
+  initialSearch = "",
 }: {
   products: Product[];
   categories: Category[];
@@ -74,12 +74,15 @@ export default function ProductsClient({
     let filtered = products;
 
     // Search filter
-    if (searchQuery && searchQuery.trim() !== '') {
+    if (searchQuery && searchQuery.trim() !== "") {
       const query = searchQuery.toLowerCase().trim();
-      filtered = filtered.filter((p) => 
-        p.name.toLowerCase().includes(query) ||
-        (p.brand && p.brand.toLowerCase().includes(query)) ||
-        p.categories.some(c => c.category.name.toLowerCase().includes(query))
+      filtered = filtered.filter(
+        (p) =>
+          p.name.toLowerCase().includes(query) ||
+          (p.brand && p.brand.toLowerCase().includes(query)) ||
+          p.categories.some((c) =>
+            c.category.name.toLowerCase().includes(query),
+          ),
       );
     }
 
@@ -128,11 +131,13 @@ export default function ProductsClient({
           {searchQuery && (
             <div className="pt-4 pb-2">
               <div className="flex items-center gap-2 flex-wrap">
-                <span className="text-sm font-medium text-gray-300">Searching for:</span>
+                <span className="text-sm font-medium text-gray-300">
+                  Searching for:
+                </span>
                 <div className="bg-primary-600 text-white px-4 py-1.5 rounded-full text-sm font-semibold flex items-center gap-2">
                   "{searchQuery}"
                   <button
-                    onClick={() => setSearchQuery('')}
+                    onClick={() => setSearchQuery("")}
                     className="hover:text-gray-200 transition-colors"
                     aria-label="Clear search"
                   >
@@ -142,7 +147,7 @@ export default function ProductsClient({
               </div>
             </div>
           )}
-          
+
           <div className="flex items-center justify-between py-3 md:py-4">
             <div className="flex items-center gap-2 md:gap-4 flex-wrap">
               <h2 className="font-bold text-sm md:text-base hidden sm:block">
