@@ -725,21 +725,21 @@ export default async function Home() {
             name: "Soft Teddy Bears",
             image:
               "/toys/Planet_Kids_Toys/1. Baby and Infant Toys/Soft Toys/1.jpg",
-            link: "/categories/baby-soft-toys",
+            link: "/categories/baby-infant-toys",
           },
           {
             id: "2",
             name: "Baby Teethers",
             image:
               "/toys/Planet_Kids_Toys/1. Baby and Infant Toys/Teethers/1.jpg",
-            link: "/categories/teethers",
+            link: "/categories/baby-infant-toys",
           },
           {
             id: "3",
             name: "Colorful Rattles",
             image:
               "/toys/Planet_Kids_Toys/1. Baby and Infant Toys/Rattles/1.jpg",
-            link: "/categories/rattles",
+            link: "/categories/baby-infant-toys",
           },
           {
             id: "4",
@@ -753,14 +753,14 @@ export default async function Home() {
             name: "Alphabet Toys",
             image:
               "/toys/Planet_Kids_Toys/2. Preschool and Learning Toys/Alphabet Toys/1.jpg",
-            link: "/categories/alphabet-toys",
+            link: "/categories/preschool-learning-toys",
           },
           {
             id: "6",
             name: "Montessori Toys",
             image:
               "/toys/Planet_Kids_Toys/2. Preschool and Learning Toys/Montessori Toys/1.jpg",
-            link: "/categories/montessori-toys",
+            link: "/categories/preschool-learning-toys",
           },
         ]}
       />
@@ -776,42 +776,42 @@ export default async function Home() {
             name: "Big Teddy Bears",
             image:
               "/toys/Planet_Kids_Toys/10. Soft Toys and Plush/Teddy bears/3.jpg",
-            link: "/categories/teddy-bears",
+            link: "/categories/soft-toys-plush",
           },
           {
             id: "8",
             name: "Cute Animals",
             image:
               "/toys/Planet_Kids_Toys/10. Soft Toys and Plush/animals/1.jpg",
-            link: "/categories/animal-plush",
+            link: "/categories/soft-toys-plush",
           },
           {
             id: "9",
             name: "Baby Dolls",
             image:
               "/toys/Planet_Kids_Toys/5. Dolls and Doll Accessories/baby dolls/1.jpg",
-            link: "/categories/baby-dolls",
+            link: "/categories/dolls-doll-accessories",
           },
           {
             id: "10",
             name: "Fashion Dolls",
             image:
               "/toys/Planet_Kids_Toys/5. Dolls and Doll Accessories/Fashion dolls/1.jpg",
-            link: "/categories/fashion-dolls",
+            link: "/categories/dolls-doll-accessories",
           },
           {
             id: "11",
             name: "Doll Houses",
             image:
               "/toys/Planet_Kids_Toys/5. Dolls and Doll Accessories/doll houses/1.jpg",
-            link: "/categories/doll-houses",
+            link: "/categories/dolls-doll-accessories",
           },
           {
             id: "12",
             name: "Doll Furniture",
             image:
               "/toys/Planet_Kids_Toys/5. Dolls and Doll Accessories/doll furniture/1.jpg",
-            link: "/categories/doll-furniture",
+            link: "/categories/dolls-doll-accessories",
           },
         ]}
       />
@@ -827,42 +827,42 @@ export default async function Home() {
             name: "Push Cars",
             image:
               "/toys/Planet_Kids_Toys/7. Ride On Toys and Scooters/push cars/1.jpg",
-            link: "/categories/push-cars",
+            link: "/categories/ride-on-toys-scooters",
           },
           {
             id: "14",
             name: "Push Cars",
             image:
               "/toys/Planet_Kids_Toys/7. Ride On Toys and Scooters/push cars/2.jpg",
-            link: "/categories/push-cars",
+            link: "/categories/ride-on-toys-scooters",
           },
           {
             id: "15",
             name: "Battery Vehicles",
             image:
               "/toys/Planet_Kids_Toys/7. Ride On Toys and Scooters/battery-operated vehicles/1.jpg",
-            link: "/categories/battery-vehicles",
+            link: "/categories/ride-on-toys-scooters",
           },
           {
             id: "16",
             name: "Scooty Rides",
             image:
               "/toys/Planet_Kids_Toys/7. Ride On Toys and Scooters/Scooty ride-ons/1.jpg",
-            link: "/categories/scooty-ride-ons",
+            link: "/categories/ride-on-toys-scooters",
           },
           {
             id: "17",
             name: "Action Figures",
             image:
               "/toys/Planet_Kids_Toys/4. Action Figures and Superheroes/Marvel/1.jpg",
-            link: "/categories/marvel-heroes",
+            link: "/categories/action-figures-superheroes",
           },
           {
             id: "18",
             name: "DC Heroes",
             image:
               "/toys/Planet_Kids_Toys/4. Action Figures and Superheroes/DC/1.jpg",
-            link: "/categories/dc-heroes",
+            link: "/categories/action-figures-superheroes",
           },
         ]}
       />
