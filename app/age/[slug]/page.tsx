@@ -118,7 +118,7 @@ export default async function AgeGroupPage({
       <div className="bg-gradient-to-r from-primary/10 to-secondary/10 py-16">
         <div className="container-custom text-center">
           <span className="text-7xl mb-4 block">{ageInfo.icon}</span>
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+          <h1 className="text-xl md:text-2xl font-bold text-gray-900 mb-2 truncate">
             {ageInfo.name}
           </h1>
           <p className="text-xl text-gray-600">{ageInfo.description}</p>

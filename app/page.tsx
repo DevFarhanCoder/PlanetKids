@@ -78,7 +78,7 @@ function ProductCard({ product }: { product: any }) {
     >
       <div className="relative aspect-square bg-gradient-to-br from-primary-100 to-orange-100 overflow-hidden">
         {discount > 0 && (
-          <div className="absolute top-3 left-3 bg-gradient-to-r from-gray-800 to-gray-900 text-white text-xs font-bold px-3 py-1.5 rounded-full z-10 shadow-soft">
+          <div className="absolute top-3 left-3 bg-gradient-to-r from-orange-500 to-pink-500 text-white text-xs font-black px-3 py-1.5 rounded-full z-10 shadow-md">
             🔥 {discount}% OFF
           </div>
         )}
@@ -98,12 +98,12 @@ function ProductCard({ product }: { product: any }) {
         {/* Overlay on hover */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
       </div>
-      <div className="p-3 md:p-5">
-        <h3 className="text-sm md:text-base font-bold text-gray-900 line-clamp-2 mb-2 group-hover:text-primary-700 transition-colors duration-300 min-h-[40px]">
+      <div className="p-3 md:p-4">
+        <h3 className="text-sm md:text-base font-bold text-gray-900 line-clamp-2 mb-2 group-hover:text-orange-600 transition-colors duration-300 min-h-[40px]">
           {product.name}
         </h3>
         <div className="flex items-center gap-2 flex-wrap mb-2">
-          <span className="text-base md:text-xl font-black text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-orange-600">
+          <span className="text-base md:text-lg font-black text-orange-600">
             ₹{Number(product.price).toLocaleString()}
           </span>
           {product.compareAtPrice &&
@@ -175,14 +175,18 @@ export default async function Home() {
     switch (section.sectionType) {
       case "GRID":
         return (
-          <section key={section.id} className="py-12 bg-white">
+          <section key={section.id} className="py-10 bg-white">
             <div className="container-custom">
               <div className="text-center mb-8">
-                <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
-                  {section.title}
+                <h2 className="text-2xl md:text-3xl lg:text-4xl font-black text-gray-900 mb-2">
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-pink-600">
+                    {section.title}
+                  </span>
                 </h2>
                 {section.subtitle && (
-                  <p className="text-gray-600 text-lg">{section.subtitle}</p>
+                  <p className="text-gray-500 text-base font-medium">
+                    {section.subtitle}
+                  </p>
                 )}
               </div>
 
@@ -207,12 +211,12 @@ export default async function Home() {
                           </div>
                         )}
                       </div>
-                      <div className="p-6 bg-gray-50">
-                        <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-2">
+                      <div className="p-4 bg-gradient-to-br from-orange-50 to-pink-50">
+                        <h3 className="text-lg md:text-xl font-black text-gray-900 mb-1 group-hover:text-orange-600 transition-colors">
                           {item.title}
                         </h3>
                         {item.subtitle && (
-                          <p className="text-gray-600 text-sm md:text-base mb-0">
+                          <p className="text-gray-500 text-sm mb-0">
                             {item.subtitle}
                           </p>
                         )}
@@ -226,7 +230,7 @@ export default async function Home() {
                 <div className="text-center mt-8">
                   <Link
                     href={`/home-sections/${section.slug}`}
-                    className="inline-flex items-center justify-center bg-gray-800 text-white px-8 py-3 rounded-full text-base font-bold hover:bg-gray-900 transition-all duration-300 shadow-md hover:shadow-xl group"
+                    className="inline-flex items-center justify-center bg-gradient-to-r from-orange-500 via-pink-500 to-purple-500 text-white px-8 py-3 rounded-full text-base font-black hover:shadow-xl transition-all duration-300 shadow-md group transform hover:scale-105"
                   >
                     Explore More Products
                     <ChevronRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
@@ -239,14 +243,21 @@ export default async function Home() {
 
       case "CAROUSEL":
         return (
-          <section key={section.id} className="py-12 bg-gray-50">
+          <section
+            key={section.id}
+            className="py-10 bg-gradient-to-br from-sky-50 via-indigo-50 to-purple-50"
+          >
             <div className="container-custom">
               <div className="mb-8">
-                <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
-                  {section.title}
+                <h2 className="text-2xl md:text-3xl lg:text-4xl font-black mb-2">
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600">
+                    {section.title}
+                  </span>
                 </h2>
                 {section.subtitle && (
-                  <p className="text-gray-600 text-lg">{section.subtitle}</p>
+                  <p className="text-gray-500 text-base font-medium">
+                    {section.subtitle}
+                  </p>
                 )}
               </div>
 
@@ -277,7 +288,7 @@ export default async function Home() {
                 <div className="text-center mt-8">
                   <Link
                     href={`/home-sections/${section.slug}`}
-                    className="inline-flex items-center justify-center bg-gray-800 text-white px-8 py-3 rounded-full text-base font-bold hover:bg-gray-900 transition-all duration-300 shadow-md hover:shadow-xl group"
+                    className="inline-flex items-center justify-center bg-gradient-to-r from-orange-500 via-pink-500 to-purple-500 text-white px-8 py-3 rounded-full text-base font-black hover:shadow-xl transition-all duration-300 shadow-md group transform hover:scale-105"
                   >
                     Explore More Products
                     <ChevronRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
@@ -290,14 +301,18 @@ export default async function Home() {
 
       case "TWO_COLUMN":
         return (
-          <section key={section.id} className="py-12 bg-white">
+          <section key={section.id} className="py-10 bg-white">
             <div className="container-custom">
               <div className="mb-8">
-                <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
-                  {section.title}
+                <h2 className="text-2xl md:text-3xl lg:text-4xl font-black">
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-rose-600">
+                    {section.title}
+                  </span>
                 </h2>
                 {section.subtitle && (
-                  <p className="text-gray-600 text-lg">{section.subtitle}</p>
+                  <p className="text-gray-500 text-base font-medium">
+                    {section.subtitle}
+                  </p>
                 )}
               </div>
 
@@ -328,7 +343,7 @@ export default async function Home() {
                 <div className="text-center mt-8">
                   <Link
                     href={`/home-sections/${section.slug}`}
-                    className="inline-flex items-center justify-center bg-gray-800 text-white px-8 py-3 rounded-full text-base font-bold hover:bg-gray-900 transition-all duration-300 shadow-md hover:shadow-xl group"
+                    className="inline-flex items-center justify-center bg-gradient-to-r from-orange-500 via-pink-500 to-purple-500 text-white px-8 py-3 rounded-full text-base font-black hover:shadow-xl transition-all duration-300 shadow-md group transform hover:scale-105"
                   >
                     Explore More Products
                     <ChevronRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
@@ -369,48 +384,48 @@ export default async function Home() {
 
   return (
     <main className="min-h-screen bg-white">
-      {/* Hero Carousel */}
-      <section className="container-custom py-6">
+      {/* Hero Carousel - Full Width */}
+      <section className="w-full">
         <HeroCarousel />
       </section>
 
       {/* Shop by Age Section */}
-      <section className="py-6 md:py-10 bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50">
+      <section className="py-4 md:py-8 bg-white">
         <div className="container-custom">
-          <div className="mb-6 md:mb-8 text-center">
-            <h2 className="text-2xl md:text-3xl lg:text-4xl font-black text-gray-900 mb-2">
+          <div className="mb-4 md:mb-6 text-center">
+            <h2 className="text-xl md:text-3xl lg:text-4xl font-black text-gray-900 mb-1">
               Shop by{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600">
                 Age
               </span>
             </h2>
-            <p className="text-gray-600 text-sm md:text-base font-semibold">
+            <p className="text-gray-500 text-xs md:text-base font-medium">
               Find the perfect toys for your child's age group
             </p>
           </div>
 
           {/* Horizontal Scroll Container */}
           <div className="relative">
-            <div className="flex gap-4 md:gap-6 overflow-x-auto pb-4 scrollbar-hide snap-x snap-mandatory">
+            <div className="flex gap-3 md:gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x snap-mandatory justify-start md:justify-center">
               {/* 0-2 Years */}
               <Link
                 href="/age/0-2"
-                className="group cursor-pointer block flex-shrink-0 w-[140px] sm:w-[180px] md:w-[220px] snap-center"
+                className="group cursor-pointer block flex-shrink-0 w-[130px] sm:w-[160px] md:w-[180px] snap-center"
               >
-                <div className="bg-white rounded-2xl p-4 md:p-6 transition-all duration-500 transform hover:scale-105 hover:-translate-y-2 hover:shadow-2xl text-center overflow-hidden border-2 border-purple-200 hover:border-purple-400 h-full">
-                  <div className="relative w-full aspect-square mb-3 md:mb-4 rounded-xl overflow-hidden">
+                <div className="bg-gradient-to-br from-pink-100 to-rose-200 rounded-2xl p-3 md:p-4 transition-all duration-400 transform hover:scale-105 hover:-translate-y-2 hover:shadow-xl text-center overflow-hidden h-full flex flex-col items-center">
+                  <div className="relative w-full aspect-square mb-2.5 bg-white/70 rounded-xl overflow-hidden flex-shrink-0 shadow-sm">
                     <Image
                       src="/toys/Planet_Kids_Toys/1. Baby and Infant Toys/Soft Toys/1.jpg"
                       alt="0-2 Years"
                       fill
                       className="object-cover group-hover:scale-110 transition-transform duration-500"
-                      sizes="220px"
+                      sizes="180px"
                     />
                   </div>
-                  <h3 className="font-black text-base md:text-lg text-gray-900 group-hover:text-purple-600 transition-colors duration-300 mb-1">
+                  <h3 className="font-black text-sm md:text-base text-gray-900 group-hover:text-pink-700 transition-colors duration-300 mb-0.5">
                     0-2 Years
                   </h3>
-                  <p className="text-xs md:text-sm text-gray-600 font-medium">
+                  <p className="text-[10px] md:text-xs text-gray-600 font-semibold">
                     Babies & Toddlers
                   </p>
                 </div>
@@ -419,22 +434,22 @@ export default async function Home() {
               {/* 3-5 Years */}
               <Link
                 href="/age/3-5"
-                className="group cursor-pointer block flex-shrink-0 w-[140px] sm:w-[180px] md:w-[220px] snap-center"
+                className="group cursor-pointer block flex-shrink-0 w-[130px] sm:w-[160px] md:w-[180px] snap-center"
               >
-                <div className="bg-white rounded-2xl p-4 md:p-6 transition-all duration-500 transform hover:scale-105 hover:-translate-y-2 hover:shadow-2xl text-center overflow-hidden border-2 border-pink-200 hover:border-pink-400 h-full">
-                  <div className="relative w-full aspect-square mb-3 md:mb-4 rounded-xl overflow-hidden">
+                <div className="bg-gradient-to-br from-yellow-100 to-amber-200 rounded-2xl p-3 md:p-4 transition-all duration-400 transform hover:scale-105 hover:-translate-y-2 hover:shadow-xl text-center overflow-hidden h-full flex flex-col items-center border-2 border-amber-300">
+                  <div className="relative w-full aspect-square mb-2.5 bg-white/70 rounded-xl overflow-hidden flex-shrink-0 shadow-sm">
                     <Image
                       src="/toys/Planet_Kids_Toys/2. Preschool and Learning Toys/1.jpg"
                       alt="3-5 Years"
                       fill
                       className="object-cover group-hover:scale-110 transition-transform duration-500"
-                      sizes="220px"
+                      sizes="180px"
                     />
                   </div>
-                  <h3 className="font-black text-base md:text-lg text-gray-900 group-hover:text-pink-600 transition-colors duration-300 mb-1">
+                  <h3 className="font-black text-sm md:text-base text-amber-700 group-hover:text-amber-800 transition-colors duration-300 mb-0.5">
                     3-5 Years
                   </h3>
-                  <p className="text-xs md:text-sm text-gray-600 font-medium">
+                  <p className="text-[10px] md:text-xs text-gray-600 font-semibold">
                     Preschoolers
                   </p>
                 </div>
@@ -443,22 +458,22 @@ export default async function Home() {
               {/* 6-8 Years */}
               <Link
                 href="/age/6-8"
-                className="group cursor-pointer block flex-shrink-0 w-[140px] sm:w-[180px] md:w-[220px] snap-center"
+                className="group cursor-pointer block flex-shrink-0 w-[130px] sm:w-[160px] md:w-[180px] snap-center"
               >
-                <div className="bg-white rounded-2xl p-4 md:p-6 transition-all duration-500 transform hover:scale-105 hover:-translate-y-2 hover:shadow-2xl text-center overflow-hidden border-2 border-blue-200 hover:border-blue-400 h-full">
-                  <div className="relative w-full aspect-square mb-3 md:mb-4 rounded-xl overflow-hidden">
+                <div className="bg-gradient-to-br from-sky-100 to-blue-200 rounded-2xl p-3 md:p-4 transition-all duration-400 transform hover:scale-105 hover:-translate-y-2 hover:shadow-xl text-center overflow-hidden h-full flex flex-col items-center">
+                  <div className="relative w-full aspect-square mb-2.5 bg-white/70 rounded-xl overflow-hidden flex-shrink-0 shadow-sm">
                     <Image
                       src="/toys/Planet_Kids_Toys/4. Action Figures and Superheroes/Marvel/1.jpg"
                       alt="6-8 Years"
                       fill
                       className="object-cover group-hover:scale-110 transition-transform duration-500"
-                      sizes="220px"
+                      sizes="180px"
                     />
                   </div>
-                  <h3 className="font-black text-base md:text-lg text-gray-900 group-hover:text-blue-600 transition-colors duration-300 mb-1">
+                  <h3 className="font-black text-sm md:text-base text-blue-700 group-hover:text-blue-800 transition-colors duration-300 mb-0.5">
                     6-8 Years
                   </h3>
-                  <p className="text-xs md:text-sm text-gray-600 font-medium">
+                  <p className="text-[10px] md:text-xs text-gray-600 font-semibold">
                     Early School Age
                   </p>
                 </div>
@@ -467,22 +482,22 @@ export default async function Home() {
               {/* 9-12 Years */}
               <Link
                 href="/age/9-12"
-                className="group cursor-pointer block flex-shrink-0 w-[140px] sm:w-[180px] md:w-[220px] snap-center"
+                className="group cursor-pointer block flex-shrink-0 w-[130px] sm:w-[160px] md:w-[180px] snap-center"
               >
-                <div className="bg-white rounded-2xl p-4 md:p-6 transition-all duration-500 transform hover:scale-105 hover:-translate-y-2 hover:shadow-2xl text-center overflow-hidden border-2 border-green-200 hover:border-green-400 h-full">
-                  <div className="relative w-full aspect-square mb-3 md:mb-4 rounded-xl overflow-hidden">
+                <div className="bg-gradient-to-br from-green-100 to-emerald-200 rounded-2xl p-3 md:p-4 transition-all duration-400 transform hover:scale-105 hover:-translate-y-2 hover:shadow-xl text-center overflow-hidden h-full flex flex-col items-center">
+                  <div className="relative w-full aspect-square mb-2.5 bg-white/70 rounded-xl overflow-hidden flex-shrink-0 shadow-sm">
                     <Image
                       src="/toys/Planet_Kids_Toys/8. Remote Controls and Battery Toys'/RC cars/1.jpg"
                       alt="9-12 Years"
                       fill
                       className="object-cover group-hover:scale-110 transition-transform duration-500"
-                      sizes="220px"
+                      sizes="180px"
                     />
                   </div>
-                  <h3 className="font-black text-base md:text-lg text-gray-900 group-hover:text-green-600 transition-colors duration-300 mb-1">
+                  <h3 className="font-black text-sm md:text-base text-green-700 group-hover:text-green-800 transition-colors duration-300 mb-0.5">
                     9-12 Years
                   </h3>
-                  <p className="text-xs md:text-sm text-gray-600 font-medium">
+                  <p className="text-[10px] md:text-xs text-gray-600 font-semibold">
                     Pre-Teens
                   </p>
                 </div>
@@ -491,22 +506,22 @@ export default async function Home() {
               {/* 12+ Years */}
               <Link
                 href="/age/12-plus"
-                className="group cursor-pointer block flex-shrink-0 w-[140px] sm:w-[180px] md:w-[220px] snap-center"
+                className="group cursor-pointer block flex-shrink-0 w-[130px] sm:w-[160px] md:w-[180px] snap-center"
               >
-                <div className="bg-white rounded-2xl p-4 md:p-6 transition-all duration-500 transform hover:scale-105 hover:-translate-y-2 hover:shadow-2xl text-center overflow-hidden border-2 border-orange-200 hover:border-orange-400 h-full">
-                  <div className="relative w-full aspect-square mb-3 md:mb-4 rounded-xl overflow-hidden">
+                <div className="bg-gradient-to-br from-purple-100 to-violet-200 rounded-2xl p-3 md:p-4 transition-all duration-400 transform hover:scale-105 hover:-translate-y-2 hover:shadow-xl text-center overflow-hidden h-full flex flex-col items-center">
+                  <div className="relative w-full aspect-square mb-2.5 bg-white/70 rounded-xl overflow-hidden flex-shrink-0 shadow-sm">
                     <Image
                       src="/toys/Planet_Kids_Toys/9. Board Games and Puzzles/Business games.jpg"
                       alt="12+ Years"
                       fill
                       className="object-cover group-hover:scale-110 transition-transform duration-500"
-                      sizes="220px"
+                      sizes="180px"
                     />
                   </div>
-                  <h3 className="font-black text-base md:text-lg text-gray-900 group-hover:text-orange-600 transition-colors duration-300 mb-1">
+                  <h3 className="font-black text-sm md:text-base text-purple-700 group-hover:text-purple-800 transition-colors duration-300 mb-0.5">
                     12+ Years
                   </h3>
-                  <p className="text-xs md:text-sm text-gray-600 font-medium">
+                  <p className="text-[10px] md:text-xs text-gray-600 font-semibold">
                     Teens & Beyond
                   </p>
                 </div>
@@ -517,195 +532,120 @@ export default async function Home() {
       </section>
 
       {/* Shop by Category Section with Real Product Images */}
-      <section className="py-6 md:py-10 bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50">
+      <section className="py-4 md:py-8 bg-gradient-to-br from-sky-50 via-blue-50 to-indigo-50">
         <div className="container mx-auto px-4 md:px-6 lg:px-8 max-w-[1400px]">
-          <div className="mb-6 md:mb-8 text-center">
-            <h2 className="text-2xl md:text-3xl lg:text-4xl font-black text-gray-900 mb-2">
-              Shop by{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-secondary-600">
-                Category
+          <div className="mb-4 md:mb-6 text-center">
+            <h2 className="text-xl md:text-3xl lg:text-4xl font-black text-gray-900 mb-1">
+              Explore{" "}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-pink-600">
+                Categories
               </span>
             </h2>
-            <p className="text-gray-600 text-sm md:text-base font-semibold">
+            <p className="text-gray-500 text-xs md:text-base font-medium">
               Explore our full range of products
             </p>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 md:gap-4">
-            {/* Baby & Infant Toys */}
-            <Link
-              href="/categories/baby-infant-toys"
-              className="group cursor-pointer block"
-            >
-              <div className="bg-white rounded-xl md:rounded-2xl p-3 md:p-4 transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 hover:shadow-xl text-center overflow-hidden border-2 border-primary-200 hover:border-primary-400 h-full flex flex-col">
-                <div className="relative w-full aspect-square mb-2 flex-shrink-0">
-                  <Image
-                    src="/toys/Planet_Kids_Toys/1. Baby and Infant Toys/Soft Toys/1.jpg"
-                    alt="Baby & Infant Toys"
-                    fill
-                    className="object-contain group-hover:scale-110 transition-transform duration-500"
-                    sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 16vw"
-                  />
+          {/* Horizontally scrollable — all cards equal size */}
+          <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide snap-x snap-mandatory justify-start md:justify-center">
+            {[
+              {
+                href: "/categories/baby-infant-toys",
+                bg: "bg-pink-100",
+                hover: "group-hover:text-pink-600",
+                img: "/toys/Planet_Kids_Toys/1. Baby and Infant Toys/Soft Toys/1.jpg",
+                alt: "Baby & Infant Toys",
+                label: "Baby & Infant",
+              },
+              {
+                href: "/categories/preschool-learning-toys",
+                bg: "bg-amber-100",
+                hover: "group-hover:text-amber-600",
+                img: "/toys/Planet_Kids_Toys/2. Preschool and Learning Toys/1.jpg",
+                alt: "Preschool & Learning",
+                label: "Preschool",
+              },
+              {
+                href: "/categories/building-construction-toys",
+                bg: "bg-sky-100",
+                hover: "group-hover:text-sky-600",
+                img: "/toys/Planet_Kids_Toys/2. Preschool and Learning Toys/Alphabet Toys/1.jpg",
+                alt: "Building & Construction",
+                label: "Building",
+              },
+              {
+                href: "/categories/action-figures-superheroes",
+                bg: "bg-red-100",
+                hover: "group-hover:text-red-600",
+                img: "/toys/Planet_Kids_Toys/4. Action Figures and Superheroes/Marvel/1.jpg",
+                alt: "Action Figures",
+                label: "Action Figures",
+              },
+              {
+                href: "/categories/dolls-doll-accessories",
+                bg: "bg-fuchsia-100",
+                hover: "group-hover:text-fuchsia-600",
+                img: "/toys/Planet_Kids_Toys/5. Dolls and Doll Accessories/Fashion dolls/1.jpg",
+                alt: "Dolls",
+                label: "Dolls",
+              },
+              {
+                href: "/categories/outdoor-sports-toys",
+                bg: "bg-green-100",
+                hover: "group-hover:text-green-600",
+                img: "/toys/Planet_Kids_Toys/6. Outdoor and Sports Toys/1.jpg",
+                alt: "Outdoor & Sports",
+                label: "Outdoor & Sports",
+              },
+              {
+                href: "/categories/ride-on-toys-scooters",
+                bg: "bg-orange-100",
+                hover: "group-hover:text-orange-600",
+                img: "/toys/Planet_Kids_Toys/7. Ride On Toys and Scooters/push cars/1.jpg",
+                alt: "Ride-On Toys",
+                label: "Ride-On Toys",
+              },
+              {
+                href: "/categories/soft-toys-plush",
+                bg: "bg-rose-100",
+                hover: "group-hover:text-rose-600",
+                img: "/toys/Planet_Kids_Toys/10. Soft Toys and Plush/Teddy bears/3.jpg",
+                alt: "Soft Toys",
+                label: "Soft Toys",
+              },
+            ].map(({ href, bg, hover, img, alt, label }) => (
+              <Link
+                key={href}
+                href={href}
+                className="group cursor-pointer block flex-shrink-0 w-[130px] md:w-[150px] snap-center"
+              >
+                <div
+                  className={`${bg} rounded-2xl p-3 transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 hover:shadow-lg text-center flex flex-col items-center h-full`}
+                >
+                  <div className="relative w-full aspect-square mb-2 bg-white rounded-xl overflow-hidden shadow-sm">
+                    <Image
+                      src={img}
+                      alt={alt}
+                      fill
+                      className="object-contain p-2 group-hover:scale-110 transition-transform duration-500"
+                      sizes="150px"
+                    />
+                  </div>
+                  <h3
+                    className={`font-black text-xs text-gray-800 ${hover} transition-colors line-clamp-2 leading-tight`}
+                  >
+                    {label}
+                  </h3>
                 </div>
-                <h3 className="font-bold text-[10px] sm:text-xs md:text-sm text-gray-900 group-hover:text-primary-600 transition-colors line-clamp-2 leading-tight min-h-[2.5rem] flex items-center justify-center">
-                  Baby & Infant Toys
-                </h3>
-              </div>
-            </Link>
-
-            {/* Preschool & Learning */}
-            <Link
-              href="/categories/preschool-learning-toys"
-              className="group cursor-pointer block"
-            >
-              <div className="bg-white rounded-xl md:rounded-2xl p-3 md:p-4 transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 hover:shadow-xl text-center overflow-hidden border-2 border-purple-200 hover:border-purple-400 h-full flex flex-col">
-                <div className="relative w-full aspect-square mb-2 flex-shrink-0">
-                  <Image
-                    src="/toys/Planet_Kids_Toys/2. Preschool and Learning Toys/1.jpg"
-                    alt="Preschool & Learning"
-                    fill
-                    className="object-contain group-hover:scale-110 transition-transform duration-500"
-                    sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 16vw"
-                  />
-                </div>
-                <h3 className="font-bold text-[10px] sm:text-xs md:text-sm text-gray-900 group-hover:text-primary-600 transition-colors line-clamp-2 leading-tight min-h-[2.5rem] flex items-center justify-center">
-                  Preschool & Learning
-                </h3>
-              </div>
-            </Link>
-
-            {/* Building & Construction */}
-            <Link
-              href="/categories/building-construction-toys"
-              className="group cursor-pointer block"
-            >
-              <div className="bg-white rounded-xl md:rounded-2xl p-3 md:p-4 transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 hover:shadow-xl text-center overflow-hidden border-2 border-blue-200 hover:border-blue-400 h-full flex flex-col">
-                <div className="relative w-full aspect-square mb-2 flex-shrink-0">
-                  <Image
-                    src="/toys/Planet_Kids_Toys/2. Preschool and Learning Toys/Alphabet Toys/1.jpg"
-                    alt="Building & Construction"
-                    fill
-                    className="object-contain group-hover:scale-110 transition-transform duration-500"
-                    sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 16vw"
-                  />
-                </div>
-                <h3 className="font-bold text-[10px] sm:text-xs md:text-sm text-gray-900 group-hover:text-primary-600 transition-colors line-clamp-2 leading-tight min-h-[2.5rem] flex items-center justify-center">
-                  Building & Construction
-                </h3>
-              </div>
-            </Link>
-
-            {/* Action Figures & Superheroes */}
-            <Link
-              href="/categories/action-figures-superheroes"
-              className="group cursor-pointer block"
-            >
-              <div className="bg-white rounded-xl md:rounded-2xl p-3 md:p-4 transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 hover:shadow-xl text-center overflow-hidden border-2 border-red-200 hover:border-red-400 h-full flex flex-col">
-                <div className="relative w-full aspect-square mb-2 flex-shrink-0">
-                  <Image
-                    src="/toys/Planet_Kids_Toys/4. Action Figures and Superheroes/Marvel/1.jpg"
-                    alt="Action Figures"
-                    fill
-                    className="object-contain group-hover:scale-110 transition-transform duration-500"
-                    sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 16vw"
-                  />
-                </div>
-                <h3 className="font-bold text-[10px] sm:text-xs md:text-sm text-gray-900 group-hover:text-primary-600 transition-colors line-clamp-2 leading-tight min-h-[2.5rem] flex items-center justify-center">
-                  Action Figures
-                </h3>
-              </div>
-            </Link>
-
-            {/* Dolls & Doll Accessories */}
-            <Link
-              href="/categories/dolls-doll-accessories"
-              className="group cursor-pointer block"
-            >
-              <div className="bg-white rounded-xl md:rounded-2xl p-3 md:p-4 transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 hover:shadow-xl text-center overflow-hidden border-2 border-pink-200 hover:border-pink-400 h-full flex flex-col">
-                <div className="relative w-full aspect-square mb-2 flex-shrink-0">
-                  <Image
-                    src="/toys/Planet_Kids_Toys/5. Dolls and Doll Accessories/Fashion dolls/1.jpg"
-                    alt="Dolls & Accessories"
-                    fill
-                    className="object-contain group-hover:scale-110 transition-transform duration-500"
-                    sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 16vw"
-                  />
-                </div>
-                <h3 className="font-bold text-[10px] sm:text-xs md:text-sm text-gray-900 group-hover:text-primary-600 transition-colors line-clamp-2 leading-tight min-h-[2.5rem] flex items-center justify-center">
-                  Dolls & Accessories
-                </h3>
-              </div>
-            </Link>
-
-            {/* Outdoor & Sports */}
-            <Link
-              href="/categories/outdoor-sports-toys"
-              className="group cursor-pointer block"
-            >
-              <div className="bg-white rounded-xl md:rounded-2xl p-3 md:p-4 transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 hover:shadow-xl text-center overflow-hidden border-2 border-green-200 hover:border-green-400 h-full flex flex-col">
-                <div className="relative w-full aspect-square mb-2 flex-shrink-0">
-                  <Image
-                    src="/toys/Planet_Kids_Toys/6. Outdoor and Sports Toys/1.jpg"
-                    alt="Outdoor & Sports"
-                    fill
-                    className="object-contain group-hover:scale-110 transition-transform duration-500"
-                    sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 16vw"
-                  />
-                </div>
-                <h3 className="font-bold text-[10px] sm:text-xs md:text-sm text-gray-900 group-hover:text-primary-600 transition-colors line-clamp-2 leading-tight min-h-[2.5rem] flex items-center justify-center">
-                  Outdoor & Sports
-                </h3>
-              </div>
-            </Link>
-
-            {/* Ride-On Toys & Scooters */}
-            <Link
-              href="/categories/ride-on-toys-scooters"
-              className="group cursor-pointer block"
-            >
-              <div className="bg-white rounded-xl md:rounded-2xl p-3 md:p-4 transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 hover:shadow-xl text-center overflow-hidden border-2 border-orange-200 hover:border-orange-400 h-full flex flex-col">
-                <div className="relative w-full aspect-square mb-2 flex-shrink-0">
-                  <Image
-                    src="/toys/Planet_Kids_Toys/7. Ride On Toys and Scooters/push cars/1.jpg"
-                    alt="Ride-On Toys"
-                    fill
-                    className="object-contain group-hover:scale-110 transition-transform duration-500"
-                    sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 16vw"
-                  />
-                </div>
-                <h3 className="font-bold text-[10px] sm:text-xs md:text-sm text-gray-900 group-hover:text-primary-600 transition-colors line-clamp-2 leading-tight min-h-[2.5rem] flex items-center justify-center">
-                  Ride-On Toys
-                </h3>
-              </div>
-            </Link>
-
-            {/* Soft Toys & Plush */}
-            <Link
-              href="/categories/soft-toys-plush"
-              className="group cursor-pointer block"
-            >
-              <div className="bg-white rounded-xl md:rounded-2xl p-3 md:p-4 transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 hover:shadow-xl text-center overflow-hidden border-2 border-rose-200 hover:border-rose-400 h-full flex flex-col">
-                <div className="relative w-full aspect-square mb-2 flex-shrink-0">
-                  <Image
-                    src="/toys/Planet_Kids_Toys/10. Soft Toys and Plush/Teddy bears/3.jpg"
-                    alt="Soft Toys"
-                    fill
-                    className="object-contain group-hover:scale-110 transition-transform duration-500"
-                    sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 16vw"
-                  />
-                </div>
-                <h3 className="font-bold text-[10px] sm:text-xs md:text-sm text-gray-900 group-hover:text-primary-600 transition-colors line-clamp-2 leading-tight min-h-[2.5rem] flex items-center justify-center">
-                  Soft Toys & Plush
-                </h3>
-              </div>
-            </Link>
+              </Link>
+            ))}
           </div>
 
-          {/* View All Products Button - Centered */}
-          <div className="text-center mt-8 md:mt-10">
+          {/* View All Products Button */}
+          <div className="text-center mt-4 md:mt-6">
             <Link
               href="/products"
-              className="inline-flex items-center justify-center bg-gradient-to-r from-gray-800 to-gray-900 text-white px-10 md:px-14 py-3 md:py-4 rounded-full text-base md:text-lg font-bold hover:from-gray-900 hover:to-black transition-all duration-300 shadow-lg hover:shadow-xl group transform hover:scale-105"
+              className="inline-flex items-center justify-center bg-gradient-to-r from-orange-500 via-pink-500 to-purple-500 text-white px-10 md:px-14 py-3 md:py-4 rounded-full text-base md:text-lg font-black hover:shadow-xl transition-all duration-300 shadow-md group transform hover:scale-105"
             >
               View All Products
               <ChevronRight className="w-5 h-5 md:w-6 md:h-6 ml-2 group-hover:translate-x-1 transition-transform" />
@@ -717,7 +657,6 @@ export default async function Home() {
       {/* Baby & Infant Toys - Soft Toys Category */}
       <CategoryShowcase
         title="Baby & Infant Toys"
-        discount="40"
         bgColor="bg-gradient-to-br from-blue-50 via-gray-50 to-yellow-50"
         items={[
           {
@@ -768,7 +707,6 @@ export default async function Home() {
       {/* Soft Toys & Plush Category */}
       <CategoryShowcase
         title="Soft Toys & Plush"
-        discount="FLAT 50"
         bgColor="bg-white"
         items={[
           {
@@ -819,7 +757,6 @@ export default async function Home() {
       {/* Ride-On Toys Category */}
       <CategoryShowcase
         title="Ride-On Toys"
-        discount="30"
         bgColor="bg-gradient-to-br from-orange-50 via-yellow-50 to-gray-50"
         items={[
           {
@@ -868,7 +805,7 @@ export default async function Home() {
       />
 
       {/* View All Products Button */}
-      <section className="py-8 bg-white">
+      <section className="py-4 bg-white">
         <div className="container mx-auto px-4 md:px-6 lg:px-8 max-w-[1400px]">
           <Link
             href="/products"
@@ -886,7 +823,7 @@ export default async function Home() {
       {dynamicSections.map((section: any) => renderSection(section))}
 
       {/* Video/Reel Section - Engaging Content */}
-      <section className="py-6 md:py-10 bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50">
+      <section className="py-4 md:py-8 bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50">
         <div className="container mx-auto px-4 md:px-6 lg:px-8 max-w-[1400px]">
           <div className="mb-6 md:mb-8 text-center">
             <h2 className="text-2xl md:text-3xl lg:text-4xl font-black text-gray-900 mb-2">
@@ -1000,7 +937,7 @@ export default async function Home() {
       </section>
 
       {/* Additional Premium Boutiques Section */}
-      <section className="py-8 md:py-10 bg-white">
+      <section className="py-5 md:py-8 bg-white">
         <div className="container-custom">
           <div className="text-center mb-6 md:mb-8">
             <h2 className="text-2xl md:text-3xl lg:text-4xl font-black text-gray-900 mb-2">
@@ -1243,38 +1180,38 @@ export default async function Home() {
       )}
 
       {/* Trust Badges - Modern Design */}
-      <section className="py-12 bg-white border-y border-gray-200">
+      <section className="py-4 md:py-6 bg-white border-y border-gray-200">
         <div className="container-custom">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
-            <div className="text-center p-6 rounded-2xl bg-gradient-to-br from-primary-50 to-orange-50 hover:shadow-lg transition-all">
-              <h3 className="font-black text-gray-900 mb-2 text-lg md:text-xl">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-6">
+            <div className="text-center p-3 md:p-6 rounded-2xl bg-gradient-to-br from-primary-50 to-orange-50 hover:shadow-lg transition-all">
+              <h3 className="font-black text-gray-900 mb-1 text-sm md:text-xl">
                 Free Shipping
               </h3>
-              <p className="text-sm text-gray-600 font-semibold">
+              <p className="text-xs md:text-sm text-gray-600 font-semibold">
                 On Prepaid Orders
               </p>
             </div>
-            <div className="text-center p-6 rounded-2xl bg-gradient-to-br from-blue-50 to-cyan-50 hover:shadow-lg transition-all">
-              <h3 className="font-black text-gray-900 mb-2 text-lg md:text-xl">
+            <div className="text-center p-3 md:p-6 rounded-2xl bg-gradient-to-br from-blue-50 to-cyan-50 hover:shadow-lg transition-all">
+              <h3 className="font-black text-gray-900 mb-1 text-sm md:text-xl">
                 Secure Payments
               </h3>
-              <p className="text-sm text-gray-600 font-semibold">
+              <p className="text-xs md:text-sm text-gray-600 font-semibold">
                 100% Safe Transactions
               </p>
             </div>
-            <div className="text-center p-6 rounded-2xl bg-gradient-to-br from-green-50 to-emerald-50 hover:shadow-lg transition-all">
-              <h3 className="font-black text-gray-900 mb-2 text-lg md:text-xl">
+            <div className="text-center p-3 md:p-6 rounded-2xl bg-gradient-to-br from-green-50 to-emerald-50 hover:shadow-lg transition-all">
+              <h3 className="font-black text-gray-900 mb-1 text-sm md:text-xl">
                 Easy Returns
               </h3>
-              <p className="text-sm text-gray-600 font-semibold">
+              <p className="text-xs md:text-sm text-gray-600 font-semibold">
                 7-Day Return Policy
               </p>
             </div>
-            <div className="text-center p-6 rounded-2xl bg-gradient-to-br from-amber-50 to-yellow-50 hover:shadow-lg transition-all">
-              <h3 className="font-black text-gray-900 mb-2 text-lg md:text-xl">
+            <div className="text-center p-3 md:p-6 rounded-2xl bg-gradient-to-br from-amber-50 to-yellow-50 hover:shadow-lg transition-all">
+              <h3 className="font-black text-gray-900 mb-1 text-sm md:text-xl">
                 Quality Assured
               </h3>
-              <p className="text-sm text-gray-600 font-semibold">
+              <p className="text-xs md:text-sm text-gray-600 font-semibold">
                 Verified Products
               </p>
             </div>

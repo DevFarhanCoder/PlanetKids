@@ -89,9 +89,9 @@ export default function HeroCarousel() {
   }, []);
 
   return (
-    <div className="relative overflow-hidden rounded-3xl shadow-soft-xl">
+    <div className="relative overflow-hidden rounded-none md:rounded-2xl shadow-none md:shadow-xl mx-0">
       {/* Slides Container */}
-      <div className="relative h-[200px] sm:h-[280px] md:h-[380px] lg:h-[450px]">
+      <div className="relative h-[200px] sm:h-[260px] md:h-[380px] lg:h-[440px]">
         {slides.map((slide, index) => (
           <div
             key={slide.id}

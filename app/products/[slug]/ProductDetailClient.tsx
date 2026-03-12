@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
-import Image from 'next/image';
+import { useState } from "react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import Image from "next/image";
 import {
   Heart,
   ShoppingCart,
@@ -16,7 +16,7 @@ import {
   Shield,
   RotateCcw,
   ChevronLeft,
-} from 'lucide-react';
+} from "lucide-react";
 
 interface Product {
   id: string;
@@ -33,6 +33,7 @@ interface Product {
   weight: number | null;
   dimensions: string | null;
   ageGroup: string | null;
+  isReturnable: boolean;
   isFeatured: boolean;
   isNewArrival: boolean;
   averageRating: number;
@@ -66,32 +67,45 @@ interface Props {
   relatedProducts: RelatedProduct[];
 }
 
-export default function ProductDetailClient({ product, relatedProducts }: Props) {
+export default function ProductDetailClient({
+  product,
+  relatedProducts,
+}: Props) {
   const { data: session } = useSession();
   const router = useRouter();
   const [quantity, setQuantity] = useState(1);
   const [selectedImage, setSelectedImage] = useState(0);
   const [isWishlisted, setIsWishlisted] = useState(false);
-  const [activeTab, setActiveTab] = useState<'description' | 'details' | 'shipping'>('description');
+  const [activeTab, setActiveTab] = useState<
+    "description" | "details" | "shipping"
+  >("description");
   const [addingToCart, setAddingToCart] = useState(false);
 
   const discount = product.compareAtPrice
-    ? Math.round(((product.compareAtPrice - product.price) / product.compareAtPrice) * 100)
+    ? Math.round(
+        ((product.compareAtPrice - product.price) / product.compareAtPrice) *
+          100,
+      )
     : 0;
 
-  const mainCategory = product.categories[0]?.category.parent?.name || product.categories[0]?.category.name || 'Products';
+  const mainCategory =
+    product.categories[0]?.category.parent?.name ||
+    product.categories[0]?.category.name ||
+    "Products";
 
   const handleAddToCart = async () => {
     if (!session) {
-      router.push('/login?callbackUrl=' + encodeURIComponent(window.location.pathname));
+      router.push(
+        "/login?callbackUrl=" + encodeURIComponent(window.location.pathname),
+      );
       return;
     }
 
     setAddingToCart(true);
     try {
-      const response = await fetch('/api/cart', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/cart", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           productId: product.id,
           quantity: quantity,
@@ -100,17 +114,17 @@ export default function ProductDetailClient({ product, relatedProducts }: Props)
 
       if (response.ok) {
         // Dispatch cart updated event
-        window.dispatchEvent(new Event('cartUpdated'));
-        
+        window.dispatchEvent(new Event("cartUpdated"));
+
         // Show success message
-        alert('✅ Product added to cart successfully!');
+        alert("✅ Product added to cart successfully!");
       } else {
         const data = await response.json();
-        alert(data.error || 'Failed to add to cart');
+        alert(data.error || "Failed to add to cart");
       }
     } catch (error) {
-      console.error('Error adding to cart:', error);
-      alert('Failed to add product to cart. Please try again.');
+      console.error("Error adding to cart:", error);
+      alert("Failed to add product to cart. Please try again.");
     } finally {
       setAddingToCart(false);
     }
@@ -118,15 +132,17 @@ export default function ProductDetailClient({ product, relatedProducts }: Props)
 
   const handleBuyNow = async () => {
     if (!session) {
-      router.push('/login?callbackUrl=' + encodeURIComponent(window.location.pathname));
+      router.push(
+        "/login?callbackUrl=" + encodeURIComponent(window.location.pathname),
+      );
       return;
     }
 
     // Add to cart first
     await handleAddToCart();
-    
+
     // Redirect to cart page
-    router.push('/cart');
+    router.push("/cart");
   };
 
   return (
@@ -145,7 +161,9 @@ export default function ProductDetailClient({ product, relatedProducts }: Props)
             <span>/</span>
             <span className="hover:text-primary">{mainCategory}</span>
             <span>/</span>
-            <span className="text-gray-900 font-medium line-clamp-1">{product.name}</span>
+            <span className="text-gray-900 font-medium line-clamp-1">
+              {product.name}
+            </span>
           </div>
         </div>
       </div>
@@ -167,14 +185,18 @@ export default function ProductDetailClient({ product, relatedProducts }: Props)
             <div className="relative aspect-square bg-white rounded-2xl overflow-hidden border border-gray-200">
               {product.images.length > 0 ? (
                 <Image
-                  src={product.images[selectedImage]?.url || product.images[0].url}
+                  src={
+                    product.images[selectedImage]?.url || product.images[0].url
+                  }
                   alt={product.images[selectedImage]?.altText || product.name}
                   fill
                   className="object-contain p-8"
                   priority
                 />
               ) : (
-                <div className="flex items-center justify-center h-full text-8xl">📦</div>
+                <div className="flex items-center justify-center h-full text-8xl">
+                  📦
+                </div>
               )}
               {product.isNewArrival && (
                 <div className="absolute top-4 left-4 bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
@@ -197,13 +219,15 @@ export default function ProductDetailClient({ product, relatedProducts }: Props)
                     onClick={() => setSelectedImage(index)}
                     className={`relative aspect-square rounded-lg overflow-hidden border-2 transition-all ${
                       selectedImage === index
-                        ? 'border-primary shadow-lg'
-                        : 'border-gray-200 hover:border-gray-300'
+                        ? "border-primary shadow-lg"
+                        : "border-gray-200 hover:border-gray-300"
                     }`}
                   >
                     <Image
                       src={image.url}
-                      alt={image.altText || `${product.name} - Image ${index + 1}`}
+                      alt={
+                        image.altText || `${product.name} - Image ${index + 1}`
+                      }
                       fill
                       className="object-contain p-2"
                     />
@@ -216,7 +240,9 @@ export default function ProductDetailClient({ product, relatedProducts }: Props)
           {/* Product Info */}
           <div className="space-y-6">
             <div>
-              <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-3">{product.name}</h1>
+              <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-3">
+                {product.name}
+              </h1>
 
               {/* Rating */}
               <div className="flex items-center gap-4 mb-4">
@@ -226,14 +252,15 @@ export default function ProductDetailClient({ product, relatedProducts }: Props)
                       key={i}
                       className={`w-5 h-5 ${
                         i < Math.round(product.averageRating)
-                          ? 'fill-yellow-400 text-yellow-400'
-                          : 'fill-gray-200 text-gray-200'
+                          ? "fill-yellow-400 text-yellow-400"
+                          : "fill-gray-200 text-gray-200"
                       }`}
                     />
                   ))}
                 </div>
                 <span className="text-sm text-gray-600">
-                  {product.averageRating.toFixed(1)} ({product.reviewCount} reviews)
+                  {product.averageRating.toFixed(1)} ({product.reviewCount}{" "}
+                  reviews)
                 </span>
               </div>
 
@@ -245,7 +272,7 @@ export default function ProductDetailClient({ product, relatedProducts }: Props)
                     href={`/categories/${pc.category.slug}`}
                     className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm hover:bg-primary hover:text-white transition-colors"
                   >
-                    {pc.category.parent ? `${pc.category.parent.name} → ` : ''}
+                    {pc.category.parent ? `${pc.category.parent.name} → ` : ""}
                     {pc.category.name}
                   </Link>
                 ))}
@@ -253,24 +280,32 @@ export default function ProductDetailClient({ product, relatedProducts }: Props)
 
               {/* Short Description */}
               {product.shortDescription && (
-                <p className="text-gray-600 leading-relaxed">{product.shortDescription}</p>
+                <p className="text-gray-600 leading-relaxed">
+                  {product.shortDescription}
+                </p>
               )}
             </div>
 
             {/* Price */}
             <div className="bg-gray-50 rounded-xl p-6">
               <div className="flex items-baseline gap-3 mb-2">
-                <span className="text-4xl font-bold text-primary">₹{product.price.toLocaleString()}</span>
-                {product.compareAtPrice && product.compareAtPrice > product.price && (
-                  <>
-                    <span className="text-xl text-gray-500 line-through">
-                      ₹{product.compareAtPrice.toLocaleString()}
-                    </span>
-                    <span className="bg-red-100 text-red-600 px-3 py-1 rounded-full text-sm font-semibold">
-                      Save ₹{(product.compareAtPrice - product.price).toLocaleString()}
-                    </span>
-                  </>
-                )}
+                <span className="text-4xl font-bold text-primary">
+                  ₹{product.price.toLocaleString()}
+                </span>
+                {product.compareAtPrice &&
+                  product.compareAtPrice > product.price && (
+                    <>
+                      <span className="text-xl text-gray-500 line-through">
+                        ₹{product.compareAtPrice.toLocaleString()}
+                      </span>
+                      <span className="bg-red-100 text-red-600 px-3 py-1 rounded-full text-sm font-semibold">
+                        Save ₹
+                        {(
+                          product.compareAtPrice - product.price
+                        ).toLocaleString()}
+                      </span>
+                    </>
+                  )}
               </div>
               <p className="text-sm text-gray-500">Inclusive of all taxes</p>
             </div>
@@ -280,7 +315,9 @@ export default function ProductDetailClient({ product, relatedProducts }: Props)
               {product.quantity > 0 ? (
                 <>
                   <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                  <span className="text-green-600 font-medium">In Stock ({product.quantity} available)</span>
+                  <span className="text-green-600 font-medium">
+                    In Stock ({product.quantity} available)
+                  </span>
                 </>
               ) : (
                 <>
@@ -293,7 +330,9 @@ export default function ProductDetailClient({ product, relatedProducts }: Props)
             {/* Quantity Selector */}
             {product.quantity > 0 && (
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Quantity:</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Quantity:
+                </label>
                 <div className="flex items-center gap-4">
                   <div className="flex items-center border border-gray-300 rounded-lg">
                     <button
@@ -305,7 +344,9 @@ export default function ProductDetailClient({ product, relatedProducts }: Props)
                     </button>
                     <span className="px-6 font-semibold">{quantity}</span>
                     <button
-                      onClick={() => setQuantity(Math.min(product.quantity, quantity + 1))}
+                      onClick={() =>
+                        setQuantity(Math.min(product.quantity, quantity + 1))
+                      }
                       className="p-3 hover:bg-gray-50 transition-colors"
                       disabled={quantity >= product.quantity}
                     >
@@ -327,17 +368,19 @@ export default function ProductDetailClient({ product, relatedProducts }: Props)
                 className="flex-1 bg-primary text-white px-8 py-4 rounded-lg font-semibold hover:bg-primary-600 transition-colors flex items-center justify-center gap-2 disabled:bg-gray-300 disabled:cursor-not-allowed"
               >
                 <ShoppingCart className="w-5 h-5" />
-                {addingToCart ? 'Adding...' : 'Add to Cart'}
+                {addingToCart ? "Adding..." : "Add to Cart"}
               </button>
               <button
                 onClick={() => setIsWishlisted(!isWishlisted)}
                 className={`px-4 py-4 rounded-lg border-2 transition-all ${
                   isWishlisted
-                    ? 'border-red-500 bg-red-50 text-red-500'
-                    : 'border-gray-300 hover:border-red-500 hover:bg-red-50 hover:text-red-500'
+                    ? "border-red-500 bg-red-50 text-red-500"
+                    : "border-gray-300 hover:border-red-500 hover:bg-red-50 hover:text-red-500"
                 }`}
               >
-                <Heart className={`w-5 h-5 ${isWishlisted ? 'fill-current' : ''}`} />
+                <Heart
+                  className={`w-5 h-5 ${isWishlisted ? "fill-current" : ""}`}
+                />
               </button>
               <button className="px-4 py-4 rounded-lg border-2 border-gray-300 hover:border-primary hover:bg-primary hover:text-white transition-all">
                 <Share2 className="w-5 h-5" />
@@ -346,7 +389,7 @@ export default function ProductDetailClient({ product, relatedProducts }: Props)
 
             {/* Buy Now Button */}
             {product.quantity > 0 && (
-              <button 
+              <button
                 onClick={handleBuyNow}
                 disabled={addingToCart}
                 className="w-full bg-gradient-to-r from-pink-500 to-purple-500 text-white px-8 py-4 rounded-lg font-semibold hover:from-pink-600 hover:to-purple-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
@@ -354,6 +397,25 @@ export default function ProductDetailClient({ product, relatedProducts }: Props)
                 Buy Now
               </button>
             )}
+
+            {/* Returnable Badge */}
+            <div
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg w-fit text-sm font-semibold ${
+                product.isReturnable !== false
+                  ? "bg-green-50 border border-green-300 text-green-700"
+                  : "bg-red-50 border border-red-300 text-red-700"
+              }`}
+            >
+              {product.isReturnable !== false ? (
+                <>
+                  <RotateCcw className="w-4 h-4" /> 7-Day Easy Returns
+                </>
+              ) : (
+                <>
+                  <Shield className="w-4 h-4" /> Non-Returnable Item
+                </>
+              )}
+            </div>
 
             {/* Features */}
             <div className="grid grid-cols-3 gap-4 pt-6 border-t">
@@ -368,9 +430,19 @@ export default function ProductDetailClient({ product, relatedProducts }: Props)
                 <p className="text-xs text-gray-500">Quality guaranteed</p>
               </div>
               <div className="text-center">
-                <RotateCcw className="w-8 h-8 mx-auto mb-2 text-primary" />
-                <p className="text-sm font-medium">Easy Returns</p>
-                <p className="text-xs text-gray-500">7-day return policy</p>
+                <RotateCcw
+                  className={`w-8 h-8 mx-auto mb-2 ${product.isReturnable !== false ? "text-primary" : "text-red-400"}`}
+                />
+                <p className="text-sm font-medium">
+                  {product.isReturnable !== false
+                    ? "Easy Returns"
+                    : "No Returns"}
+                </p>
+                <p className="text-xs text-gray-500">
+                  {product.isReturnable !== false
+                    ? "7-day return policy"
+                    : "Final sale item"}
+                </p>
               </div>
             </div>
           </div>
@@ -382,31 +454,31 @@ export default function ProductDetailClient({ product, relatedProducts }: Props)
             {/* Tab Headers */}
             <div className="border-b flex">
               <button
-                onClick={() => setActiveTab('description')}
+                onClick={() => setActiveTab("description")}
                 className={`px-8 py-4 font-semibold transition-colors ${
-                  activeTab === 'description'
-                    ? 'text-primary border-b-2 border-primary'
-                    : 'text-gray-600 hover:text-primary'
+                  activeTab === "description"
+                    ? "text-primary border-b-2 border-primary"
+                    : "text-gray-600 hover:text-primary"
                 }`}
               >
                 Description
               </button>
               <button
-                onClick={() => setActiveTab('details')}
+                onClick={() => setActiveTab("details")}
                 className={`px-8 py-4 font-semibold transition-colors ${
-                  activeTab === 'details'
-                    ? 'text-primary border-b-2 border-primary'
-                    : 'text-gray-600 hover:text-primary'
+                  activeTab === "details"
+                    ? "text-primary border-b-2 border-primary"
+                    : "text-gray-600 hover:text-primary"
                 }`}
               >
                 Product Details
               </button>
               <button
-                onClick={() => setActiveTab('shipping')}
+                onClick={() => setActiveTab("shipping")}
                 className={`px-8 py-4 font-semibold transition-colors ${
-                  activeTab === 'shipping'
-                    ? 'text-primary border-b-2 border-primary'
-                    : 'text-gray-600 hover:text-primary'
+                  activeTab === "shipping"
+                    ? "text-primary border-b-2 border-primary"
+                    : "text-gray-600 hover:text-primary"
                 }`}
               >
                 Shipping & Returns
@@ -415,68 +487,112 @@ export default function ProductDetailClient({ product, relatedProducts }: Props)
 
             {/* Tab Content */}
             <div className="p-8">
-              {activeTab === 'description' && (
+              {activeTab === "description" && (
                 <div className="prose max-w-none">
                   <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">
-                    {product.description || 'No description available.'}
+                    {product.description || "No description available."}
                   </p>
                 </div>
               )}
 
-              {activeTab === 'details' && (
+              {activeTab === "details" && (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {product.sku && (
                     <div className="flex py-3 border-b">
-                      <span className="font-semibold text-gray-700 w-40">SKU:</span>
+                      <span className="font-semibold text-gray-700 w-40">
+                        SKU:
+                      </span>
                       <span className="text-gray-600">{product.sku}</span>
                     </div>
                   )}
                   {product.brand && (
                     <div className="flex py-3 border-b">
-                      <span className="font-semibold text-gray-700 w-40">Brand:</span>
+                      <span className="font-semibold text-gray-700 w-40">
+                        Brand:
+                      </span>
                       <span className="text-gray-600">{product.brand}</span>
                     </div>
                   )}
                   {product.ageGroup && (
                     <div className="flex py-3 border-b">
-                      <span className="font-semibold text-gray-700 w-40">Age Group:</span>
+                      <span className="font-semibold text-gray-700 w-40">
+                        Age Group:
+                      </span>
                       <span className="text-gray-600">{product.ageGroup}</span>
                     </div>
                   )}
                   {product.weight && (
                     <div className="flex py-3 border-b">
-                      <span className="font-semibold text-gray-700 w-40">Weight:</span>
+                      <span className="font-semibold text-gray-700 w-40">
+                        Weight:
+                      </span>
                       <span className="text-gray-600">{product.weight} kg</span>
                     </div>
                   )}
                   {product.dimensions && (
                     <div className="flex py-3 border-b">
-                      <span className="font-semibold text-gray-700 w-40">Dimensions:</span>
-                      <span className="text-gray-600">{product.dimensions}</span>
+                      <span className="font-semibold text-gray-700 w-40">
+                        Dimensions:
+                      </span>
+                      <span className="text-gray-600">
+                        {product.dimensions}
+                      </span>
                     </div>
                   )}
                 </div>
               )}
 
-              {activeTab === 'shipping' && (
+              {activeTab === "shipping" && (
                 <div className="space-y-6">
                   <div>
-                    <h3 className="font-semibold text-lg mb-3">Shipping Information</h3>
+                    <h3 className="font-semibold text-lg mb-3">
+                      Shipping Information
+                    </h3>
                     <ul className="space-y-2 text-gray-600">
                       <li>• Free shipping on orders above ₹999</li>
                       <li>• Standard delivery: 5-7 business days</li>
-                      <li>• Express delivery: 2-3 business days (additional charges apply)</li>
+                      <li>
+                        • Express delivery: 2-3 business days (additional
+                        charges apply)
+                      </li>
                       <li>• Cash on Delivery available</li>
                     </ul>
                   </div>
                   <div>
-                    <h3 className="font-semibold text-lg mb-3">Return Policy</h3>
-                    <ul className="space-y-2 text-gray-600">
-                      <li>• 7-day easy returns</li>
-                      <li>• Product must be unused and in original packaging</li>
-                      <li>• Refund will be processed within 5-7 business days</li>
-                      <li>• Return shipping charges may apply</li>
-                    </ul>
+                    <h3 className="font-semibold text-lg mb-3 flex items-center gap-2">
+                      Return Policy
+                      {product.isReturnable !== false ? (
+                        <span className="text-xs font-semibold bg-green-100 text-green-700 px-2 py-0.5 rounded-full">
+                          Returnable
+                        </span>
+                      ) : (
+                        <span className="text-xs font-semibold bg-red-100 text-red-700 px-2 py-0.5 rounded-full">
+                          Non-Returnable
+                        </span>
+                      )}
+                    </h3>
+                    {product.isReturnable !== false ? (
+                      <ul className="space-y-2 text-gray-600">
+                        <li>• 7-day easy returns from the date of delivery</li>
+                        <li>
+                          • Product must be unused and in original packaging
+                        </li>
+                        <li>
+                          • Refund will be processed within 5-7 business days
+                        </li>
+                        <li>• Return shipping charges may apply</li>
+                      </ul>
+                    ) : (
+                      <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                        <p className="text-red-700 font-medium mb-1">
+                          ⚠️ This product is not eligible for returns.
+                        </p>
+                        <p className="text-red-600 text-sm">
+                          Please review your order carefully before purchasing.
+                          For queries, contact our support team.
+                        </p>
+                      </div>
+                    )}
                   </div>
                 </div>
               )}
@@ -494,7 +610,7 @@ export default function ProductDetailClient({ product, relatedProducts }: Props)
                   ? Math.round(
                       ((relatedProduct.compareAtPrice - relatedProduct.price) /
                         relatedProduct.compareAtPrice) *
-                        100
+                        100,
                     )
                   : 0;
 
@@ -513,7 +629,9 @@ export default function ProductDetailClient({ product, relatedProducts }: Props)
                           className="object-cover group-hover:scale-110 transition-transform duration-300"
                         />
                       ) : (
-                        <div className="flex items-center justify-center h-full text-6xl">📦</div>
+                        <div className="flex items-center justify-center h-full text-6xl">
+                          📦
+                        </div>
                       )}
                       {relatedProduct.isFeatured && (
                         <div className="absolute top-2 left-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full font-semibold">
@@ -531,27 +649,31 @@ export default function ProductDetailClient({ product, relatedProducts }: Props)
                             key={i}
                             className={`w-3 h-3 ${
                               i < Math.round(relatedProduct.averageRating)
-                                ? 'fill-yellow-400 text-yellow-400'
-                                : 'fill-gray-200 text-gray-200'
+                                ? "fill-yellow-400 text-yellow-400"
+                                : "fill-gray-200 text-gray-200"
                             }`}
                           />
                         ))}
-                        <span className="text-xs text-gray-500">({relatedProduct.reviewCount})</span>
+                        <span className="text-xs text-gray-500">
+                          ({relatedProduct.reviewCount})
+                        </span>
                       </div>
                       <div className="flex items-center gap-2">
                         <span className="text-lg font-bold text-primary">
                           ₹{relatedProduct.price.toLocaleString()}
                         </span>
-                        {relatedProduct.compareAtPrice && relatedDiscount > 0 && (
-                          <>
-                            <span className="text-sm text-gray-500 line-through">
-                              ₹{relatedProduct.compareAtPrice.toLocaleString()}
-                            </span>
-                            <span className="text-xs bg-red-100 text-red-600 px-2 py-0.5 rounded font-semibold">
-                              {relatedDiscount}% OFF
-                            </span>
-                          </>
-                        )}
+                        {relatedProduct.compareAtPrice &&
+                          relatedDiscount > 0 && (
+                            <>
+                              <span className="text-sm text-gray-500 line-through">
+                                ₹
+                                {relatedProduct.compareAtPrice.toLocaleString()}
+                              </span>
+                              <span className="text-xs bg-red-100 text-red-600 px-2 py-0.5 rounded font-semibold">
+                                {relatedDiscount}% OFF
+                              </span>
+                            </>
+                          )}
                       </div>
                     </div>
                   </Link>

@@ -13,7 +13,9 @@ import {
   Menu,
   X,
   ChevronDown,
+  ChevronRight,
   LogOut,
+  ArrowLeft,
 } from "lucide-react";
 
 interface Subcategory {
@@ -47,6 +49,8 @@ export default function Navbar() {
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const searchContainerRef = useRef<HTMLDivElement | null>(null);
+  const mobileSearchContainerRef = useRef<HTMLDivElement | null>(null);
+  const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -145,10 +149,14 @@ export default function Navbar() {
   // Close suggestions when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (
+      const target = event.target as Node;
+      const outsideDesktop =
         searchContainerRef.current &&
-        !searchContainerRef.current.contains(event.target as Node)
-      ) {
+        !searchContainerRef.current.contains(target);
+      const outsideMobile =
+        mobileSearchContainerRef.current &&
+        !mobileSearchContainerRef.current.contains(target);
+      if (outsideDesktop && outsideMobile) {
         setShowSuggestions(false);
       }
     };
@@ -223,53 +231,62 @@ export default function Navbar() {
     const container = document.getElementById("nav-scroll");
     if (container) {
       container.addEventListener("scroll", handleScroll);
-      // Initial check
-      handleScroll();
+      // Don't check immediately — categories haven't loaded yet; let the categories effect handle initial state
       return () => container.removeEventListener("scroll", handleScroll);
     }
   }, []);
 
-  // Check arrows when categories load
+  // Check arrows when categories load — wait for DOM to fully render the buttons
   useEffect(() => {
     if (categories.length > 0) {
-      setTimeout(() => {
-        const container = document.getElementById("nav-scroll");
-        if (container) {
-          const { scrollWidth, clientWidth } = container;
-          setShowRightArrow(scrollWidth > clientWidth);
-        }
-      }, 100);
+      // rAF ensures we're past the current paint, then a small delay ensures layout is settled
+      requestAnimationFrame(() => {
+        setTimeout(() => {
+          const container = document.getElementById("nav-scroll");
+          if (container) {
+            const { scrollWidth, clientWidth } = container;
+            setShowRightArrow(scrollWidth > clientWidth);
+          }
+        }, 200);
+      });
     }
   }, [categories]);
 
   // Categories are now loaded dynamically from the database via useEffect
 
+  // Announcement carousel
+  const announcements = [
+    "✨ COD Available at ₹60",
+    "🎁 Extra Discounts on Prepaid Orders",
+    "🚚 Free Shipping Above ₹999",
+    "🔄 7-Day Easy Returns",
+    "💳 EMI Available on Orders Above ₹999",
+  ];
+  const [announcementIndex, setAnnouncementIndex] = React.useState(0);
+  const [announcementFade, setAnnouncementFade] = React.useState(true);
+
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      setAnnouncementFade(false);
+      setTimeout(() => {
+        setAnnouncementIndex((prev) => (prev + 1) % announcements.length);
+        setAnnouncementFade(true);
+      }, 300);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <nav className="bg-white shadow-soft sticky top-0 z-50">
-      {/* Top Bar with Gradient */}
-      <div className="bg-gradient-to-r from-primary-500 via-orange-500 to-pink-500 py-1.5">
+      {/* Top Bar with Gradient - Announcement Carousel */}
+      <div className="bg-black py-2">
         <div className="container-custom">
-          <div className="flex flex-col md:flex-row items-center justify-between text-[10px] md:text-xs font-semibold text-white gap-1 md:gap-0">
-            <div className="flex flex-col md:flex-row items-center md:gap-2 text-center md:text-left">
-              <span>✨ COD Available at ₹60</span>
-              <span className="hidden md:inline">|</span>
-              <span>Extra Discounts on Prepaid Orders</span>
-              <span className="hidden md:inline">|</span>
-              <span>Free Shipping Above ₹999</span>
-            </div>
-            <div className="hidden md:flex items-center gap-4">
-              <Link
-                href="/contact"
-                className="text-xs font-bold text-white hover:text-yellow-200 transition-colors"
-              >
-                Contact Us
-              </Link>
-              <Link
-                href="/about"
-                className="text-xs font-bold text-white hover:text-yellow-200 transition-colors"
-              >
-                About Us
-              </Link>
+          <div className="flex items-center justify-center">
+            <div
+              className="transition-opacity duration-300 text-center text-[11px] md:text-sm font-bold text-white tracking-wide"
+              style={{ opacity: announcementFade ? 1 : 0 }}
+            >
+              {announcements[announcementIndex]}
             </div>
           </div>
         </div>
@@ -301,9 +318,7 @@ export default function Navbar() {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                onFocus={() =>
-                  searchQuery.trim().length >= 2 && setShowSuggestions(true)
-                }
+                onFocus={() => setShowSuggestions(true)}
                 placeholder="Search toys, learning kits, school essentials..."
                 className="w-full px-4 py-2 pr-10 border-2 border-primary-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-primary-500 transition-all bg-orange-50 placeholder:text-gray-500 text-sm"
               />
@@ -315,150 +330,207 @@ export default function Navbar() {
               </button>
 
               {/* Search Suggestions Dropdown */}
-              {showSuggestions && searchSuggestions && (
-                <div className="absolute top-full mt-2 left-0 right-0 bg-white rounded-xl shadow-2xl border-2 border-gray-100 z-50 max-h-[500px] overflow-y-auto">
-                  {loadingSuggestions ? (
-                    <div className="p-4 text-center">
-                      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary mx-auto"></div>
-                    </div>
-                  ) : (
-                    <div className="p-2">
-                      {/* Products */}
-                      {searchSuggestions.products &&
-                        searchSuggestions.products.length > 0 && (
-                          <div className="mb-2">
-                            <div className="px-3 py-2 text-xs font-bold text-gray-500 uppercase">
-                              Products
-                            </div>
-                            {searchSuggestions.products.map((product: any) => (
+              {showSuggestions && (
+                <>
+                  <div
+                    className="fixed inset-0 z-40"
+                    onClick={() => setShowSuggestions(false)}
+                  />
+                  <div className="absolute top-full mt-2 left-0 right-0 bg-white rounded-xl shadow-2xl border border-gray-200 z-50 max-h-[500px] overflow-y-auto">
+                    {!searchQuery ? (
+                      /* Show categories when no query */
+                      <div className="p-3">
+                        <div className="px-2 py-1.5 text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">
+                          Browse Categories
+                        </div>
+                        <div className="grid grid-cols-2 gap-1.5">
+                          {categories.slice(0, 10).map((cat) => (
+                            <Link
+                              key={cat.slug}
+                              href={`/categories/${cat.slug}`}
+                              onClick={() => {
+                                setShowSuggestions(false);
+                                setSearchQuery("");
+                              }}
+                              className="flex items-center justify-between px-3 py-2 border border-gray-100 rounded-lg text-xs font-medium text-gray-700 hover:border-orange-300 hover:bg-orange-50 transition-colors"
+                            >
+                              <span className="truncate pr-1">{cat.name}</span>
+                              <ChevronRight className="w-3 h-3 text-gray-400 flex-shrink-0" />
+                            </Link>
+                          ))}
+                        </div>
+                        <div className="mt-3 pt-2 border-t border-gray-100">
+                          <p className="px-2 pb-1.5 text-xs font-bold text-gray-400 uppercase tracking-wider">
+                            Shop by Age
+                          </p>
+                          <div className="flex flex-wrap gap-1.5 px-1">
+                            {[
+                              { label: "0-2 Yrs", href: "/age/0-2" },
+                              { label: "3-5 Yrs", href: "/age/3-5" },
+                              { label: "6-8 Yrs", href: "/age/6-8" },
+                              { label: "9-12 Yrs", href: "/age/9-12" },
+                              { label: "12+ Yrs", href: "/age/12plus" },
+                            ].map((item) => (
                               <Link
-                                key={product.id}
-                                href={`/products/${product.slug}`}
+                                key={item.href}
+                                href={item.href}
                                 onClick={() => {
                                   setShowSuggestions(false);
                                   setSearchQuery("");
                                 }}
-                                className="flex items-center gap-3 px-3 py-2 hover:bg-gray-50 rounded-lg transition-colors"
+                                className="px-3 py-1.5 bg-orange-50 border border-orange-200 rounded-full text-xs font-semibold text-orange-700 hover:bg-orange-100 transition-colors"
                               >
-                                {product.image ? (
-                                  <img
-                                    src={product.image}
-                                    alt={product.name}
-                                    className="w-10 h-10 object-cover rounded"
-                                  />
-                                ) : (
-                                  <div className="w-10 h-10 bg-gray-200 rounded flex items-center justify-center text-lg">
-                                    🧸
-                                  </div>
-                                )}
-                                <div className="flex-1 min-w-0">
-                                  <div className="text-sm font-medium text-gray-900 truncate">
-                                    {product.name}
-                                  </div>
-                                  <div className="text-xs text-primary-600 font-semibold">
-                                    ₹{product.price.toLocaleString("en-IN")}
-                                  </div>
-                                </div>
+                                {item.label}
                               </Link>
                             ))}
                           </div>
-                        )}
-
-                      {/* Categories */}
-                      {searchSuggestions.categories &&
-                        searchSuggestions.categories.length > 0 && (
-                          <div className="mb-2">
-                            <div className="px-3 py-2 text-xs font-bold text-gray-500 uppercase">
-                              Categories
-                            </div>
-                            {searchSuggestions.categories.map(
-                              (category: any) => (
-                                <Link
-                                  key={category.id}
-                                  href={`/categories/${category.slug}`}
-                                  onClick={() => {
-                                    setShowSuggestions(false);
-                                    setSearchQuery("");
-                                  }}
-                                  className="flex items-center gap-3 px-3 py-2 hover:bg-gray-50 rounded-lg transition-colors"
-                                >
-                                  <div className="w-10 h-10 bg-primary-100 rounded-lg flex items-center justify-center text-2xl">
-                                    {category.icon || "📦"}
-                                  </div>
-                                  <div className="text-sm font-medium text-gray-900">
-                                    {category.name}
-                                  </div>
-                                </Link>
-                              ),
-                            )}
-                          </div>
-                        )}
-
-                      {/* Brands */}
-                      {searchSuggestions.brands &&
-                        searchSuggestions.brands.length > 0 && (
-                          <div className="mb-2">
-                            <div className="px-3 py-2 text-xs font-bold text-gray-500 uppercase">
-                              Brands
-                            </div>
-                            {searchSuggestions.brands.map(
-                              (brand: any, index: number) => (
-                                <Link
-                                  key={index}
-                                  href={`/products?search=${encodeURIComponent(brand.name)}`}
-                                  onClick={() => {
-                                    setShowSuggestions(false);
-                                    setSearchQuery("");
-                                  }}
-                                  className="flex items-center gap-3 px-3 py-2 hover:bg-gray-50 rounded-lg transition-colors"
-                                >
-                                  <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
-                                    <span className="text-xs font-bold text-gray-600">
-                                      B
-                                    </span>
-                                  </div>
-                                  <div className="text-sm font-medium text-gray-900">
-                                    {brand.name}
-                                  </div>
-                                </Link>
-                              ),
-                            )}
-                          </div>
-                        )}
-
-                      {/* No results */}
-                      {searchSuggestions.products?.length === 0 &&
-                        searchSuggestions.categories?.length === 0 &&
-                        searchSuggestions.brands?.length === 0 && (
-                          <div className="px-3 py-6 text-center text-gray-500">
-                            <p className="text-sm">
-                              No results found for "{searchQuery}"
-                            </p>
-                          </div>
-                        )}
-
-                      {/* View All Results */}
-                      {(searchSuggestions.products?.length > 0 ||
-                        searchSuggestions.categories?.length > 0) && (
-                        <div className="border-t border-gray-100 mt-2 pt-2">
-                          <Link
-                            href={`/products?search=${encodeURIComponent(searchQuery)}`}
-                            onClick={() => {
-                              setShowSuggestions(false);
-                            }}
-                            className="block px-3 py-2 text-center text-sm font-semibold text-primary-600 hover:bg-primary-50 rounded-lg transition-colors"
-                          >
-                            View All Results for "{searchQuery}"
-                          </Link>
                         </div>
-                      )}
-                    </div>
-                  )}
-                </div>
+                      </div>
+                    ) : loadingSuggestions ? (
+                      <div className="p-4 text-center">
+                        <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary mx-auto"></div>
+                      </div>
+                    ) : searchSuggestions ? (
+                      <div className="p-2">
+                        {/* Products */}
+                        {searchSuggestions.products &&
+                          searchSuggestions.products.length > 0 && (
+                            <div className="mb-2">
+                              <div className="px-3 py-2 text-xs font-bold text-gray-400 uppercase tracking-wider">
+                                Products
+                              </div>
+                              {searchSuggestions.products.map(
+                                (product: any) => (
+                                  <Link
+                                    key={product.id}
+                                    href={`/products/${product.slug}`}
+                                    onClick={() => {
+                                      setShowSuggestions(false);
+                                      setSearchQuery("");
+                                    }}
+                                    className="flex items-center gap-3 px-3 py-2 hover:bg-orange-50 rounded-lg transition-colors"
+                                  >
+                                    {product.image ? (
+                                      <img
+                                        src={product.image}
+                                        alt={product.name}
+                                        className="w-10 h-10 object-cover rounded-lg flex-shrink-0"
+                                      />
+                                    ) : (
+                                      <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center text-lg flex-shrink-0">
+                                        🧸
+                                      </div>
+                                    )}
+                                    <div className="flex-1 min-w-0">
+                                      <div className="text-sm font-semibold text-gray-900 truncate">
+                                        {product.name}
+                                      </div>
+                                      <div className="text-xs text-orange-600 font-bold">
+                                        ₹{product.price.toLocaleString("en-IN")}
+                                      </div>
+                                    </div>
+                                    <ChevronRight className="w-3.5 h-3.5 text-gray-400 flex-shrink-0" />
+                                  </Link>
+                                ),
+                              )}
+                            </div>
+                          )}
+
+                        {/* Categories */}
+                        {searchSuggestions.categories &&
+                          searchSuggestions.categories.length > 0 && (
+                            <div className="mb-2">
+                              <div className="px-3 py-2 text-xs font-bold text-gray-400 uppercase tracking-wider">
+                                Categories
+                              </div>
+                              {searchSuggestions.categories.map(
+                                (category: any) => (
+                                  <Link
+                                    key={category.id}
+                                    href={`/categories/${category.slug}`}
+                                    onClick={() => {
+                                      setShowSuggestions(false);
+                                      setSearchQuery("");
+                                    }}
+                                    className="flex items-center gap-3 px-3 py-2 hover:bg-orange-50 rounded-lg transition-colors"
+                                  >
+                                    <div className="w-9 h-9 bg-orange-100 rounded-lg flex items-center justify-center text-xl flex-shrink-0">
+                                      {category.icon || "📦"}
+                                    </div>
+                                    <div className="flex-1 text-sm font-semibold text-gray-900">
+                                      {category.name}
+                                    </div>
+                                    <ChevronRight className="w-3.5 h-3.5 text-gray-400 flex-shrink-0" />
+                                  </Link>
+                                ),
+                              )}
+                            </div>
+                          )}
+
+                        {/* Brands */}
+                        {searchSuggestions.brands &&
+                          searchSuggestions.brands.length > 0 && (
+                            <div className="mb-2">
+                              <div className="px-3 py-2 text-xs font-bold text-gray-400 uppercase tracking-wider">
+                                Brands
+                              </div>
+                              {searchSuggestions.brands.map(
+                                (brand: any, index: number) => (
+                                  <Link
+                                    key={index}
+                                    href={`/products?search=${encodeURIComponent(brand.name)}`}
+                                    onClick={() => {
+                                      setShowSuggestions(false);
+                                      setSearchQuery("");
+                                    }}
+                                    className="flex items-center gap-3 px-3 py-2 hover:bg-orange-50 rounded-lg transition-colors"
+                                  >
+                                    <div className="w-9 h-9 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                      <span className="text-xs font-bold text-gray-600">
+                                        B
+                                      </span>
+                                    </div>
+                                    <div className="flex-1 text-sm font-semibold text-gray-900">
+                                      {brand.name}
+                                    </div>
+                                  </Link>
+                                ),
+                              )}
+                            </div>
+                          )}
+
+                        {/* No results */}
+                        {searchSuggestions.products?.length === 0 &&
+                          searchSuggestions.categories?.length === 0 &&
+                          searchSuggestions.brands?.length === 0 && (
+                            <div className="px-3 py-6 text-center text-gray-500">
+                              <div className="text-3xl mb-2">🔍</div>
+                              <p className="text-sm font-medium">
+                                No results found for &quot;{searchQuery}&quot;
+                              </p>
+                            </div>
+                          )}
+
+                        {/* View All Results */}
+                        {(searchSuggestions.products?.length > 0 ||
+                          searchSuggestions.categories?.length > 0) && (
+                          <div className="border-t border-gray-100 mt-2 pt-2">
+                            <Link
+                              href={`/products?search=${encodeURIComponent(searchQuery)}`}
+                              onClick={() => setShowSuggestions(false)}
+                              className="block px-3 py-2 text-center text-sm font-bold text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
+                            >
+                              View All Results for &quot;{searchQuery}&quot; →
+                            </Link>
+                          </div>
+                        )}
+                      </div>
+                    ) : null}
+                  </div>
+                </>
               )}
             </form>
           </div>
-
           {/* Right Actions */}
           <div className="flex items-center gap-2 md:gap-4">
             {/* Wishlist */}
@@ -559,36 +631,47 @@ export default function Navbar() {
         </div>
       </div>
 
+      {/* Mobile Search Bar - Tap to Open Full Screen Overlay */}
+      <div className="lg:hidden bg-white border-t border-orange-100 px-4 py-2.5">
+        <button
+          onClick={() => setMobileSearchOpen(true)}
+          className="w-full flex items-center gap-2 pl-4 pr-4 py-2.5 border-2 border-orange-200 rounded-full bg-orange-50 text-sm text-gray-400 text-left"
+        >
+          <Search className="w-4 h-4 text-orange-400 flex-shrink-0" />
+          <span>Search toys, games, learning kits...</span>
+        </button>
+      </div>
+
       {/* Category Navigation (Desktop) */}
-      <div className="hidden lg:block bg-gradient-to-r from-primary-50 via-orange-50 to-pink-50 border-t border-gray-100 overflow-visible">
-        <div className="container-custom overflow-visible">
-          <div className="relative flex items-center py-3 overflow-visible">
+      <div className="hidden lg:block bg-gradient-to-r from-primary-50 via-orange-50 to-pink-50 border-t border-gray-100">
+        <div className="container-custom">
+          <div className="relative flex items-center">
             {/* Left Arrow */}
             {showLeftArrow && (
               <button
                 onClick={() => {
                   const container = document.getElementById("nav-scroll");
-                  if (container) container.scrollLeft -= 200;
+                  if (container) container.scrollLeft -= 300;
                 }}
-                className="flex-shrink-0 p-2 mr-2 text-white bg-gradient-to-r from-primary-400 to-primary-500 hover:from-primary-500 hover:to-primary-600 transition-all shadow-soft rounded-full z-10"
+                className="flex-shrink-0 w-8 h-8 flex items-center justify-center mr-1 text-white bg-orange-500 hover:bg-orange-600 transition-colors shadow-soft rounded-full z-10"
                 aria-label="Scroll left"
               >
-                <ChevronDown className="w-5 h-5 rotate-90" />
+                <ChevronDown className="w-4 h-4 rotate-90" />
               </button>
             )}
 
             {/* Scrollable Navigation */}
             <div
               id="nav-scroll"
-              className="flex items-center gap-6 overflow-x-auto scrollbar-hide flex-1"
-              style={{ scrollBehavior: "smooth", overflowY: "visible" }}
+              className="flex items-center gap-1 overflow-x-auto scrollbar-hide flex-1 py-2.5"
+              style={{ scrollBehavior: "smooth" }}
             >
               {categories.length === 0 ? (
-                <div className="text-sm text-gray-500 font-semibold">
+                <div className="text-sm text-gray-500 font-semibold px-2">
                   Loading categories...
                 </div>
               ) : (
-                categories.map((category, index) => (
+                categories.map((category) => (
                   <div
                     key={category.slug}
                     ref={(el) => {
@@ -602,13 +685,13 @@ export default function Navbar() {
                       className="flex items-center gap-1 text-sm font-bold text-gray-700 hover:text-primary-700 transition-colors whitespace-nowrap cursor-default px-3 py-1.5 rounded-xl hover:bg-white/60"
                     >
                       {category.name}
-                      <ChevronDown className="w-4 h-4" />
+                      <ChevronDown className="w-3.5 h-3.5 flex-shrink-0" />
                     </button>
                   </div>
                 ))
               )}
 
-              {/* Shop By Age, Price */}
+              {/* Shop By Age */}
               <div
                 ref={(el) => {
                   buttonRefs.current["shop-by"] = el;
@@ -618,17 +701,17 @@ export default function Navbar() {
                 <button
                   onMouseEnter={() => handleMouseEnter("shop-by")}
                   onMouseLeave={handleMouseLeave}
-                  className="flex items-center gap-1 text-sm font-bold text-gray-700 hover:text-primary-700 transition-colors whitespace-nowrap cursor-default px-3 py-1.5 rounded-xl hover:bg-white/60"
+                  className="flex items-center gap-1 text-sm font-bold text-primary-700 hover:text-primary-800 transition-colors whitespace-nowrap cursor-default px-3 py-1.5 rounded-xl hover:bg-white/60 ml-1"
                 >
-                  Shop By Age, Price
-                  <ChevronDown className="w-4 h-4" />
+                  🎂 Shop By Age
+                  <ChevronDown className="w-3.5 h-3.5 flex-shrink-0" />
                 </button>
               </div>
 
               {/* New Arrivals */}
               <Link
                 href="/new-arrivals"
-                className="flex items-center gap-1 text-sm font-bold bg-gradient-to-r from-primary-500 to-orange-500 text-white px-4 py-1.5 rounded-2xl hover:shadow-soft transition-all transform hover:-translate-y-0.5 flex-shrink-0 whitespace-nowrap"
+                className="flex-shrink-0 flex items-center gap-1 text-sm font-bold bg-gradient-to-r from-primary-500 to-orange-500 text-white px-4 py-1.5 rounded-2xl hover:shadow-soft transition-all transform hover:-translate-y-0.5 whitespace-nowrap ml-2"
               >
                 ✨ New Arrivals
               </Link>
@@ -639,12 +722,12 @@ export default function Navbar() {
               <button
                 onClick={() => {
                   const container = document.getElementById("nav-scroll");
-                  if (container) container.scrollLeft += 200;
+                  if (container) container.scrollLeft += 300;
                 }}
-                className="flex-shrink-0 p-2 ml-2 text-white bg-gradient-to-r from-primary-400 to-primary-500 hover:from-primary-500 hover:to-primary-600 transition-all shadow-soft rounded-full z-10"
+                className="flex-shrink-0 w-8 h-8 flex items-center justify-center ml-1 text-white bg-orange-500 hover:bg-orange-600 transition-colors shadow-soft rounded-full z-10"
                 aria-label="Scroll right"
               >
-                <ChevronDown className="w-5 h-5 -rotate-90" />
+                <ChevronDown className="w-4 h-4 -rotate-90" />
               </button>
             )}
           </div>
@@ -813,6 +896,213 @@ export default function Navbar() {
           </div>,
           document.body,
         )}
+
+      {/* Mobile Full-Screen Search Overlay */}
+      {mobileSearchOpen && (
+        <div className="fixed inset-0 z-[300] bg-white flex flex-col lg:hidden">
+          {/* Search Header */}
+          <div className="flex items-center gap-3 px-4 py-3 border-b border-gray-100 bg-white shadow-sm">
+            <button
+              onClick={() => {
+                setMobileSearchOpen(false);
+                setSearchQuery("");
+                setShowSuggestions(false);
+              }}
+              className="p-1.5 rounded-full hover:bg-gray-100 transition-colors flex-shrink-0"
+              aria-label="Back"
+            >
+              <ArrowLeft className="w-5 h-5 text-gray-700" />
+            </button>
+            <div className="flex-1 relative">
+              <input
+                autoFocus
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && searchQuery.trim()) {
+                    setMobileSearchOpen(false);
+                    window.location.href = `/products?search=${encodeURIComponent(searchQuery.trim())}`;
+                  }
+                }}
+                placeholder="Search for products, brands and more"
+                className="w-full pl-3 pr-8 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-orange-400 bg-gray-50"
+              />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery("")}
+                  className="absolute right-2 top-1/2 -translate-y-1/2"
+                  aria-label="Clear"
+                >
+                  <X className="w-4 h-4 text-gray-400" />
+                </button>
+              )}
+            </div>
+          </div>
+
+          {/* Scrollable Content */}
+          <div className="flex-1 overflow-y-auto bg-white">
+            {!searchQuery ? (
+              /* Category chips when no search */
+              <div className="p-4">
+                <p className="text-xs text-gray-400 font-semibold mb-3 uppercase tracking-wider">
+                  Browse Categories
+                </p>
+                {categories.length > 0 ? (
+                  <div className="grid grid-cols-3 gap-2">
+                    {categories.map((cat) => (
+                      <Link
+                        key={cat.slug}
+                        href={`/categories/${cat.slug}`}
+                        onClick={() => {
+                          setMobileSearchOpen(false);
+                          setSearchQuery("");
+                        }}
+                        className="flex items-center justify-between px-3 py-2.5 border border-gray-200 rounded-lg text-xs font-medium text-gray-700 hover:border-orange-300 hover:bg-orange-50 transition-colors"
+                      >
+                        <span className="truncate pr-1 leading-tight">
+                          {cat.name}
+                        </span>
+                        <ChevronRight className="w-3 h-3 flex-shrink-0 text-gray-400 ml-0.5" />
+                      </Link>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-center h-20">
+                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-orange-400" />
+                  </div>
+                )}
+
+                {/* Quick Age Links */}
+                <p className="text-xs text-gray-400 font-semibold mt-5 mb-3 uppercase tracking-wider">
+                  Shop by Age
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {[
+                    { label: "👶 0-2 Years", href: "/age/0-2" },
+                    { label: "🧒 3-5 Years", href: "/age/3-5" },
+                    { label: "👧 6-8 Years", href: "/age/6-8" },
+                    { label: "👦 9-12 Years", href: "/age/9-12" },
+                    { label: "🧑 12+ Years", href: "/age/12plus" },
+                  ].map((item) => (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      onClick={() => {
+                        setMobileSearchOpen(false);
+                        setSearchQuery("");
+                      }}
+                      className="px-4 py-2 bg-orange-50 border border-orange-200 rounded-full text-xs font-semibold text-orange-700 hover:bg-orange-100 transition-colors"
+                    >
+                      {item.label}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            ) : loadingSuggestions ? (
+              <div className="flex items-center justify-center h-32">
+                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-orange-400" />
+              </div>
+            ) : searchSuggestions ? (
+              <div className="p-3">
+                {/* Products */}
+                {searchSuggestions.products &&
+                  searchSuggestions.products.length > 0 && (
+                    <div className="mb-4">
+                      <div className="px-2 py-1.5 text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">
+                        Products
+                      </div>
+                      {searchSuggestions.products.map((product: any) => (
+                        <Link
+                          key={product.id}
+                          href={`/products/${product.slug}`}
+                          onClick={() => {
+                            setMobileSearchOpen(false);
+                            setSearchQuery("");
+                          }}
+                          className="flex items-center gap-3 px-2 py-2.5 hover:bg-orange-50 rounded-xl transition-colors"
+                        >
+                          {product.image ? (
+                            <img
+                              src={product.image}
+                              alt={product.name}
+                              className="w-12 h-12 object-cover rounded-lg flex-shrink-0"
+                            />
+                          ) : (
+                            <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center text-xl flex-shrink-0">
+                              🧸
+                            </div>
+                          )}
+                          <div className="flex-1 min-w-0">
+                            <div className="text-sm font-semibold text-gray-900 truncate">
+                              {product.name}
+                            </div>
+                            <div className="text-xs text-orange-600 font-bold">
+                              ₹{product.price.toLocaleString("en-IN")}
+                            </div>
+                          </div>
+                          <ChevronRight className="w-4 h-4 text-gray-400 flex-shrink-0" />
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+
+                {/* Categories */}
+                {searchSuggestions.categories &&
+                  searchSuggestions.categories.length > 0 && (
+                    <div className="mb-4">
+                      <div className="px-2 py-1.5 text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">
+                        Categories
+                      </div>
+                      {searchSuggestions.categories.map((cat: any) => (
+                        <Link
+                          key={cat.id}
+                          href={`/categories/${cat.slug}`}
+                          onClick={() => {
+                            setMobileSearchOpen(false);
+                            setSearchQuery("");
+                          }}
+                          className="flex items-center gap-3 px-2 py-2.5 hover:bg-orange-50 rounded-xl transition-colors"
+                        >
+                          <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center text-xl flex-shrink-0">
+                            {cat.icon || "📦"}
+                          </div>
+                          <div className="flex-1 text-sm font-semibold text-gray-900">
+                            {cat.name}
+                          </div>
+                          <ChevronRight className="w-4 h-4 text-gray-400 flex-shrink-0" />
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+
+                {/* No results */}
+                {searchSuggestions.products?.length === 0 &&
+                  searchSuggestions.categories?.length === 0 && (
+                    <div className="px-2 py-8 text-center text-gray-500">
+                      <div className="text-4xl mb-3">🔍</div>
+                      <p className="text-sm font-medium">
+                        No results for &quot;{searchQuery}&quot;
+                      </p>
+                    </div>
+                  )}
+
+                {/* View All Results */}
+                {(searchSuggestions.products?.length > 0 ||
+                  searchSuggestions.categories?.length > 0) && (
+                  <Link
+                    href={`/products?search=${encodeURIComponent(searchQuery)}`}
+                    onClick={() => setMobileSearchOpen(false)}
+                    className="block w-full py-3.5 text-center text-sm font-bold text-white bg-gradient-to-r from-orange-400 to-pink-500 rounded-xl shadow-md mt-2"
+                  >
+                    View All Results for &quot;{searchQuery}&quot; →
+                  </Link>
+                )}
+              </div>
+            ) : null}
+          </div>
+        </div>
+      )}
     </nav>
   );
 }

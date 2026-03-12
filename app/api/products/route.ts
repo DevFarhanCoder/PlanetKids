@@ -1,23 +1,23 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
-import { prisma } from '@/lib/prisma';
-import { uploadToCloudinary } from '@/lib/cloudinary';
-import { writeFile, mkdir } from 'fs/promises';
-import { join } from 'path';
-import { existsSync } from 'fs';
+import { NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
+import { uploadToCloudinary } from "@/lib/cloudinary";
+import { writeFile, mkdir } from "fs/promises";
+import { join } from "path";
+import { existsSync } from "fs";
 
 // GET all products or single product
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    const id = searchParams.get('id');
-    const slug = searchParams.get('slug');
-    const category = searchParams.get('category');
-    const featured = searchParams.get('featured');
-    const newArrivals = searchParams.get('newArrivals');
-    const page = parseInt(searchParams.get('page') || '1');
-    const limit = parseInt(searchParams.get('limit') || '20');
+    const id = searchParams.get("id");
+    const slug = searchParams.get("slug");
+    const category = searchParams.get("category");
+    const featured = searchParams.get("featured");
+    const newArrivals = searchParams.get("newArrivals");
+    const page = parseInt(searchParams.get("page") || "1");
+    const limit = parseInt(searchParams.get("limit") || "20");
     const skip = (page - 1) * limit;
 
     // Get single product by ID or slug
@@ -27,27 +27,30 @@ export async function GET(request: NextRequest) {
         include: {
           categories: {
             include: {
-              category: true
-            }
+              category: true,
+            },
           },
           images: {
-            orderBy: { order: 'asc' }
+            orderBy: { order: "asc" },
           },
           variants: true,
           reviews: {
             include: {
               user: {
-                select: { name: true, image: true }
-              }
+                select: { name: true, image: true },
+              },
             },
             take: 10,
-            orderBy: { createdAt: 'desc' }
-          }
-        }
+            orderBy: { createdAt: "desc" },
+          },
+        },
       });
 
       if (!product) {
-        return NextResponse.json({ error: 'Product not found' }, { status: 404 });
+        return NextResponse.json(
+          { error: "Product not found" },
+          { status: 404 },
+        );
       }
 
       return NextResponse.json(product);
@@ -60,17 +63,17 @@ export async function GET(request: NextRequest) {
       where.categories = {
         some: {
           category: {
-            slug: category
-          }
-        }
+            slug: category,
+          },
+        },
       };
     }
 
-    if (featured === 'true') {
+    if (featured === "true") {
       where.isFeatured = true;
     }
 
-    if (newArrivals === 'true') {
+    if (newArrivals === "true") {
       where.isNewArrival = true;
     }
 
@@ -81,19 +84,19 @@ export async function GET(request: NextRequest) {
         include: {
           categories: {
             include: {
-              category: true
-            }
+              category: true,
+            },
           },
           images: {
-            orderBy: { order: 'asc' },
-            take: 1
-          }
+            orderBy: { order: "asc" },
+            take: 1,
+          },
         },
         skip,
         take: limit,
-        orderBy: { createdAt: 'desc' }
+        orderBy: { createdAt: "desc" },
       }),
-      prisma.product.count({ where })
+      prisma.product.count({ where }),
     ]);
 
     return NextResponse.json({
@@ -102,12 +105,15 @@ export async function GET(request: NextRequest) {
         page,
         limit,
         total,
-        totalPages: Math.ceil(total / limit)
-      }
+        totalPages: Math.ceil(total / limit),
+      },
     });
   } catch (error) {
-    console.error('Error fetching products:', error);
-    return NextResponse.json({ error: 'Failed to fetch products' }, { status: 500 });
+    console.error("Error fetching products:", error);
+    return NextResponse.json(
+      { error: "Failed to fetch products" },
+      { status: 500 },
+    );
   }
 }
 
@@ -115,59 +121,68 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
-    
-    if (!session || (session.user as any).role !== 'ADMIN') {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+    if (!session || (session.user as any).role !== "ADMIN") {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const formData = await request.formData();
-    console.log('Form data received:', Object.fromEntries(formData));
-    
+    console.log("Form data received:", Object.fromEntries(formData));
+
     // Extract product data
-    const name = formData.get('name') as string;
-    const slug = formData.get('slug') as string;
-    const description = formData.get('description') as string;
-    const shortDescription = formData.get('shortDescription') as string;
-    const price = parseFloat(formData.get('price') as string);
-    const compareAtPrice = formData.get('compareAtPrice') ? parseFloat(formData.get('compareAtPrice') as string) : null;
-    const sku = formData.get('sku') as string;
-    const quantity = parseInt(formData.get('quantity') as string);
-    const brand = formData.get('brand') as string;
-    const ageGroup = formData.get('ageGroup') as string;
-    const categoryIds = JSON.parse(formData.get('categoryIds') as string || '[]');
-    const isFeatured = formData.get('isFeatured') === 'true';
-    const isNewArrival = formData.get('isNewArrival') === 'true';
+    const name = formData.get("name") as string;
+    const slug = formData.get("slug") as string;
+    const description = formData.get("description") as string;
+    const shortDescription = formData.get("shortDescription") as string;
+    const price = parseFloat(formData.get("price") as string);
+    const compareAtPrice = formData.get("compareAtPrice")
+      ? parseFloat(formData.get("compareAtPrice") as string)
+      : null;
+    const sku = formData.get("sku") as string;
+    const quantity = parseInt(formData.get("quantity") as string);
+    const brand = formData.get("brand") as string;
+    const ageGroup = formData.get("ageGroup") as string;
+    const categoryIds = JSON.parse(
+      (formData.get("categoryIds") as string) || "[]",
+    );
+    const isFeatured = formData.get("isFeatured") === "true";
+    const isNewArrival = formData.get("isNewArrival") === "true";
+    const isReturnable = formData.get("isReturnable") !== "false";
 
     // Handle image uploads
-    const images = formData.getAll('images') as File[];
+    const images = formData.getAll("images") as File[];
     const imageUrls: string[] = [];
 
     // Check if Cloudinary is configured
-    const hasCloudinary = process.env.CLOUDINARY_CLOUD_NAME && 
-                          process.env.CLOUDINARY_API_KEY && 
-                          process.env.CLOUDINARY_API_SECRET;
+    const hasCloudinary =
+      process.env.CLOUDINARY_CLOUD_NAME &&
+      process.env.CLOUDINARY_API_KEY &&
+      process.env.CLOUDINARY_API_SECRET;
 
     if (images && images.length > 0) {
       if (hasCloudinary) {
         // Use Cloudinary for both local and production
-        console.log('Uploading images to Cloudinary...');
+        console.log("Uploading images to Cloudinary...");
         for (const image of images) {
           if (image && image.size > 0) {
             try {
               const buffer = Buffer.from(await image.arrayBuffer());
-              const url = await uploadToCloudinary(buffer, 'planetkids/products');
+              const url = await uploadToCloudinary(
+                buffer,
+                "planetkids/products",
+              );
               imageUrls.push(url);
-              console.log('Image uploaded to Cloudinary:', url);
+              console.log("Image uploaded to Cloudinary:", url);
             } catch (error) {
-              console.error('Failed to upload image to Cloudinary:', error);
+              console.error("Failed to upload image to Cloudinary:", error);
             }
           }
         }
       } else {
         // Fallback to local filesystem (development only)
-        console.warn('Cloudinary not configured. Using local filesystem.');
-        const uploadDir = join(process.cwd(), 'public', 'uploads', 'products');
-        
+        console.warn("Cloudinary not configured. Using local filesystem.");
+        const uploadDir = join(process.cwd(), "public", "uploads", "products");
+
         if (!existsSync(uploadDir)) {
           await mkdir(uploadDir, { recursive: true });
         }
@@ -175,9 +190,9 @@ export async function POST(request: NextRequest) {
         for (const image of images) {
           if (image && image.size > 0) {
             const buffer = Buffer.from(await image.arrayBuffer());
-            const filename = `${Date.now()}-${image.name.replace(/\s/g, '-')}`;
+            const filename = `${Date.now()}-${image.name.replace(/\s/g, "-")}`;
             const filepath = join(uploadDir, filename);
-            
+
             await writeFile(filepath, buffer);
             imageUrls.push(`/uploads/products/${filename}`);
           }
@@ -200,39 +215,43 @@ export async function POST(request: NextRequest) {
         ageGroup: ageGroup as any,
         isFeatured,
         isNewArrival,
+        isReturnable,
         isActive: true, // Make product active by default
         categories: {
           create: categoryIds.map((categoryId: string) => ({
-            categoryId
-          }))
+            categoryId,
+          })),
         },
         images: {
           create: imageUrls.map((url, index) => ({
             url,
             altText: name,
-            order: index
-          }))
-        }
+            order: index,
+          })),
+        },
       },
       include: {
         categories: {
           include: {
-            category: true
-          }
+            category: true,
+          },
         },
-        images: true
-      }
+        images: true,
+      },
     });
 
     return NextResponse.json(product, { status: 201 });
   } catch (error: any) {
-    console.error('Error creating product:', error);
-    console.error('Error details:', error.message, error.stack);
-    return NextResponse.json({ 
-      error: 'Failed to create product',
-      details: error.message,
-      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
-    }, { status: 500 });
+    console.error("Error creating product:", error);
+    console.error("Error details:", error.message, error.stack);
+    return NextResponse.json(
+      {
+        error: "Failed to create product",
+        details: error.message,
+        stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
+      },
+      { status: 500 },
+    );
   }
 }
 
@@ -240,41 +259,58 @@ export async function POST(request: NextRequest) {
 export async function PUT(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
-    
-    if (!session || (session.user as any).role !== 'ADMIN') {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+    if (!session || (session.user as any).role !== "ADMIN") {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const formData = await request.formData();
-    const id = formData.get('id') as string;
+    const id = formData.get("id") as string;
 
     if (!id) {
-      return NextResponse.json({ error: 'Product ID required' }, { status: 400 });
+      return NextResponse.json(
+        { error: "Product ID required" },
+        { status: 400 },
+      );
     }
 
     // Extract product data
     const updateData: any = {};
-    
-    if (formData.has('name')) updateData.name = formData.get('name');
-    if (formData.has('slug')) updateData.slug = formData.get('slug');
-    if (formData.has('description')) updateData.description = formData.get('description');
-    if (formData.has('shortDescription')) updateData.shortDescription = formData.get('shortDescription');
-    if (formData.has('price')) updateData.price = parseFloat(formData.get('price') as string);
-    if (formData.has('compareAtPrice')) updateData.compareAtPrice = parseFloat(formData.get('compareAtPrice') as string);
-    if (formData.has('sku')) updateData.sku = formData.get('sku');
-    if (formData.has('quantity')) updateData.quantity = parseInt(formData.get('quantity') as string);
-    if (formData.has('brand')) updateData.brand = formData.get('brand');
-    if (formData.has('ageGroup')) updateData.ageGroup = formData.get('ageGroup');
-    if (formData.has('isFeatured')) updateData.isFeatured = formData.get('isFeatured') === 'true';
-    if (formData.has('isNewArrival')) updateData.isNewArrival = formData.get('isNewArrival') === 'true';
-    if (formData.has('isActive')) updateData.isActive = formData.get('isActive') === 'true';
+
+    if (formData.has("name")) updateData.name = formData.get("name");
+    if (formData.has("slug")) updateData.slug = formData.get("slug");
+    if (formData.has("description"))
+      updateData.description = formData.get("description");
+    if (formData.has("shortDescription"))
+      updateData.shortDescription = formData.get("shortDescription");
+    if (formData.has("price"))
+      updateData.price = parseFloat(formData.get("price") as string);
+    if (formData.has("compareAtPrice"))
+      updateData.compareAtPrice = parseFloat(
+        formData.get("compareAtPrice") as string,
+      );
+    if (formData.has("sku")) updateData.sku = formData.get("sku");
+    if (formData.has("quantity"))
+      updateData.quantity = parseInt(formData.get("quantity") as string);
+    if (formData.has("brand")) updateData.brand = formData.get("brand");
+    if (formData.has("ageGroup"))
+      updateData.ageGroup = formData.get("ageGroup");
+    if (formData.has("isFeatured"))
+      updateData.isFeatured = formData.get("isFeatured") === "true";
+    if (formData.has("isNewArrival"))
+      updateData.isNewArrival = formData.get("isNewArrival") === "true";
+    if (formData.has("isReturnable"))
+      updateData.isReturnable = formData.get("isReturnable") !== "false";
+    if (formData.has("isActive"))
+      updateData.isActive = formData.get("isActive") === "true";
 
     // Handle new images
-    const images = formData.getAll('images') as File[];
+    const images = formData.getAll("images") as File[];
     if (images && images.length > 0) {
-      const hasCloudinary = process.env.CLOUDINARY_CLOUD_NAME && 
-                            process.env.CLOUDINARY_API_KEY && 
-                            process.env.CLOUDINARY_API_SECRET;
+      const hasCloudinary =
+        process.env.CLOUDINARY_CLOUD_NAME &&
+        process.env.CLOUDINARY_API_KEY &&
+        process.env.CLOUDINARY_API_SECRET;
       const imageUrls: string[] = [];
 
       if (hasCloudinary) {
@@ -283,17 +319,20 @@ export async function PUT(request: NextRequest) {
           if (image && image.size > 0) {
             try {
               const buffer = Buffer.from(await image.arrayBuffer());
-              const url = await uploadToCloudinary(buffer, 'planetkids/products');
+              const url = await uploadToCloudinary(
+                buffer,
+                "planetkids/products",
+              );
               imageUrls.push(url);
             } catch (error) {
-              console.error('Failed to upload image to Cloudinary:', error);
+              console.error("Failed to upload image to Cloudinary:", error);
             }
           }
         }
       } else {
         // Fallback to local filesystem
-        const uploadDir = join(process.cwd(), 'public', 'uploads', 'products');
-        
+        const uploadDir = join(process.cwd(), "public", "uploads", "products");
+
         if (!existsSync(uploadDir)) {
           await mkdir(uploadDir, { recursive: true });
         }
@@ -301,9 +340,9 @@ export async function PUT(request: NextRequest) {
         for (const image of images) {
           if (image && image.size > 0) {
             const buffer = Buffer.from(await image.arrayBuffer());
-            const filename = `${Date.now()}-${image.name.replace(/\s/g, '-')}`;
+            const filename = `${Date.now()}-${image.name.replace(/\s/g, "-")}`;
             const filepath = join(uploadDir, filename);
-            
+
             await writeFile(filepath, buffer);
             imageUrls.push(`/uploads/products/${filename}`);
           }
@@ -314,34 +353,34 @@ export async function PUT(request: NextRequest) {
         updateData.images = {
           create: imageUrls.map((url, index) => ({
             url,
-            altText: updateData.name || '',
-            order: index
-          }))
+            altText: updateData.name || "",
+            order: index,
+          })),
         };
       }
     }
 
     // Handle category updates
-    if (formData.has('categoryIds')) {
-      const categoryIdsStr = formData.get('categoryIds') as string;
-      console.log('Category IDs string:', categoryIdsStr);
+    if (formData.has("categoryIds")) {
+      const categoryIdsStr = formData.get("categoryIds") as string;
+      console.log("Category IDs string:", categoryIdsStr);
       const categoryIds = JSON.parse(categoryIdsStr);
-      console.log('Parsed category IDs:', categoryIds);
-      
+      console.log("Parsed category IDs:", categoryIds);
+
       // Delete existing categories and create new ones
       await prisma.productCategory.deleteMany({
-        where: { productId: id }
+        where: { productId: id },
       });
 
       if (categoryIds.length > 0) {
         updateData.categories = {
           create: categoryIds.map((categoryId: string) => ({
-            categoryId
-          }))
+            categoryId,
+          })),
         };
-        console.log('Creating category relationships:', categoryIds);
+        console.log("Creating category relationships:", categoryIds);
       } else {
-        console.log('No categories to link');
+        console.log("No categories to link");
       }
     }
 
@@ -351,17 +390,20 @@ export async function PUT(request: NextRequest) {
       include: {
         categories: {
           include: {
-            category: true
-          }
+            category: true,
+          },
         },
-        images: true
-      }
+        images: true,
+      },
     });
 
     return NextResponse.json(product);
   } catch (error) {
-    console.error('Error updating product:', error);
-    return NextResponse.json({ error: 'Failed to update product' }, { status: 500 });
+    console.error("Error updating product:", error);
+    return NextResponse.json(
+      { error: "Failed to update product" },
+      { status: 500 },
+    );
   }
 }
 
@@ -369,25 +411,31 @@ export async function PUT(request: NextRequest) {
 export async function DELETE(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
-    
-    if (!session || (session.user as any).role !== 'ADMIN') {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+    if (!session || (session.user as any).role !== "ADMIN") {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const { searchParams } = new URL(request.url);
-    const id = searchParams.get('id');
+    const id = searchParams.get("id");
 
     if (!id) {
-      return NextResponse.json({ error: 'Product ID required' }, { status: 400 });
+      return NextResponse.json(
+        { error: "Product ID required" },
+        { status: 400 },
+      );
     }
 
     await prisma.product.delete({
-      where: { id }
+      where: { id },
     });
 
-    return NextResponse.json({ message: 'Product deleted successfully' });
+    return NextResponse.json({ message: "Product deleted successfully" });
   } catch (error) {
-    console.error('Error deleting product:', error);
-    return NextResponse.json({ error: 'Failed to delete product' }, { status: 500 });
+    console.error("Error deleting product:", error);
+    return NextResponse.json(
+      { error: "Failed to delete product" },
+      { status: 500 },
+    );
   }
 }

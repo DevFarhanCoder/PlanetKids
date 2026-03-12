@@ -111,13 +111,13 @@ export default function ProductsClient({
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header Banner */}
-      <div className="bg-gradient-to-r from-primary-500 via-primary-600 to-orange-500 text-white py-12 md:py-16">
+      <div className="bg-gradient-to-r from-orange-500 via-pink-500 to-purple-600 text-white py-8 md:py-12">
         <div className="container-custom">
           <div className="text-center">
-            <h1 className="text-3xl md:text-5xl font-black mb-3">
-              PREMIUM <span className="text-gray-900">BOUTIQUES</span>
+            <h1 className="text-3xl md:text-5xl font-black mb-2">
+              All <span className="text-yellow-300">Products</span>
             </h1>
-            <p className="text-lg md:text-xl font-semibold opacity-90">
+            <p className="text-base md:text-lg font-semibold opacity-90">
               Discover Amazing Toys for Every Age
             </p>
           </div>
@@ -151,7 +151,7 @@ export default function ProductsClient({
           <div className="flex items-center justify-between py-3 md:py-4">
             <div className="flex items-center gap-2 md:gap-4 flex-wrap">
               <h2 className="font-bold text-sm md:text-base hidden sm:block">
-                Filter Boutiques By:
+                Filter By:
               </h2>
 
               {/* Category Dropdown */}
@@ -192,7 +192,7 @@ export default function ProductsClient({
             </div>
 
             <p className="text-gray-300 text-sm md:text-base font-medium">
-              (Showing {filteredProducts.length} Boutique
+              ({filteredProducts.length} Product
               {filteredProducts.length !== 1 ? "s" : ""})
             </p>
           </div>
