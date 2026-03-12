@@ -112,20 +112,24 @@ export default function Footer() {
           {/* Quick Links - Collapsible on Mobile */}
           <div>
             <button
-              onClick={() => toggleSection('quick')}
+              onClick={() => toggleSection("quick")}
               className="flex md:hidden items-center justify-between w-full text-gray-900 font-black text-lg mb-3"
             >
               Quick Links
-              <ChevronDown className={`w-5 h-5 transition-transform ${openSection === 'quick' ? 'rotate-180' : ''}`} />
+              <ChevronDown
+                className={`w-5 h-5 transition-transform ${openSection === "quick" ? "rotate-180" : ""}`}
+              />
             </button>
             <h4 className="hidden md:block text-gray-900 font-black text-xl mb-5">
               Quick Links
             </h4>
-            <ul className={`space-y-2 md:space-y-3 ${openSection === 'quick' ? 'block' : 'hidden md:block'}`}>
+            <ul
+              className={`space-y-2 md:space-y-3 ${openSection === "quick" ? "block" : "hidden md:block"}`}
+            >
               <li>
                 <Link
                   href="/about"
-                  className="hover:text-primary-600 transition-colors font-semibold hover:pl-2 inline-block transform transition-all text-sm md:text-base"
+                  className="hover:text-primary-600 font-semibold hover:pl-2 inline-block transform transition-all text-sm md:text-base"
                 >
                   About Us
                 </Link>
@@ -133,7 +137,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/contact"
-                  className="hover:text-primary-600 transition-colors font-semibold hover:pl-2 inline-block transform transition-all text-sm md:text-base"
+                  className="hover:text-primary-600 font-semibold hover:pl-2 inline-block transform transition-all text-sm md:text-base"
                 >
                   Contact Us
                 </Link>
@@ -141,7 +145,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/track-order"
-                  className="hover:text-primary-600 transition-colors font-semibold hover:pl-2 inline-block transform transition-all text-sm md:text-base"
+                  className="hover:text-primary-600 font-semibold hover:pl-2 inline-block transform transition-all text-sm md:text-base"
                 >
                   Track Order
                 </Link>
@@ -149,7 +153,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/bulk-order"
-                  className="hover:text-primary-600 transition-colors font-semibold hover:pl-2 inline-block transform transition-all text-sm md:text-base"
+                  className="hover:text-primary-600 font-semibold hover:pl-2 inline-block transform transition-all text-sm md:text-base"
                 >
                   Bulk Orders
                 </Link>
@@ -160,20 +164,24 @@ export default function Footer() {
           {/* Customer Service - Collapsible on Mobile */}
           <div>
             <button
-              onClick={() => toggleSection('service')}
+              onClick={() => toggleSection("service")}
               className="flex md:hidden items-center justify-between w-full text-gray-900 font-black text-lg mb-3"
             >
               Customer Service
-              <ChevronDown className={`w-5 h-5 transition-transform ${openSection === 'service' ? 'rotate-180' : ''}`} />
+              <ChevronDown
+                className={`w-5 h-5 transition-transform ${openSection === "service" ? "rotate-180" : ""}`}
+              />
             </button>
             <h4 className="hidden md:block text-gray-900 font-black text-xl mb-5">
               Customer Service
             </h4>
-            <ul className={`space-y-2 md:space-y-3 ${openSection === 'service' ? 'block' : 'hidden md:block'}`}>
+            <ul
+              className={`space-y-2 md:space-y-3 ${openSection === "service" ? "block" : "hidden md:block"}`}
+            >
               <li>
                 <Link
                   href="/shipping-policy"
-                  className="hover:text-primary-600 transition-colors font-semibold hover:pl-2 inline-block transform transition-all text-sm md:text-base"
+                  className="hover:text-primary-600 font-semibold hover:pl-2 inline-block transform transition-all text-sm md:text-base"
                 >
                   Shipping Policy
                 </Link>
@@ -181,7 +189,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/return-policy"
-                  className="hover:text-primary-600 transition-colors font-semibold hover:pl-2 inline-block transform transition-all text-sm md:text-base"
+                  className="hover:text-primary-600 font-semibold hover:pl-2 inline-block transform transition-all text-sm md:text-base"
                 >
                   Return & Refund
                 </Link>
@@ -189,7 +197,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/privacy-policy"
-                  className="hover:text-primary-600 transition-colors font-semibold hover:pl-2 inline-block transform transition-all text-sm md:text-base"
+                  className="hover:text-primary-600 font-semibold hover:pl-2 inline-block transform transition-all text-sm md:text-base"
                 >
                   Privacy Policy
                 </Link>
@@ -197,7 +205,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/terms"
-                  className="hover:text-primary-600 transition-colors font-semibold hover:pl-2 inline-block transform transition-all text-sm md:text-base"
+                  className="hover:text-primary-600 font-semibold hover:pl-2 inline-block transform transition-all text-sm md:text-base"
                 >
                   Terms & Conditions
                 </Link>
@@ -205,7 +213,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/faq"
-                  className="hover:text-primary-600 transition-colors font-semibold hover:pl-2 inline-block transform transition-all text-sm md:text-base"
+                  className="hover:text-primary-600 font-semibold hover:pl-2 inline-block transform transition-all text-sm md:text-base"
                 >
                   FAQs
                 </Link>
@@ -216,16 +224,20 @@ export default function Footer() {
           {/* Contact Info - Collapsible on Mobile */}
           <div>
             <button
-              onClick={() => toggleSection('contact')}
+              onClick={() => toggleSection("contact")}
               className="flex md:hidden items-center justify-between w-full text-gray-900 font-black text-lg mb-3"
             >
               Contact Us
-              <ChevronDown className={`w-5 h-5 transition-transform ${openSection === 'contact' ? 'rotate-180' : ''}`} />
+              <ChevronDown
+                className={`w-5 h-5 transition-transform ${openSection === "contact" ? "rotate-180" : ""}`}
+              />
             </button>
             <h4 className="hidden md:block text-gray-900 font-black text-xl mb-5">
               Contact Us
             </h4>
-            <ul className={`space-y-3 md:space-y-4 ${openSection === 'contact' ? 'block' : 'hidden md:block'}`}>
+            <ul
+              className={`space-y-3 md:space-y-4 ${openSection === "contact" ? "block" : "hidden md:block"}`}
+            >
               <li className="flex items-start gap-2 md:gap-3">
                 <div className="w-8 h-8 md:w-10 md:h-10 bg-white rounded-xl flex items-center justify-center flex-shrink-0 shadow-soft">
                   <MapPin className="w-4 h-4 md:w-5 md:h-5 text-primary-600" />
@@ -258,7 +270,9 @@ export default function Footer() {
                 </a>
               </li>
             </ul>
-            <div className={`mt-4 md:mt-6 bg-white rounded-xl md:rounded-2xl p-3 md:p-4 shadow-soft ${openSection === 'contact' ? 'block' : 'hidden md:block'}`}>
+            <div
+              className={`mt-4 md:mt-6 bg-white rounded-xl md:rounded-2xl p-3 md:p-4 shadow-soft ${openSection === "contact" ? "block" : "hidden md:block"}`}
+            >
               <p className="text-xs md:text-sm font-black text-gray-900 mb-2">
                 Customer Support Hours:
               </p>

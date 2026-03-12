@@ -1,23 +1,20 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { prisma } from '@/lib/prisma';
+import { NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { prisma } from "@/lib/prisma";
 
 // GET - Fetch all videos
 export async function GET() {
   try {
     const videos = await prisma.video.findMany({
-      orderBy: [
-        { displayOrder: 'asc' },
-        { createdAt: 'desc' }
-      ]
+      orderBy: [{ displayOrder: "asc" }, { createdAt: "desc" }],
     });
 
     return NextResponse.json(videos);
   } catch (error) {
-    console.error('Error fetching videos:', error);
+    console.error("Error fetching videos:", error);
     return NextResponse.json(
-      { error: 'Failed to fetch videos' },
-      { status: 500 }
+      { error: "Failed to fetch videos" },
+      { status: 500 },
     );
   }
 }
@@ -26,12 +23,9 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession();
-    
-    if (!session || (session.user as any).role !== 'ADMIN') {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
+
+    if (!session || (session.user as any).role !== "ADMIN") {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const body = await request.json();
@@ -54,7 +48,7 @@ export async function POST(request: NextRequest) {
         videoUrl,
         thumbnail: thumbnail || null,
         duration: duration || null,
-        videoType: videoType || 'URL',
+        videoType: videoType || "URL",
         isActive: isActive !== undefined ? isActive : true,
         isFeatured: isFeatured !== undefined ? isFeatured : false,
         displayOrder: displayOrder || 0,
@@ -63,10 +57,10 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(video, { status: 201 });
   } catch (error) {
-    console.error('Error creating video:', error);
+    console.error("Error creating video:", error);
     return NextResponse.json(
-      { error: 'Failed to create video' },
-      { status: 500 }
+      { error: "Failed to create video" },
+      { status: 500 },
     );
   }
 }

@@ -1,12 +1,12 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
-    const query = searchParams.get('q');
+    const query = searchParams.get("q");
 
     if (!query || query.trim().length < 2) {
       return NextResponse.json([]);
@@ -20,8 +20,8 @@ export async function GET(request: NextRequest) {
         where: {
           isActive: true,
           OR: [
-            { name: { contains: searchTerm, mode: 'insensitive' } },
-            { brand: { contains: searchTerm, mode: 'insensitive' } },
+            { name: { contains: searchTerm, mode: "insensitive" } },
+            { brand: { contains: searchTerm, mode: "insensitive" } },
           ],
         },
         select: {
@@ -31,20 +31,17 @@ export async function GET(request: NextRequest) {
           price: true,
           images: {
             take: 1,
-            orderBy: { order: 'asc' },
+            orderBy: { order: "asc" },
           },
           brand: true,
         },
         take: 8,
-        orderBy: [
-          { viewCount: 'desc' },
-          { salesCount: 'desc' },
-        ],
+        orderBy: [{ viewCount: "desc" }, { salesCount: "desc" }],
       }),
       prisma.category.findMany({
         where: {
           isActive: true,
-          name: { contains: searchTerm, mode: 'insensitive' },
+          name: { contains: searchTerm, mode: "insensitive" },
         },
         select: {
           id: true,
@@ -73,24 +70,27 @@ export async function GET(request: NextRequest) {
         price: Number(p.price),
         image: p.images[0]?.url || null,
         brand: p.brand,
-        type: 'product',
+        type: "product",
       })),
       categories: categories.map((c) => ({
         id: c.id,
         name: c.name,
         slug: c.slug,
         icon: c.icon,
-        type: 'category',
+        type: "category",
       })),
       brands: brands.map((brand) => ({
         name: brand,
-        type: 'brand',
+        type: "brand",
       })),
     };
 
     return NextResponse.json(suggestions);
   } catch (error) {
-    console.error('Error fetching search suggestions:', error);
-    return NextResponse.json({ error: 'Failed to fetch suggestions' }, { status: 500 });
+    console.error("Error fetching search suggestions:", error);
+    return NextResponse.json(
+      { error: "Failed to fetch suggestions" },
+      { status: 500 },
+    );
   }
 }
