@@ -129,7 +129,7 @@ export default function Navbar() {
         } finally {
           setLoadingSuggestions(false);
         }
-      }, 300);
+      }, 200);
     } else {
       setShowSuggestions(false);
       setSearchSuggestions(null);
