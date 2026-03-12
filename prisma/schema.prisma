@@ -638,6 +638,40 @@ model HomeSectionItem {
   @@index([displayOrder])
 }
 
+// ============================================
+// VIDEOS / MEDIA
+// ============================================
+
+model Video {
+  id          String   @id @default(cuid())
+  title       String
+  description String?  @db.Text
+  
+  // Video source - can be URL or uploaded file path
+  videoUrl    String   // YouTube URL, Vimeo URL, or uploaded video path
+  thumbnail   String?  // Custom thumbnail image URL
+  
+  duration    String?  // Duration in format "5:32"
+  videoType   VideoType @default(URL)
+  
+  viewCount   Int      @default(0)
+  isActive    Boolean  @default(true)
+  isFeatured  Boolean  @default(false)
+  
+  displayOrder Int     @default(0)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([isActive, isFeatured])
+  @@index([displayOrder])
+}
+
+enum VideoType {
+  URL          // External URL (YouTube, Vimeo, etc.)
+  UPLOAD       // Uploaded video file
+}
+
 model SiteSettings {
   id    String @id @default(cuid())
   key   String @unique

@@ -13,7 +13,8 @@ import {
   LogOut,
   Menu,
   X,
-  Layout
+  Layout,
+  Video
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
@@ -22,6 +23,7 @@ const navigation = [
   { name: 'Products', href: '/admin/products', icon: Package },
   { name: 'Categories', href: '/admin/categories', icon: FolderTree },
   { name: 'Home Sections', href: '/admin/home-sections', icon: Layout },
+  { name: 'Videos', href: '/admin/videos', icon: Video },
   { name: 'Orders', href: '/admin/orders', icon: ShoppingCart },
   { name: 'Customers', href: '/admin/customers', icon: Users },
   { name: 'Settings', href: '/admin/settings', icon: Settings },

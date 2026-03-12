@@ -39,9 +39,14 @@ export default function Navbar() {
   const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 });
   const [mounted, setMounted] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [searchSuggestions, setSearchSuggestions] = useState<any>(null);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [loadingSuggestions, setLoadingSuggestions] = useState(false);
   const buttonRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const searchContainerRef = useRef<HTMLDivElement | null>(null);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -98,6 +103,54 @@ export default function Navbar() {
     window.addEventListener("cartUpdated", handleCartUpdate);
     return () => window.removeEventListener("cartUpdated", handleCartUpdate);
   }, [session]);
+
+  // Fetch search suggestions
+  useEffect(() => {
+    if (searchQuery.trim().length >= 2) {
+      setLoadingSuggestions(true);
+      
+      // Debounce search
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current);
+      }
+      
+      searchTimeoutRef.current = setTimeout(async () => {
+        try {
+          const response = await fetch(`/api/search/suggestions?q=${encodeURIComponent(searchQuery)}`);
+          if (response.ok) {
+            const data = await response.json();
+            setSearchSuggestions(data);
+            setShowSuggestions(true);
+          }
+        } catch (error) {
+          console.error('Error fetching suggestions:', error);
+        } finally {
+          setLoadingSuggestions(false);
+        }
+      }, 300);
+    } else {
+      setShowSuggestions(false);
+      setSearchSuggestions(null);
+    }
+    
+    return () => {
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current);
+      }
+    };
+  }, [searchQuery]);
+
+  // Close suggestions when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (searchContainerRef.current && !searchContainerRef.current.contains(event.target as Node)) {
+        setShowSuggestions(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const fetchCounts = async () => {
     try {
@@ -234,12 +287,13 @@ export default function Navbar() {
           </Link>
 
           {/* Search Bar */}
-          <div className="hidden md:flex flex-1 max-w-lg mx-6">
+          <div className="hidden md:flex flex-1 max-w-lg mx-6" ref={searchContainerRef}>
             <form onSubmit={handleSearch} className="relative w-full">
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
+                onFocus={() => searchQuery.trim().length >= 2 && setShowSuggestions(true)}
                 placeholder="Search toys, learning kits, school essentials..."
                 className="w-full px-4 py-2 pr-10 border-2 border-primary-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-primary-500 transition-all bg-orange-50 placeholder:text-gray-500 text-sm"
               />
@@ -249,6 +303,123 @@ export default function Navbar() {
               >
                 <Search className="w-4 h-4" />
               </button>
+
+              {/* Search Suggestions Dropdown */}
+              {showSuggestions && searchSuggestions && (
+                <div className="absolute top-full mt-2 left-0 right-0 bg-white rounded-xl shadow-2xl border-2 border-gray-100 z-50 max-h-[500px] overflow-y-auto">
+                  {loadingSuggestions ? (
+                    <div className="p-4 text-center">
+                      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary mx-auto"></div>
+                    </div>
+                  ) : (
+                    <div className="p-2">
+                      {/* Products */}
+                      {searchSuggestions.products && searchSuggestions.products.length > 0 && (
+                        <div className="mb-2">
+                          <div className="px-3 py-2 text-xs font-bold text-gray-500 uppercase">Products</div>
+                          {searchSuggestions.products.map((product: any) => (
+                            <Link
+                              key={product.id}
+                              href={`/products/${product.slug}`}
+                              onClick={() => {
+                                setShowSuggestions(false);
+                                setSearchQuery('');
+                              }}
+                              className="flex items-center gap-3 px-3 py-2 hover:bg-gray-50 rounded-lg transition-colors"
+                            >
+                              {product.image ? (
+                                <img
+                                  src={product.image}
+                                  alt={product.name}
+                                  className="w-10 h-10 object-cover rounded"
+                                />
+                              ) : (
+                                <div className="w-10 h-10 bg-gray-200 rounded flex items-center justify-center text-lg">
+                                  🧸
+                                </div>
+                              )}
+                              <div className="flex-1 min-w-0">
+                                <div className="text-sm font-medium text-gray-900 truncate">{product.name}</div>
+                                <div className="text-xs text-primary-600 font-semibold">₹{product.price.toLocaleString('en-IN')}</div>
+                              </div>
+                            </Link>
+                          ))}
+                        </div>
+                      )}
+
+                      {/* Categories */}
+                      {searchSuggestions.categories && searchSuggestions.categories.length > 0 && (
+                        <div className="mb-2">
+                          <div className="px-3 py-2 text-xs font-bold text-gray-500 uppercase">Categories</div>
+                          {searchSuggestions.categories.map((category: any) => (
+                            <Link
+                              key={category.id}
+                              href={`/categories/${category.slug}`}
+                              onClick={() => {
+                                setShowSuggestions(false);
+                                setSearchQuery('');
+                              }}
+                              className="flex items-center gap-3 px-3 py-2 hover:bg-gray-50 rounded-lg transition-colors"
+                            >
+                              <div className="w-10 h-10 bg-primary-100 rounded-lg flex items-center justify-center text-2xl">
+                                {category.icon || '📦'}
+                              </div>
+                              <div className="text-sm font-medium text-gray-900">{category.name}</div>
+                            </Link>
+                          ))}
+                        </div>
+                      )}
+
+                      {/* Brands */}
+                      {searchSuggestions.brands && searchSuggestions.brands.length > 0 && (
+                        <div className="mb-2">
+                          <div className="px-3 py-2 text-xs font-bold text-gray-500 uppercase">Brands</div>
+                          {searchSuggestions.brands.map((brand: any, index: number) => (
+                            <Link
+                              key={index}
+                              href={`/products?search=${encodeURIComponent(brand.name)}`}
+                              onClick={() => {
+                                setShowSuggestions(false);
+                                setSearchQuery('');
+                              }}
+                              className="flex items-center gap-3 px-3 py-2 hover:bg-gray-50 rounded-lg transition-colors"
+                            >
+                              <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
+                                <span className="text-xs font-bold text-gray-600">B</span>
+                              </div>
+                              <div className="text-sm font-medium text-gray-900">{brand.name}</div>
+                            </Link>
+                          ))}
+                        </div>
+                      )}
+
+                      {/* No results */}
+                      {searchSuggestions.products?.length === 0 &&
+                        searchSuggestions.categories?.length === 0 &&
+                        searchSuggestions.brands?.length === 0 && (
+                          <div className="px-3 py-6 text-center text-gray-500">
+                            <p className="text-sm">No results found for "{searchQuery}"</p>
+                          </div>
+                        )}
+
+                      {/* View All Results */}
+                      {(searchSuggestions.products?.length > 0 || searchSuggestions.categories?.length > 0) && (
+                        <div className="border-t border-gray-100 mt-2 pt-2">
+                          <Link
+                            href={`/products?search=${encodeURIComponent(searchQuery)}`}
+                            onClick={() => {
+                              setShowSuggestions(false);
+                            }}
+                            className="block px-3 py-2 text-center text-sm font-semibold text-primary-600 hover:bg-primary-50 rounded-lg transition-colors"
+                          >
+                            View All Results for "{searchQuery}"
+                          </Link>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
             </form>
           </div>
 
