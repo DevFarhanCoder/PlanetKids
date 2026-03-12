@@ -1,9 +1,9 @@
-import { prisma } from '@/lib/prisma';
-import ProductCard from '@/components/products/ProductCard';
-import { Sparkles } from 'lucide-react';
-import Link from 'next/link';
+import { prisma } from "@/lib/prisma";
+import ProductCard from "@/components/products/ProductCard";
+import { Sparkles } from "lucide-react";
+import Link from "next/link";
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 async function getNewArrivals() {
   try {
@@ -15,21 +15,23 @@ async function getNewArrivals() {
       include: {
         images: {
           take: 1,
-          orderBy: { order: 'asc' }
-        }
+          orderBy: { order: "asc" },
+        },
       },
       orderBy: {
-        createdAt: 'desc'
+        createdAt: "desc",
       },
-      take: 24
+      take: 24,
     });
 
-    return products.map(product => ({
+    return products.map((product) => ({
       id: product.id,
       name: product.name,
       slug: product.slug,
       price: Number(product.price),
-      compareAtPrice: product.compareAtPrice ? Number(product.compareAtPrice) : null,
+      compareAtPrice: product.compareAtPrice
+        ? Number(product.compareAtPrice)
+        : null,
       image: product.images[0]?.url || null,
       averageRating: Number(product.averageRating),
       reviewCount: product.reviewCount,
@@ -37,7 +39,7 @@ async function getNewArrivals() {
       isActive: product.isActive,
     }));
   } catch (error) {
-    console.error('Error fetching new arrivals:', error);
+    console.error("Error fetching new arrivals:", error);
     return [];
   }
 }
@@ -68,7 +70,9 @@ export default async function NewArrivalsPage() {
         {products.length > 0 ? (
           <>
             <div className="mb-8">
-              <p className="text-gray-600">Showing {products.length} new products</p>
+              <p className="text-gray-600">
+                Showing {products.length} new products
+              </p>
             </div>
 
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -80,9 +84,13 @@ export default async function NewArrivalsPage() {
         ) : (
           <div className="text-center py-16">
             <Sparkles className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-2xl font-bold text-gray-900 mb-2">No New Arrivals Yet</h3>
-            <p className="text-gray-600 mb-6">Check back soon for exciting new products!</p>
-            <Link 
+            <h3 className="text-2xl font-bold text-gray-900 mb-2">
+              No New Arrivals Yet
+            </h3>
+            <p className="text-gray-600 mb-6">
+              Check back soon for exciting new products!
+            </p>
+            <Link
               href="/products"
               className="inline-block bg-primary-600 text-white px-8 py-3 rounded-full font-bold hover:bg-primary-700 transition-colors"
             >
