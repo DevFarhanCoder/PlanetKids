@@ -25,7 +25,8 @@ export default function NavigationProgress() {
     let current = 0;
     timerRef.current = setInterval(() => {
       // Slow down as it approaches 85%
-      const increment = current < 30 ? 8 : current < 60 ? 4 : current < 80 ? 1.5 : 0.3;
+      const increment =
+        current < 30 ? 8 : current < 60 ? 4 : current < 80 ? 1.5 : 0.3;
       current = Math.min(current + increment, 85);
       setProgress(current);
     }, 50);
@@ -50,7 +51,10 @@ export default function NavigationProgress() {
       className="fixed top-0 left-0 z-[9999] h-[3px] pointer-events-none"
       style={{
         width: `${progress}%`,
-        transition: progress === 100 ? "width 0.2s ease-out, opacity 0.3s ease 0.1s" : "width 0.4s ease-out",
+        transition:
+          progress === 100
+            ? "width 0.2s ease-out, opacity 0.3s ease 0.1s"
+            : "width 0.4s ease-out",
         opacity: progress === 100 ? 0 : 1,
         background: "linear-gradient(90deg, #F59E0B, #EF4444, #EC4899)",
         boxShadow: "0 0 8px rgba(245, 158, 11, 0.8)",

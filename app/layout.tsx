@@ -9,8 +9,10 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "PlanetKids - Quality Kids Products | Toys, Learning Kits & More",
-  description: "Explore PlanetKids for the best selection of toys, learning kits, school essentials, bags, stationery, and baby products. Safe, quality products for children of all ages.",
-  keywords: "kids toys, learning kits, school essentials, kids bags, stationery, baby products, educational toys",
+  description:
+    "Explore PlanetKids for the best selection of toys, learning kits, school essentials, bags, stationery, and baby products. Safe, quality products for children of all ages.",
+  keywords:
+    "kids toys, learning kits, school essentials, kids bags, stationery, baby products, educational toys",
   authors: [{ name: "PlanetKids" }],
   openGraph: {
     type: "website",
@@ -46,9 +48,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <NavigationProgress />
         <Providers>
-          <ConditionalLayout>
-            {children}
-          </ConditionalLayout>
+          <ConditionalLayout>{children}</ConditionalLayout>
         </Providers>
       </body>
     </html>
