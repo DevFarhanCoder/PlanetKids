@@ -146,6 +146,10 @@ model Product {
   isNewArrival Boolean @default(false)
   isTrending   Boolean @default(false)
   isOnSale     Boolean @default(false)
+  
+  // Return Policy
+  isReturnable      Boolean @default(true)
+  returnPolicyNote  String?  @db.Text
 
   viewCount     Int      @default(0)
   salesCount    Int      @default(0)

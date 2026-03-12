@@ -6,11 +6,42 @@ import Image from 'next/image';
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
-const ageData: Record<string, { name: string; description: string; icon: string; ageRange: string }> = {
-  '0-2': { name: '0-2 Years', description: 'Safe products for babies and toddlers', icon: '👶', ageRange: '0-2 years' },
-  '3-5': { name: '3-5 Years', description: 'Perfect for preschoolers exploring the world', icon: '🧒', ageRange: '3-5 years' },
-  '6-8': { name: '6-8 Years', description: 'Engaging toys for early school age', icon: '👧', ageRange: '6-8 years' },
-  '9-12': { name: '9-12 Years', description: 'Advanced products for pre-teens', icon: '👦', ageRange: '9-12 years' },
+const ageData: Record<string, { name: string; description: string; icon: string; ageRange: string; ageGroups: string[] }> = {
+  '0-2': { 
+    name: '0-2 Years', 
+    description: 'Safe products for babies and toddlers', 
+    icon: '👶', 
+    ageRange: '0-2 years',
+    ageGroups: ['ZERO_TO_ONE', 'ONE_TO_TWO']
+  },
+  '3-5': { 
+    name: '3-5 Years', 
+    description: 'Perfect for preschoolers exploring the world', 
+    icon: '🧒', 
+    ageRange: '3-5 years',
+    ageGroups: ['TWO_TO_FOUR', 'FOUR_TO_SIX']
+  },
+  '6-8': { 
+    name: '6-8 Years', 
+    description: 'Engaging toys for early school age', 
+    icon: '👧', 
+    ageRange: '6-8 years',
+    ageGroups: ['SIX_TO_EIGHT']
+  },
+  '9-12': { 
+    name: '9-12 Years', 
+    description: 'Advanced products for pre-teens', 
+    icon: '👦', 
+    ageRange: '9-12 years',
+    ageGroups: ['EIGHT_PLUS']
+  },
+  '12-plus': { 
+    name: '12+ Years', 
+    description: 'Perfect for teens and young adults', 
+    icon: '🧑', 
+    ageRange: '12+ years',
+    ageGroups: ['EIGHT_PLUS']
+  },
 };
 
 async function getProductsByAge(slug: string) {
@@ -19,11 +50,13 @@ async function getProductsByAge(slug: string) {
     return null;
   }
 
-  // Fetch products from database
-  // For now, fetch featured products as example
+  // Fetch products filtered by age group
   const products = await prisma.product.findMany({
     where: {
       isActive: true,
+      ageGroup: {
+        in: ageInfo.ageGroups as any
+      }
     },
     include: {
       images: {
@@ -31,7 +64,7 @@ async function getProductsByAge(slug: string) {
         orderBy: { order: 'asc' }
       }
     },
-    take: 20,
+    take: 50,
     orderBy: { createdAt: 'desc' }
   });
 

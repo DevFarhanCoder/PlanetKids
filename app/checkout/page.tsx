@@ -295,23 +295,23 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Checkout</h1>
-          <p className="text-gray-600">Complete your order</p>
+    <div className="min-h-screen bg-gray-50 py-4 md:py-8">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
+        <div className="mb-6 md:mb-8">
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-1 md:mb-2">Checkout</h1>
+          <p className="text-sm md:text-base text-gray-600">Complete your order</p>
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-8">
+        <div className="grid lg:grid-cols-3 gap-4 md:gap-8">
           {/* Left Column - Forms */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="lg:col-span-2 space-y-4 md:space-y-6">
             {/* Delivery Address */}
-            <div className="bg-white rounded-xl shadow-sm p-6">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
-                  <Truck className="w-5 h-5 text-primary" />
+            <div className="bg-white rounded-lg md:rounded-xl shadow-sm p-4 md:p-6">
+              <div className="flex items-center gap-2 md:gap-3 mb-4 md:mb-6">
+                <div className="w-8 h-8 md:w-10 md:h-10 bg-primary/10 rounded-full flex items-center justify-center">
+                  <Truck className="w-4 h-4 md:w-5 md:h-5 text-primary" />
                 </div>
-                <h2 className="text-xl font-bold text-gray-900">
+                <h2 className="text-lg md:text-xl font-bold text-gray-900">
                   Delivery Address
                 </h2>
               </div>
@@ -493,12 +493,12 @@ export default function CheckoutPage() {
             </div>
 
             {/* Payment Method */}
-            <div className="bg-white rounded-xl shadow-sm p-6">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
-                  <CreditCard className="w-5 h-5 text-primary" />
+            <div className="bg-white rounded-lg md:rounded-xl shadow-sm p-4 md:p-6">
+              <div className="flex items-center gap-2 md:gap-3 mb-4 md:mb-6">
+                <div className="w-8 h-8 md:w-10 md:h-10 bg-primary/10 rounded-full flex items-center justify-center">
+                  <CreditCard className="w-4 h-4 md:w-5 md:h-5 text-primary" />
                 </div>
-                <h2 className="text-xl font-bold text-gray-900">
+                <h2 className="text-lg md:text-xl font-bold text-gray-900">
                   Payment Method
                 </h2>
               </div>
@@ -566,8 +566,8 @@ export default function CheckoutPage() {
 
           {/* Right Column - Order Summary */}
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-xl shadow-sm p-6 sticky top-4">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">
+            <div className="bg-white rounded-lg md:rounded-xl shadow-sm p-4 md:p-6 lg:sticky lg:top-4">
+              <h2 className="text-lg md:text-xl font-bold text-gray-900 mb-4">
                 Order Summary
               </h2>
 

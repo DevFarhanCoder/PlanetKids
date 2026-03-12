@@ -38,7 +38,15 @@ async function getCategories() {
   return categories;
 }
 
-export default async function ProductsPage() {
+export default async function ProductsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }> | { [key: string]: string | string[] | undefined };
+}) {
+  // Await searchParams if it's a Promise (Next.js 15+)
+  const params = searchParams instanceof Promise ? await searchParams : searchParams;
+  const searchQuery = typeof params.search === 'string' ? params.search : '';
+  
   const [products, categories] = await Promise.all([
     getProducts(),
     getCategories(),
@@ -52,5 +60,5 @@ export default async function ProductsPage() {
     costPrice: product.costPrice ? Number(product.costPrice) : null,
   }));
 
-  return <ProductsClient products={serializedProducts} categories={categories} />;
+  return <ProductsClient products={serializedProducts} categories={categories} initialSearch={searchQuery} />;
 }

@@ -49,13 +49,16 @@ const ageGroups = [
 export default function ProductsClient({
   products,
   categories,
+  initialSearch = '',
 }: {
   products: Product[];
   categories: Category[];
+  initialSearch?: string;
 }) {
   const [selectedCategory, setSelectedCategory] = useState("All Categories");
   const [selectedAge, setSelectedAge] = useState("All Ages");
   const [selectedBrand, setSelectedBrand] = useState("All Brands");
+  const [searchQuery, setSearchQuery] = useState(initialSearch);
   const [showFilters, setShowFilters] = useState(false);
   const [filteredProducts, setFilteredProducts] = useState(products);
 
@@ -69,6 +72,16 @@ export default function ProductsClient({
 
   useEffect(() => {
     let filtered = products;
+
+    // Search filter
+    if (searchQuery && searchQuery.trim() !== '') {
+      const query = searchQuery.toLowerCase().trim();
+      filtered = filtered.filter((p) => 
+        p.name.toLowerCase().includes(query) ||
+        (p.brand && p.brand.toLowerCase().includes(query)) ||
+        p.categories.some(c => c.category.name.toLowerCase().includes(query))
+      );
+    }
 
     if (selectedCategory !== "All Categories") {
       filtered = filtered.filter((p) =>
@@ -85,7 +98,7 @@ export default function ProductsClient({
     }
 
     setFilteredProducts(filtered);
-  }, [selectedCategory, selectedAge, selectedBrand, products]);
+  }, [selectedCategory, selectedAge, selectedBrand, searchQuery, products]);
 
   const calculateDiscount = (price: number, comparePrice: number | null) => {
     if (!comparePrice || comparePrice <= price) return null;
@@ -111,6 +124,25 @@ export default function ProductsClient({
       {/* Filter Bar */}
       <div className="bg-gray-800 text-white sticky top-[72px] z-40 shadow-lg">
         <div className="container-custom">
+          {/* Search Bar */}
+          {searchQuery && (
+            <div className="pt-4 pb-2">
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="text-sm font-medium text-gray-300">Searching for:</span>
+                <div className="bg-primary-600 text-white px-4 py-1.5 rounded-full text-sm font-semibold flex items-center gap-2">
+                  "{searchQuery}"
+                  <button
+                    onClick={() => setSearchQuery('')}
+                    className="hover:text-gray-200 transition-colors"
+                    aria-label="Clear search"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+          
           <div className="flex items-center justify-between py-3 md:py-4">
             <div className="flex items-center gap-2 md:gap-4 flex-wrap">
               <h2 className="font-bold text-sm md:text-base hidden sm:block">

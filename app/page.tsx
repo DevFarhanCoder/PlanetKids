@@ -597,7 +597,7 @@ export default async function Home() {
 
             {/* Action Figures & Superheroes */}
             <Link
-              href="/categories/action-figures"
+              href="/categories/action-figures-superheroes"
               className="group cursor-pointer block"
             >
               <div className="bg-white rounded-xl md:rounded-2xl p-3 md:p-4 transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 hover:shadow-xl text-center overflow-hidden border-2 border-red-200 hover:border-red-400">
@@ -618,7 +618,7 @@ export default async function Home() {
 
             {/* Dolls & Doll Accessories */}
             <Link
-              href="/categories/fashion-dolls"
+              href="/categories/dolls-doll-accessories"
               className="group cursor-pointer block"
             >
               <div className="bg-white rounded-xl md:rounded-2xl p-3 md:p-4 transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 hover:shadow-xl text-center overflow-hidden border-2 border-pink-200 hover:border-pink-400">
@@ -660,7 +660,7 @@ export default async function Home() {
 
             {/* Ride-On Toys & Scooters */}
             <Link
-              href="/categories/push-cars"
+              href="/categories/ride-on-toys-scooters"
               className="group cursor-pointer block"
             >
               <div className="bg-white rounded-xl md:rounded-2xl p-3 md:p-4 transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 hover:shadow-xl text-center overflow-hidden border-2 border-orange-200 hover:border-orange-400">
@@ -681,7 +681,7 @@ export default async function Home() {
 
             {/* Soft Toys & Plush */}
             <Link
-              href="/categories/teddy-bears"
+              href="/categories/soft-toys-plush"
               className="group cursor-pointer block"
             >
               <div className="bg-white rounded-xl md:rounded-2xl p-3 md:p-4 transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 hover:shadow-xl text-center overflow-hidden border-2 border-rose-200 hover:border-rose-400">
@@ -867,7 +867,7 @@ export default async function Home() {
         ]}
       />
 
-      {/* View All Boutiques Button */}
+      {/* View All Products Button */}
       <section className="py-8 bg-white">
         <div className="container mx-auto px-4 md:px-6 lg:px-8 max-w-[1400px]">
           <Link
@@ -875,7 +875,7 @@ export default async function Home() {
             className="block w-full bg-white border-2 border-gray-200 rounded-2xl py-4 md:py-5 text-center hover:border-primary-400 hover:shadow-lg transition-all duration-300 group"
           >
             <span className="text-base md:text-lg font-bold text-gray-700 group-hover:text-primary-600 transition-colors flex items-center justify-center gap-2">
-              View All Boutiques
+              View All Products
               <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </span>
           </Link>
