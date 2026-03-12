@@ -75,7 +75,7 @@ export default function Footer() {
             </p>
             <div className="flex gap-3">
               <a
-                href="https://www.instagram.com/myplanetkids"
+                href="https://www.instagram.com/my_planet_kids?utm_source=qr&igsh=MWFhcW5wOXV2eXBmZQ=="
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-12 h-12 bg-white hover:bg-gradient-to-r hover:from-pink-400 hover:to-pink-500 rounded-2xl flex items-center justify-center transition-all shadow-soft hover:shadow-soft-lg transform hover:-translate-y-1 group"
@@ -219,7 +219,7 @@ export default function Footer() {
         {/* Mobile Social Links */}
         <div className="md:hidden mt-4 flex justify-center gap-3">
           <a
-            href="https://www.instagram.com/myplanetkids"
+            href="https://www.instagram.com/my_planet_kids?utm_source=qr&igsh=MWFhcW5wOXV2eXBmZQ=="
             target="_blank"
             rel="noopener noreferrer"
             className="w-9 h-9 bg-white rounded-xl flex items-center justify-center shadow-sm"

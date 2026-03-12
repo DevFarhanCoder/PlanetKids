@@ -175,7 +175,7 @@ export default async function Home() {
     switch (section.sectionType) {
       case "GRID":
         return (
-          <section key={section.id} className="py-10 bg-white">
+          <section key={section.id} className="py-5 md:py-8 bg-white">
             <div className="container-custom">
               <div className="text-center mb-8">
                 <h2 className="text-2xl md:text-3xl lg:text-4xl font-black text-gray-900 mb-2">
@@ -805,7 +805,7 @@ export default async function Home() {
       />
 
       {/* View All Products Button */}
-      <section className="py-4 bg-white">
+      <section className="py-2 bg-white">
         <div className="container mx-auto px-4 md:px-6 lg:px-8 max-w-[1400px]">
           <Link
             href="/products"
@@ -823,28 +823,28 @@ export default async function Home() {
       {dynamicSections.map((section: any) => renderSection(section))}
 
       {/* Video/Reel Section - Engaging Content */}
-      <section className="py-4 md:py-8 bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50">
+      <section className="py-3 md:py-5 bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50">
         <div className="container mx-auto px-4 md:px-6 lg:px-8 max-w-[1400px]">
-          <div className="mb-6 md:mb-8 text-center">
-            <h2 className="text-2xl md:text-3xl lg:text-4xl font-black text-gray-900 mb-2">
+          <div className="mb-3 flex items-center justify-between">
+            <h2 className="text-lg md:text-xl font-black text-gray-900">
               Watch Our{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600">
                 Fun Videos! 🎥
               </span>
             </h2>
-            <p className="text-gray-600 text-sm md:text-base font-semibold">
+            <p className="text-gray-500 text-xs font-semibold">
               See our amazing toys in action
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+          <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-2 snap-x snap-mandatory">
             {/* Video Card 1 */}
-            <div className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border-2 border-purple-200 hover:border-purple-400">
-              <div className="relative aspect-video bg-gradient-to-br from-purple-100 to-pink-100">
+            <div className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 border border-purple-200 flex-shrink-0 w-[150px] sm:w-[165px] snap-center">
+              <div className="relative h-[100px] bg-gradient-to-br from-purple-100 to-pink-100">
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform cursor-pointer">
+                  <div className="w-9 h-9 bg-white rounded-full flex items-center justify-center shadow cursor-pointer">
                     <svg
-                      className="w-8 h-8 text-purple-600 ml-1"
+                      className="w-4 h-4 text-purple-600 ml-0.5"
                       fill="currentColor"
                       viewBox="0 0 24 24"
                     >
@@ -852,27 +852,27 @@ export default async function Home() {
                     </svg>
                   </div>
                 </div>
-                <div className="absolute top-3 left-3 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded">
+                <div className="absolute top-1.5 left-1.5 bg-red-600 text-white text-[9px] font-bold px-1.5 py-0.5 rounded">
                   LIVE
                 </div>
               </div>
-              <div className="p-4">
-                <h3 className="font-bold text-gray-900 mb-1 text-sm md:text-base">
-                  Toy Unboxing & Review
+              <div className="p-2">
+                <h3 className="font-bold text-gray-900 text-[11px] leading-tight line-clamp-1">
+                  Toy Unboxing &amp; Review
                 </h3>
-                <p className="text-xs md:text-sm text-gray-600">
+                <p className="text-[10px] text-gray-500 mt-0.5 line-clamp-2">
                   Watch kids having fun with our latest toys!
                 </p>
               </div>
             </div>
 
             {/* Video Card 2 */}
-            <div className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border-2 border-blue-200 hover:border-blue-400">
-              <div className="relative aspect-video bg-gradient-to-br from-blue-100 to-cyan-100">
+            <div className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 border border-blue-200 flex-shrink-0 w-[150px] sm:w-[165px] snap-center">
+              <div className="relative h-[100px] bg-gradient-to-br from-blue-100 to-cyan-100">
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform cursor-pointer">
+                  <div className="w-9 h-9 bg-white rounded-full flex items-center justify-center shadow cursor-pointer">
                     <svg
-                      className="w-8 h-8 text-blue-600 ml-1"
+                      className="w-4 h-4 text-blue-600 ml-0.5"
                       fill="currentColor"
                       viewBox="0 0 24 24"
                     >
@@ -880,27 +880,27 @@ export default async function Home() {
                     </svg>
                   </div>
                 </div>
-                <div className="absolute top-3 left-3 bg-gradient-to-r from-primary-500 to-orange-500 text-white text-xs font-bold px-2 py-1 rounded">
-                  TRENDING 🔥
+                <div className="absolute top-1.5 left-1.5 bg-orange-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded">
+                  TRENDING{" "}
                 </div>
               </div>
-              <div className="p-4">
-                <h3 className="font-bold text-gray-900 mb-1 text-sm md:text-base">
+              <div className="p-2">
+                <h3 className="font-bold text-gray-900 text-[11px] leading-tight line-clamp-1">
                   Learning Toys Demo
                 </h3>
-                <p className="text-xs md:text-sm text-gray-600">
+                <p className="text-[10px] text-gray-500 mt-0.5 line-clamp-2">
                   Educational toys that make learning fun!
                 </p>
               </div>
             </div>
 
             {/* Video Card 3 */}
-            <div className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border-2 border-pink-200 hover:border-pink-400 md:col-span-2 lg:col-span-1">
-              <div className="relative aspect-video bg-gradient-to-br from-pink-100 to-rose-100">
+            <div className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 border border-pink-200 flex-shrink-0 w-[150px] sm:w-[165px] snap-center">
+              <div className="relative h-[100px] bg-gradient-to-br from-pink-100 to-rose-100">
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform cursor-pointer">
+                  <div className="w-9 h-9 bg-white rounded-full flex items-center justify-center shadow cursor-pointer">
                     <svg
-                      className="w-8 h-8 text-pink-600 ml-1"
+                      className="w-4 h-4 text-pink-600 ml-0.5"
                       fill="currentColor"
                       viewBox="0 0 24 24"
                     >
@@ -908,15 +908,15 @@ export default async function Home() {
                     </svg>
                   </div>
                 </div>
-                <div className="absolute top-3 left-3 bg-pink-600 text-white text-xs font-bold px-2 py-1 rounded">
-                  NEW ✨
+                <div className="absolute top-1.5 left-1.5 bg-pink-600 text-white text-[9px] font-bold px-1.5 py-0.5 rounded">
+                  NEW{" "}
                 </div>
               </div>
-              <div className="p-4">
-                <h3 className="font-bold text-gray-900 mb-1 text-sm md:text-base">
+              <div className="p-2">
+                <h3 className="font-bold text-gray-900 text-[11px] leading-tight line-clamp-1">
                   Holiday Gift Guide
                 </h3>
-                <p className="text-xs md:text-sm text-gray-600">
+                <p className="text-[10px] text-gray-500 mt-0.5 line-clamp-2">
                   Perfect gift ideas for every occasion!
                 </p>
               </div>
@@ -949,127 +949,71 @@ export default async function Home() {
           </div>
 
           <div className="relative">
-            <div className="flex gap-4 md:gap-6 overflow-x-auto pb-4 scrollbar-hide snap-x snap-mandatory">
+            <div className="flex gap-3 md:gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x snap-mandatory justify-start md:justify-center">
               <Link
                 href="/categories/seasonal-festival-toys"
-                className="flex-shrink-0 w-[280px] md:w-[350px] snap-center relative rounded-2xl overflow-hidden h-[350px] md:h-[400px] shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-[1.02] group cursor-pointer border-2 border-orange-200 hover:border-orange-400"
+                className="group cursor-pointer block flex-shrink-0 w-[130px] sm:w-[160px] md:w-[180px] snap-center"
               >
-                <div className="absolute inset-0 bg-gradient-to-br from-primary-500 to-orange-500">
-                  <div
-                    className="absolute inset-0 opacity-10"
-                    style={{
-                      backgroundImage:
-                        "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")",
-                    }}
-                  ></div>
-                </div>
-
-                <div className="absolute inset-0 p-6 md:p-8 flex flex-col justify-between">
-                  <div className="flex justify-between items-start">
-                    <div className="inline-flex items-center justify-center bg-orange-600 text-white rounded-full w-16 h-16 md:w-20 md:h-20 shadow-lg transform group-hover:rotate-12 transition-transform duration-300">
-                      <div className="text-center px-2">
-                        <div className="text-xs md:text-sm font-bold leading-tight">
-                          SUMMER VIBES
-                        </div>
-                      </div>
-                    </div>
+                <div className="bg-gradient-to-br from-orange-200 to-amber-300 rounded-2xl p-3 md:p-4 transition-all duration-300 transform hover:scale-105 hover:-translate-y-2 hover:shadow-xl text-center overflow-hidden h-full flex flex-col items-center">
+                  <div className="relative w-full aspect-square mb-2.5 rounded-xl overflow-hidden flex-shrink-0 shadow-sm">
+                    <Image
+                      src="/toys/Planet_Kids_Toys/6. Outdoor and Sports Toys/Cricket sets/1.jpg"
+                      alt="Seasonal Toys"
+                      fill
+                      className="object-cover"
+                      sizes="180px"
+                    />
                   </div>
-
-                  <div className="relative z-10">
-                    <h3 className="text-xl md:text-2xl font-bold text-white mb-2 drop-shadow-lg">
-                      Seasonal Toys
-                    </h3>
-                    <p className="text-white text-sm md:text-base mb-4 opacity-90">
-                      Festival & Seasonal Fun
-                    </p>
-                    <div className="flex flex-wrap items-center gap-3">
-                      <div className="inline-block bg-orange-700 text-white px-4 md:px-6 py-2 md:py-3 rounded-full font-bold text-sm md:text-base shadow-lg">
-                        UPTO 50% OFF
-                      </div>
-                    </div>
-                  </div>
+                  <h3 className="font-black text-sm md:text-base text-orange-800 group-hover:text-orange-900 transition-colors mb-0.5">
+                    Seasonal Toys
+                  </h3>
+                  <p className="text-[10px] md:text-xs text-orange-700 font-semibold">
+                    Upto 50% Off
+                  </p>
                 </div>
               </Link>
-
               <Link
                 href="/categories/water-sand-play-toys"
-                className="flex-shrink-0 w-[280px] md:w-[350px] snap-center relative rounded-2xl overflow-hidden h-[350px] md:h-[400px] shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-[1.02] group cursor-pointer border-2 border-purple-200 hover:border-purple-400"
+                className="group cursor-pointer block flex-shrink-0 w-[130px] sm:w-[160px] md:w-[180px] snap-center"
               >
-                <div className="absolute inset-0 bg-gradient-to-br from-purple-500 to-indigo-600">
-                  <div
-                    className="absolute inset-0 opacity-10"
-                    style={{
-                      backgroundImage:
-                        "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")",
-                    }}
-                  ></div>
-                </div>
-
-                <div className="absolute inset-0 p-6 md:p-8 flex flex-col justify-between">
-                  <div className="flex justify-between items-start">
-                    <div className="inline-flex items-center justify-center bg-purple-700 text-white rounded-full w-16 h-16 md:w-20 md:h-20 shadow-lg transform group-hover:rotate-12 transition-transform duration-300">
-                      <div className="text-center px-2">
-                        <div className="text-xs md:text-sm font-bold leading-tight">
-                          FESTIVE SPECIAL
-                        </div>
-                      </div>
-                    </div>
+                <div className="bg-gradient-to-br from-purple-200 to-indigo-300 rounded-2xl p-3 md:p-4 transition-all duration-300 transform hover:scale-105 hover:-translate-y-2 hover:shadow-xl text-center overflow-hidden h-full flex flex-col items-center">
+                  <div className="relative w-full aspect-square mb-2.5 rounded-xl overflow-hidden flex-shrink-0 shadow-sm">
+                    <Image
+                      src="/toys/Planet_Kids_Toys/6. Outdoor and Sports Toys/1.jpg"
+                      alt="Water Play"
+                      fill
+                      className="object-cover"
+                      sizes="180px"
+                    />
                   </div>
-
-                  <div className="relative z-10">
-                    <h3 className="text-xl md:text-2xl font-bold text-white mb-2 drop-shadow-lg">
-                      Water Play Toys
-                    </h3>
-                    <p className="text-white text-sm md:text-base mb-4 opacity-90">
-                      Splash into Fun
-                    </p>
-                    <div className="flex flex-wrap items-center gap-3">
-                      <div className="inline-block bg-purple-700 text-white px-4 md:px-6 py-2 md:py-3 rounded-full font-bold text-sm md:text-base shadow-lg">
-                        UPTO 55% OFF
-                      </div>
-                    </div>
-                  </div>
+                  <h3 className="font-black text-sm md:text-base text-purple-800 group-hover:text-purple-900 transition-colors mb-0.5">
+                    Water Play
+                  </h3>
+                  <p className="text-[10px] md:text-xs text-purple-700 font-semibold">
+                    Splash into Fun
+                  </p>
                 </div>
               </Link>
-
               <Link
                 href="/categories/premium-collectors-items"
-                className="flex-shrink-0 w-[280px] md:w-[350px] snap-center relative rounded-2xl overflow-hidden h-[350px] md:h-[400px] shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:scale-[1.02] group cursor-pointer"
+                className="group cursor-pointer block flex-shrink-0 w-[130px] sm:w-[160px] md:w-[180px] snap-center"
               >
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-400 to-cyan-500">
-                  <div
-                    className="absolute inset-0 opacity-10"
-                    style={{
-                      backgroundImage:
-                        "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")",
-                    }}
-                  ></div>
-                </div>
-
-                <div className="absolute inset-0 p-6 md:p-8 flex flex-col justify-between">
-                  <div className="flex justify-between items-start">
-                    <div className="inline-flex items-center justify-center bg-blue-600 text-white rounded-full w-16 h-16 md:w-20 md:h-20 shadow-lg transform group-hover:rotate-12 transition-transform duration-300">
-                      <div className="text-center px-2">
-                        <div className="text-[10px] md:text-xs font-bold leading-tight">
-                          EVERYDAY STYLE
-                        </div>
-                      </div>
-                    </div>
+                <div className="bg-gradient-to-br from-sky-200 to-cyan-300 rounded-2xl p-3 md:p-4 transition-all duration-300 transform hover:scale-105 hover:-translate-y-2 hover:shadow-xl text-center overflow-hidden h-full flex flex-col items-center">
+                  <div className="relative w-full aspect-square mb-2.5 rounded-xl overflow-hidden flex-shrink-0 shadow-sm">
+                    <Image
+                      src="/toys/Planet_Kids_Toys/4. Action Figures and Superheroes/Marvel/1.jpg"
+                      alt="Premium"
+                      fill
+                      className="object-cover"
+                      sizes="180px"
+                    />
                   </div>
-
-                  <div className="relative z-10">
-                    <h3 className="text-xl md:text-2xl font-bold text-white mb-2 drop-shadow-lg">
-                      Premium Collection
-                    </h3>
-                    <p className="text-white text-sm md:text-base mb-4 opacity-90">
-                      Collector's Special Items
-                    </p>
-                    <div className="flex flex-wrap items-center gap-3">
-                      <div className="inline-block bg-blue-700 text-white px-4 md:px-6 py-2 md:py-3 rounded-full font-bold text-sm md:text-base shadow-lg">
-                        UPTO 45% OFF
-                      </div>
-                    </div>
-                  </div>
+                  <h3 className="font-black text-sm md:text-base text-blue-800 group-hover:text-blue-900 transition-colors mb-0.5">
+                    Premium
+                  </h3>
+                  <p className="text-[10px] md:text-xs text-blue-700 font-semibold">
+                    Upto 45% Off
+                  </p>
                 </div>
               </Link>
             </div>
@@ -1079,9 +1023,9 @@ export default async function Home() {
 
       {/* New Arrivals Section */}
       {newArrivals.length > 0 && (
-        <section className="py-16 bg-gradient-to-br from-orange-50 via-gray-50 to-gray-100">
+        <section className="py-5 md:py-8 bg-gradient-to-br from-orange-50 via-gray-50 to-gray-100">
           <div className="container-custom">
-            <div className="flex items-center justify-between mb-10">
+            <div className="flex items-center justify-between mb-5 md:mb-8">
               <div>
                 <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-3">
                   New{" "}
