@@ -277,7 +277,7 @@ export default function Navbar() {
   }, []);
 
   return (
-    <nav className="bg-white shadow-soft sticky top-0 z-50">
+    <nav className="bg-white shadow-soft sticky top-0 z-50 overflow-visible">
       {/* Top Bar with Gradient - Announcement Carousel */}
       <div className="bg-black py-2">
         <div className="container-custom">
@@ -294,16 +294,19 @@ export default function Navbar() {
 
       {/* Main Navigation */}
       <div className="container-custom">
-        <div className="flex items-center justify-between py-2 md:py-3">
-          {/* Logo */}
-          <Link href="/" className="flex items-center group">
-            <div className="relative w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 flex items-center justify-center">
+        <div className="flex items-center justify-between py-1 md:py-1.5">
+          {/* Logo — oversized but overflows outside the navbar row */}
+          <Link
+            href="/"
+            className="flex items-center group flex-shrink-0 -my-4 md:-my-6"
+          >
+            <div className="relative w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28">
               <Image
                 src="/myplanetkidslogo.png"
                 alt="MyPlanetKids"
                 width={112}
                 height={112}
-                className="object-contain group-hover:scale-105 transition-transform"
+                className="object-contain w-full h-full group-hover:scale-105 transition-transform drop-shadow-md"
               />
             </div>
           </Link>
