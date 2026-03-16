@@ -297,12 +297,12 @@ export default function Navbar() {
         <div className="flex items-center justify-between py-2 md:py-3">
           {/* Logo */}
           <Link href="/" className="flex items-center group">
-            <div className="relative w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 flex items-center justify-center">
+            <div className="relative w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 flex items-center justify-center">
               <Image
                 src="/myplanetkidslogo.png"
                 alt="MyPlanetKids"
-                width={80}
-                height={80}
+                width={112}
+                height={112}
                 className="object-contain group-hover:scale-105 transition-transform"
               />
             </div>
