@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   Plus,
   Edit,
@@ -8,7 +8,9 @@ import {
   Eye,
   EyeOff,
   Video as VideoIcon,
-  ExternalLink,
+  Upload,
+  Link as LinkIcon,
+  X,
 } from "lucide-react";
 
 interface Video {
@@ -32,6 +34,9 @@ export default function AdminVideosPage() {
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [editingVideo, setEditingVideo] = useState<Video | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState("");
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -174,6 +179,64 @@ export default function AdminVideosPage() {
       return `https://www.youtube.com/embed/${videoId}`;
     }
     return url;
+  };
+
+  // Extract YouTube video ID from URL
+  const getYouTubeId = (url: string): string | null => {
+    try {
+      if (url.includes("youtube.com/watch"))
+        return new URL(url).searchParams.get("v");
+      if (url.includes("youtu.be/"))
+        return url.split("youtu.be/")[1]?.split("?")[0] ?? null;
+      if (url.includes("youtube.com/shorts/"))
+        return url.split("shorts/")[1]?.split("?")[0] ?? null;
+      if (url.includes("youtube.com/embed/"))
+        return url.split("embed/")[1]?.split("?")[0] ?? null;
+    } catch {}
+    return null;
+  };
+
+  // Auto-set YouTube thumbnail when URL is entered
+  const handleVideoUrlChange = (url: string) => {
+    setFormData((prev) => {
+      const updated = { ...prev, videoUrl: url };
+      if (prev.videoType === "URL" && !prev.thumbnail) {
+        const ytId = getYouTubeId(url);
+        if (ytId)
+          updated.thumbnail = `https://img.youtube.com/vi/${ytId}/maxresdefault.jpg`;
+      }
+      return updated;
+    });
+  };
+
+  // Handle video file upload
+  const handleFileUpload = async (file: File) => {
+    if (!file) return;
+    setUploading(true);
+    setUploadProgress("Uploading video to cloud...");
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+      const res = await fetch("/api/admin/videos/upload", {
+        method: "POST",
+        body: fd,
+      });
+      if (!res.ok) throw new Error("Upload failed");
+      const data = await res.json();
+      setFormData((prev) => ({
+        ...prev,
+        videoUrl: data.videoUrl,
+        thumbnail: data.thumbnail || prev.thumbnail,
+        duration: data.duration || prev.duration,
+      }));
+      setUploadProgress("✅ Uploaded successfully!");
+      setTimeout(() => setUploadProgress(""), 3000);
+    } catch (err) {
+      setUploadProgress("❌ Upload failed. Please try again.");
+      setTimeout(() => setUploadProgress(""), 4000);
+    } finally {
+      setUploading(false);
+    }
   };
 
   if (loading) {
@@ -372,6 +435,8 @@ export default function AdminVideosPage() {
                       setFormData({
                         ...formData,
                         videoType: e.target.value as "URL" | "UPLOAD",
+                        videoUrl: "",
+                        thumbnail: "",
                       })
                     }
                     className="input w-full"
@@ -379,39 +444,132 @@ export default function AdminVideosPage() {
                     <option value="URL">
                       Video URL (YouTube, Vimeo, etc.)
                     </option>
-                    <option value="UPLOAD">Uploaded Video File</option>
+                    <option value="UPLOAD">Upload Video File</option>
                   </select>
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Video URL / Path *
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.videoUrl}
-                    onChange={(e) =>
-                      setFormData({ ...formData, videoUrl: e.target.value })
-                    }
-                    className="input w-full"
-                    placeholder={
-                      formData.videoType === "URL"
-                        ? "https://www.youtube.com/watch?v=..."
-                        : "/uploads/videos/video.mp4"
-                    }
-                    required
-                  />
-                  <p className="text-xs text-gray-500 mt-1">
-                    {formData.videoType === "URL"
-                      ? "Enter YouTube, Vimeo, or any video URL"
-                      : "Enter the path to uploaded video file"}
-                  </p>
-                </div>
+                {formData.videoType === "URL" ? (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <LinkIcon className="w-4 h-4 inline mr-1" />
+                      YouTube / Video URL *
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.videoUrl}
+                      onChange={(e) => handleVideoUrlChange(e.target.value)}
+                      className="input w-full"
+                      placeholder="https://www.youtube.com/watch?v=..."
+                      required
+                    />
+                    <p className="text-xs text-gray-500 mt-1">
+                      Thumbnail will be auto-filled for YouTube links
+                    </p>
+                  </div>
+                ) : (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <Upload className="w-4 h-4 inline mr-1" />
+                      Upload Video File *
+                    </label>
+                    <div
+                      onClick={() =>
+                        !uploading && fileInputRef.current?.click()
+                      }
+                      className={`border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-colors ${
+                        uploading
+                          ? "border-orange-300 bg-orange-50"
+                          : "border-gray-300 hover:border-orange-400 hover:bg-orange-50"
+                      }`}
+                    >
+                      <input
+                        ref={fileInputRef}
+                        type="file"
+                        accept="video/*"
+                        className="hidden"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) handleFileUpload(file);
+                        }}
+                      />
+                      {uploading ? (
+                        <div className="flex flex-col items-center gap-2">
+                          <div className="w-8 h-8 border-3 border-orange-500 border-t-transparent rounded-full animate-spin" />
+                          <p className="text-sm text-orange-600 font-medium">
+                            Uploading...
+                          </p>
+                        </div>
+                      ) : formData.videoUrl ? (
+                        <div className="flex flex-col items-center gap-1">
+                          <VideoIcon className="w-8 h-8 text-green-500" />
+                          <p className="text-sm text-green-600 font-medium">
+                            Video uploaded ✅
+                          </p>
+                          <p className="text-xs text-gray-500 truncate max-w-full">
+                            {formData.videoUrl}
+                          </p>
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setFormData((p) => ({
+                                ...p,
+                                videoUrl: "",
+                                thumbnail: "",
+                              }));
+                            }}
+                            className="text-xs text-red-500 hover:text-red-700 mt-1"
+                          >
+                            Remove
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="flex flex-col items-center gap-2">
+                          <Upload className="w-8 h-8 text-gray-400" />
+                          <p className="text-sm text-gray-600 font-medium">
+                            Click to select video file
+                          </p>
+                          <p className="text-xs text-gray-400">
+                            MP4, MOV, AVI, etc.
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                    {uploadProgress && (
+                      <p className="text-xs mt-2 text-gray-600">
+                        {uploadProgress}
+                      </p>
+                    )}
+                  </div>
+                )}
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Thumbnail URL
+                    {formData.videoType === "URL" && formData.thumbnail && (
+                      <span className="ml-2 text-xs text-green-600 font-normal">
+                        ✅ Auto-set
+                      </span>
+                    )}
                   </label>
+                  {formData.thumbnail && (
+                    <div className="mb-2 relative w-32 h-20 rounded-lg overflow-hidden border border-gray-200">
+                      <img
+                        src={formData.thumbnail}
+                        alt="Thumbnail preview"
+                        className="w-full h-full object-cover"
+                      />
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setFormData((p) => ({ ...p, thumbnail: "" }))
+                        }
+                        className="absolute top-1 right-1 bg-black/50 rounded-full p-0.5 hover:bg-black/70"
+                      >
+                        <X className="w-3 h-3 text-white" />
+                      </button>
+                    </div>
+                  )}
                   <input
                     type="text"
                     value={formData.thumbnail}

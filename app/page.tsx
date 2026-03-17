@@ -837,9 +837,9 @@ export default async function Home() {
             </p>
           </div>
 
-          <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-2 snap-x snap-mandatory">
+          <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-2 snap-x snap-mandatory md:grid md:grid-cols-3 md:overflow-visible md:snap-none">
             {/* Video Card 1 */}
-            <div className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 border border-purple-200 flex-shrink-0 w-[150px] sm:w-[165px] snap-center">
+            <div className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 border border-purple-200 flex-shrink-0 w-[150px] sm:w-[165px] md:w-auto snap-center">
               <div className="relative h-[100px] bg-gradient-to-br from-purple-100 to-pink-100">
                 <div className="absolute inset-0 flex items-center justify-center">
                   <div className="w-9 h-9 bg-white rounded-full flex items-center justify-center shadow cursor-pointer">
@@ -867,7 +867,7 @@ export default async function Home() {
             </div>
 
             {/* Video Card 2 */}
-            <div className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 border border-blue-200 flex-shrink-0 w-[150px] sm:w-[165px] snap-center">
+            <div className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 border border-blue-200 flex-shrink-0 w-[150px] sm:w-[165px] md:w-auto snap-center">
               <div className="relative h-[100px] bg-gradient-to-br from-blue-100 to-cyan-100">
                 <div className="absolute inset-0 flex items-center justify-center">
                   <div className="w-9 h-9 bg-white rounded-full flex items-center justify-center shadow cursor-pointer">
@@ -895,7 +895,7 @@ export default async function Home() {
             </div>
 
             {/* Video Card 3 */}
-            <div className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 border border-pink-200 flex-shrink-0 w-[150px] sm:w-[165px] snap-center">
+            <div className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 border border-pink-200 flex-shrink-0 w-[150px] sm:w-[165px] md:w-auto snap-center">
               <div className="relative h-[100px] bg-gradient-to-br from-pink-100 to-rose-100">
                 <div className="absolute inset-0 flex items-center justify-center">
                   <div className="w-9 h-9 bg-white rounded-full flex items-center justify-center shadow cursor-pointer">
