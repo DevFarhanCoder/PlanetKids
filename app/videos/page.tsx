@@ -1,7 +1,6 @@
 "use client";
 
-import { Play, Sparkles } from "lucide-react";
-import Link from "next/link";
+import { Play, Sparkles, X } from "lucide-react";
 import { useEffect, useState } from "react";
 
 interface Video {
@@ -18,6 +17,7 @@ interface Video {
 export default function VideosPage() {
   const [videos, setVideos] = useState<Video[]>([]);
   const [loading, setLoading] = useState(true);
+  const [activeVideo, setActiveVideo] = useState<Video | null>(null);
 
   useEffect(() => {
     fetchVideos();
@@ -37,18 +37,27 @@ export default function VideosPage() {
     }
   };
 
-  const handleVideoClick = async (videoId: string, videoUrl: string) => {
+  const handleVideoClick = async (video: Video) => {
     // Increment view count
     try {
-      await fetch(`/api/videos/${videoId}/view`, { method: "POST" });
+      await fetch(`/api/videos/${video.id}/view`, { method: "POST" });
     } catch (error) {
       console.error("Error updating view count:", error);
     }
+    setActiveVideo(video);
+  };
 
-    // Open video in new tab if it's a URL
-    if (videoUrl.includes("youtube.com") || videoUrl.includes("youtu.be")) {
-      window.open(videoUrl, "_blank");
+  const getYouTubeEmbedUrl = (url: string): string | null => {
+    if (url.includes("youtube.com/watch")) {
+      const videoId = new URL(url).searchParams.get("v");
+      return videoId ? `https://www.youtube.com/embed/${videoId}?autoplay=1` : null;
     }
+    if (url.includes("youtu.be")) {
+      const videoId = url.split("/").pop()?.split("?")[0];
+      return videoId ? `https://www.youtube.com/embed/${videoId}?autoplay=1` : null;
+    }
+    if (url.includes("youtube.com/embed")) return url;
+    return null;
   };
 
   const getVideoThumbnail = (video: Video) => {
@@ -104,7 +113,7 @@ export default function VideosPage() {
               return (
                 <button
                   key={video.id}
-                  onClick={() => handleVideoClick(video.id, video.videoUrl)}
+                  onClick={() => handleVideoClick(video)}
                   className="group bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer border-2 border-gray-100 hover:border-purple-300 text-left w-full"
                 >
                   {/* Video Thumbnail */}
@@ -173,6 +182,54 @@ export default function VideosPage() {
           </div>
         )}
       </div>
+
+      {/* Video Player Modal */}
+      {activeVideo && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
+          onClick={() => setActiveVideo(null)}
+        >
+          <div
+            className="relative w-full max-w-3xl bg-black rounded-2xl overflow-hidden shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Close button */}
+            <button
+              onClick={() => setActiveVideo(null)}
+              className="absolute top-3 right-3 z-10 bg-black/60 hover:bg-black/90 text-white rounded-full p-1.5 transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            {/* Player */}
+            {activeVideo.videoType === "UPLOAD" ||
+            !getYouTubeEmbedUrl(activeVideo.videoUrl) ? (
+              <video
+                src={activeVideo.videoUrl}
+                controls
+                autoPlay
+                className="w-full aspect-video bg-black"
+                controlsList="nodownload"
+              />
+            ) : (
+              <iframe
+                src={getYouTubeEmbedUrl(activeVideo.videoUrl)!}
+                className="w-full aspect-video"
+                allow="autoplay; fullscreen"
+                allowFullScreen
+              />
+            )}
+
+            {/* Title */}
+            <div className="p-4 bg-gray-900">
+              <h3 className="text-white font-bold text-lg">{activeVideo.title}</h3>
+              {activeVideo.description && (
+                <p className="text-gray-400 text-sm mt-1">{activeVideo.description}</p>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
