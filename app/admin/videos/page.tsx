@@ -261,7 +261,9 @@ export default function AdminVideosPage() {
       setUploadProgress("✅ Uploaded successfully!");
       setTimeout(() => setUploadProgress(""), 3000);
     } catch (err: any) {
-      setUploadProgress(`❌ ${err?.message || "Upload failed. Please try again."}`);
+      setUploadProgress(
+        `❌ ${err?.message || "Upload failed. Please try again."}`,
+      );
       setTimeout(() => setUploadProgress(""), 5000);
     } finally {
       setUploading(false);
