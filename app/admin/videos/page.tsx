@@ -213,27 +213,56 @@ export default function AdminVideosPage() {
   const handleFileUpload = async (file: File) => {
     if (!file) return;
     setUploading(true);
-    setUploadProgress("Uploading video to cloud...");
+    setUploadProgress("Preparing upload...");
     try {
+      // Step 1: get a server-signed upload credential (tiny request, no file goes through server)
+      const sigRes = await fetch("/api/admin/videos/upload-signature");
+      if (!sigRes.ok) throw new Error("Could not get upload signature");
+      const { signature, timestamp, cloudName, apiKey, folder } =
+        await sigRes.json();
+
+      // Step 2: upload directly from the browser to Cloudinary (no 4MB server limit)
+      setUploadProgress("Uploading to cloud (this may take a moment)...");
       const fd = new FormData();
       fd.append("file", file);
-      const res = await fetch("/api/admin/videos/upload", {
-        method: "POST",
-        body: fd,
-      });
-      if (!res.ok) throw new Error("Upload failed");
-      const data = await res.json();
+      fd.append("api_key", apiKey);
+      fd.append("timestamp", String(timestamp));
+      fd.append("signature", signature);
+      fd.append("folder", folder);
+
+      const uploadRes = await fetch(
+        `https://api.cloudinary.com/v1_1/${cloudName}/video/upload`,
+        { method: "POST", body: fd },
+      );
+      if (!uploadRes.ok) {
+        const errData = await uploadRes.json().catch(() => ({}));
+        throw new Error((errData as any).error?.message || "Upload failed");
+      }
+      const data = await uploadRes.json();
+
+      // Auto-generate thumbnail at 1s into the video
+      const thumbnail = data.secure_url
+        .replace("/upload/", "/upload/so_1/")
+        .replace(/\.[^/.]+$/, ".jpg");
+
+      const duration =
+        typeof data.duration === "number"
+          ? `${Math.floor(data.duration / 60)}:${String(
+              Math.floor(data.duration % 60),
+            ).padStart(2, "0")}`
+          : "";
+
       setFormData((prev) => ({
         ...prev,
-        videoUrl: data.videoUrl,
-        thumbnail: data.thumbnail || prev.thumbnail,
-        duration: data.duration || prev.duration,
+        videoUrl: data.secure_url,
+        thumbnail: thumbnail,
+        duration: duration || prev.duration,
       }));
       setUploadProgress("✅ Uploaded successfully!");
       setTimeout(() => setUploadProgress(""), 3000);
-    } catch (err) {
-      setUploadProgress("❌ Upload failed. Please try again.");
-      setTimeout(() => setUploadProgress(""), 4000);
+    } catch (err: any) {
+      setUploadProgress(`❌ ${err?.message || "Upload failed. Please try again."}`);
+      setTimeout(() => setUploadProgress(""), 5000);
     } finally {
       setUploading(false);
     }
