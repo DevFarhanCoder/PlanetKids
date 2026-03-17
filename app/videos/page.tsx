@@ -50,11 +50,15 @@ export default function VideosPage() {
   const getYouTubeEmbedUrl = (url: string): string | null => {
     if (url.includes("youtube.com/watch")) {
       const videoId = new URL(url).searchParams.get("v");
-      return videoId ? `https://www.youtube.com/embed/${videoId}?autoplay=1` : null;
+      return videoId
+        ? `https://www.youtube.com/embed/${videoId}?autoplay=1`
+        : null;
     }
     if (url.includes("youtu.be")) {
       const videoId = url.split("/").pop()?.split("?")[0];
-      return videoId ? `https://www.youtube.com/embed/${videoId}?autoplay=1` : null;
+      return videoId
+        ? `https://www.youtube.com/embed/${videoId}?autoplay=1`
+        : null;
     }
     if (url.includes("youtube.com/embed")) return url;
     return null;
@@ -222,9 +226,13 @@ export default function VideosPage() {
 
             {/* Title */}
             <div className="p-4 bg-gray-900">
-              <h3 className="text-white font-bold text-lg">{activeVideo.title}</h3>
+              <h3 className="text-white font-bold text-lg">
+                {activeVideo.title}
+              </h3>
               {activeVideo.description && (
-                <p className="text-gray-400 text-sm mt-1">{activeVideo.description}</p>
+                <p className="text-gray-400 text-sm mt-1">
+                  {activeVideo.description}
+                </p>
               )}
             </div>
           </div>
