@@ -57,6 +57,25 @@ async function getHomeSections() {
   }
 }
 
+async function getHomeVideos() {
+  try {
+    const { prisma } = await import("@/lib/prisma");
+    const videos = await prisma.video.findMany({
+      where: { isActive: true },
+      orderBy: [
+        { isFeatured: "desc" },
+        { displayOrder: "asc" },
+        { createdAt: "desc" },
+      ],
+      take: 3,
+    });
+    return videos;
+  } catch (error) {
+    console.error("Error fetching home videos:", error);
+    return [];
+  }
+}
+
 // Helper function to calculate discount percentage
 function calculateDiscount(price: number, comparePrice: number | null): number {
   if (!comparePrice || comparePrice <= price) return 0;
@@ -139,6 +158,7 @@ function ProductCard({ product }: { product: any }) {
 export default async function Home() {
   const homeData = await getHomeData();
   const dynamicSections = await getHomeSections();
+  const homeVideos = await getHomeVideos();
 
   console.log("Dynamic sections count:", dynamicSections.length);
   console.log("Dynamic sections:", JSON.stringify(dynamicSections, null, 2));
@@ -822,119 +842,102 @@ export default async function Home() {
       {/* Dynamic Admin-Managed Sections */}
       {dynamicSections.map((section: any) => renderSection(section))}
 
-      {/* Video/Reel Section - Engaging Content */}
-      <section className="py-3 md:py-5 bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50">
-        <div className="container mx-auto px-4 md:px-6 lg:px-8 max-w-[1400px]">
-          <div className="mb-3 flex items-center justify-between">
-            <h2 className="text-lg md:text-xl font-black text-gray-900">
-              Watch Our{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600">
-                Fun Videos! 🎥
-              </span>
-            </h2>
-            <p className="text-gray-500 text-xs font-semibold">
-              See our amazing toys in action
-            </p>
-          </div>
-
-          <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-2 snap-x snap-mandatory md:grid md:grid-cols-3 md:overflow-visible md:snap-none">
-            {/* Video Card 1 */}
-            <div className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 border border-purple-200 flex-shrink-0 w-[150px] sm:w-[165px] md:w-auto snap-center">
-              <div className="relative h-[100px] bg-gradient-to-br from-purple-100 to-pink-100">
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-9 h-9 bg-white rounded-full flex items-center justify-center shadow cursor-pointer">
-                    <svg
-                      className="w-4 h-4 text-purple-600 ml-0.5"
-                      fill="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path d="M8 5v14l11-7z" />
-                    </svg>
-                  </div>
-                </div>
-                <div className="absolute top-1.5 left-1.5 bg-red-600 text-white text-[9px] font-bold px-1.5 py-0.5 rounded">
-                  LIVE
-                </div>
-              </div>
-              <div className="p-2">
-                <h3 className="font-bold text-gray-900 text-[11px] leading-tight line-clamp-1">
-                  Toy Unboxing &amp; Review
-                </h3>
-                <p className="text-[10px] text-gray-500 mt-0.5 line-clamp-2">
-                  Watch kids having fun with our latest toys!
-                </p>
-              </div>
+      {/* Video/Reel Section - Live from Admin */}
+      {homeVideos.length > 0 && (
+        <section className="py-3 md:py-5 bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50">
+          <div className="container mx-auto px-4 md:px-6 lg:px-8 max-w-[1400px]">
+            <div className="mb-3 flex items-center justify-between">
+              <h2 className="text-lg md:text-xl font-black text-gray-900">
+                Watch Our{" "}
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600">
+                  Fun Videos! 🎥
+                </span>
+              </h2>
+              <p className="text-gray-500 text-xs font-semibold">
+                See our amazing toys in action
+              </p>
             </div>
 
-            {/* Video Card 2 */}
-            <div className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 border border-blue-200 flex-shrink-0 w-[150px] sm:w-[165px] md:w-auto snap-center">
-              <div className="relative h-[100px] bg-gradient-to-br from-blue-100 to-cyan-100">
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-9 h-9 bg-white rounded-full flex items-center justify-center shadow cursor-pointer">
-                    <svg
-                      className="w-4 h-4 text-blue-600 ml-0.5"
-                      fill="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path d="M8 5v14l11-7z" />
-                    </svg>
-                  </div>
-                </div>
-                <div className="absolute top-1.5 left-1.5 bg-orange-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded">
-                  TRENDING{" "}
-                </div>
-              </div>
-              <div className="p-2">
-                <h3 className="font-bold text-gray-900 text-[11px] leading-tight line-clamp-1">
-                  Learning Toys Demo
-                </h3>
-                <p className="text-[10px] text-gray-500 mt-0.5 line-clamp-2">
-                  Educational toys that make learning fun!
-                </p>
-              </div>
+            <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-2 snap-x snap-mandatory md:grid md:grid-cols-3 md:overflow-visible md:snap-none">
+              {homeVideos.map((video) => {
+                const isYouTube = video.videoUrl.includes("youtube.com") || video.videoUrl.includes("youtu.be");
+                const ytId = isYouTube
+                  ? (video.videoUrl.includes("youtu.be")
+                      ? video.videoUrl.split("/").pop()?.split("?")[0]
+                      : new URL(video.videoUrl).searchParams.get("v"))
+                  : null;
+                const thumbnail = video.thumbnail ||
+                  (ytId ? `https://img.youtube.com/vi/${ytId}/mqdefault.jpg` : null);
+
+                return (
+                  <Link
+                    key={video.id}
+                    href="/videos"
+                    className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 border border-purple-200 flex-shrink-0 w-[150px] sm:w-[165px] md:w-auto snap-center group"
+                  >
+                    <div className="relative h-[100px] bg-gradient-to-br from-purple-100 to-pink-100 overflow-hidden">
+                      {thumbnail ? (
+                        <img
+                          src={thumbnail}
+                          alt={video.title}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center">
+                          <svg className="w-8 h-8 text-gray-300" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M8 5v14l11-7z" />
+                          </svg>
+                        </div>
+                      )}
+                      {/* Play overlay */}
+                      <div className="absolute inset-0 bg-black/10 group-hover:bg-black/25 transition-all flex items-center justify-center">
+                        <div className="w-9 h-9 bg-white/90 rounded-full flex items-center justify-center shadow">
+                          <svg className="w-4 h-4 text-purple-600 ml-0.5" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M8 5v14l11-7z" />
+                          </svg>
+                        </div>
+                      </div>
+                      {/* Duration badge */}
+                      {video.duration && (
+                        <div className="absolute bottom-1.5 right-1.5 bg-black/70 text-white text-[9px] font-bold px-1.5 py-0.5 rounded">
+                          {video.duration}
+                        </div>
+                      )}
+                      {/* Featured badge */}
+                      {video.isFeatured && (
+                        <div className="absolute top-1.5 left-1.5 bg-red-600 text-white text-[9px] font-bold px-1.5 py-0.5 rounded">
+                          FEATURED
+                        </div>
+                      )}
+                    </div>
+                    <div className="p-2">
+                      <h3 className="font-bold text-gray-900 text-[11px] leading-tight line-clamp-1">
+                        {video.title}
+                      </h3>
+                      {video.description && (
+                        <p className="text-[10px] text-gray-500 mt-0.5 line-clamp-2">
+                          {video.description}
+                        </p>
+                      )}
+                    </div>
+                  </Link>
+                );
+              })}
             </div>
 
-            {/* Video Card 3 */}
-            <div className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 border border-pink-200 flex-shrink-0 w-[150px] sm:w-[165px] md:w-auto snap-center">
-              <div className="relative h-[100px] bg-gradient-to-br from-pink-100 to-rose-100">
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-9 h-9 bg-white rounded-full flex items-center justify-center shadow cursor-pointer">
-                    <svg
-                      className="w-4 h-4 text-pink-600 ml-0.5"
-                      fill="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path d="M8 5v14l11-7z" />
-                    </svg>
-                  </div>
-                </div>
-                <div className="absolute top-1.5 left-1.5 bg-pink-600 text-white text-[9px] font-bold px-1.5 py-0.5 rounded">
-                  NEW{" "}
-                </div>
-              </div>
-              <div className="p-2">
-                <h3 className="font-bold text-gray-900 text-[11px] leading-tight line-clamp-1">
-                  Holiday Gift Guide
-                </h3>
-                <p className="text-[10px] text-gray-500 mt-0.5 line-clamp-2">
-                  Perfect gift ideas for every occasion!
-                </p>
-              </div>
+            {/* View All Videos Button */}
+            <div className="text-center mt-6 md:mt-8">
+              <Link
+                href="/videos"
+                className="inline-flex items-center justify-center bg-gradient-to-r from-purple-600 to-pink-600 text-white px-8 md:px-12 py-2.5 md:py-3 rounded-full text-sm md:text-base font-bold hover:from-purple-700 hover:to-pink-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+              >
+                Watch More Videos
+                <ChevronRight className="w-4 h-4 md:w-5 md:h-5 ml-2" />
+              </Link>
             </div>
           </div>
-
-          {/* View All Videos Button */}
-          <div className="text-center mt-6 md:mt-8">
-            <Link
-              href="/videos"
-              className="inline-flex items-center justify-center bg-gradient-to-r from-purple-600 to-pink-600 text-white px-8 md:px-12 py-2.5 md:py-3 rounded-full text-sm md:text-base font-bold hover:from-purple-700 hover:to-pink-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
-            >
-              Watch More Videos
-              <ChevronRight className="w-4 h-4 md:w-5 md:h-5 ml-2" />
-            </Link>
-          </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Additional Premium Boutiques Section */}
       <section className="py-5 md:py-8 bg-white">
