@@ -1,25 +1,38 @@
-import { notFound } from 'next/navigation';
-import { prisma } from '@/lib/prisma';
-import ProductDetailClient from './ProductDetailClient';
+import { notFound } from "next/navigation";
+import { prisma } from "@/lib/prisma";
+import ProductDetailClient from "./ProductDetailClient";
 
 async function getProduct(slug: string) {
   const product = await prisma.product.findUnique({
     where: { slug },
     include: {
       images: {
-        orderBy: { order: 'asc' }
+        orderBy: { order: "asc" },
       },
       categories: {
         include: {
           category: {
             include: {
-              parent: true
-            }
-          }
-        }
+              parent: true,
+            },
+          },
+        },
       },
-      variants: true
-    }
+      variants: true,
+      productLinks: {
+        include: {
+          linkedProduct: {
+            select: {
+              id: true,
+              name: true,
+              slug: true,
+              images: { take: 1, orderBy: { order: "asc" } },
+            },
+          },
+        },
+        orderBy: { displayOrder: "asc" },
+      },
+    },
   });
 
   if (!product || !product.isActive) {
@@ -29,10 +42,13 @@ async function getProduct(slug: string) {
   return {
     ...product,
     price: Number(product.price),
-    compareAtPrice: product.compareAtPrice ? Number(product.compareAtPrice) : null,
+    compareAtPrice: product.compareAtPrice
+      ? Number(product.compareAtPrice)
+      : null,
     costPrice: product.costPrice ? Number(product.costPrice) : null,
+    shippingCharge: Number(product.shippingCharge),
     averageRating: Number(product.averageRating),
-    weight: product.weight ? Number(product.weight) : null
+    weight: product.weight ? Number(product.weight) : null,
   };
 }
 
@@ -45,28 +61,32 @@ async function getRelatedProducts(productId: string, categoryIds: string[]) {
       id: { not: productId },
       categories: {
         some: {
-          categoryId: { in: categoryIds }
-        }
-      }
+          categoryId: { in: categoryIds },
+        },
+      },
     },
     include: {
       images: {
         take: 1,
-        orderBy: { order: 'asc' }
-      }
+        orderBy: { order: "asc" },
+      },
     },
-    take: 4
+    take: 5,
   });
 
-  return products.map(p => ({
+  return products.map((p) => ({
     ...p,
     price: Number(p.price),
     compareAtPrice: p.compareAtPrice ? Number(p.compareAtPrice) : null,
-    averageRating: Number(p.averageRating)
+    averageRating: Number(p.averageRating),
   }));
 }
 
-export default async function ProductDetailPage({ params }: { params: Promise<{ slug: string }> | { slug: string } }) {
+export default async function ProductDetailPage({
+  params,
+}: {
+  params: Promise<{ slug: string }> | { slug: string };
+}) {
   const resolvedParams = params instanceof Promise ? await params : params;
   const product = await getProduct(resolvedParams.slug);
 
@@ -74,8 +94,10 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
     notFound();
   }
 
-  const categoryIds = product.categories.map(pc => pc.categoryId);
+  const categoryIds = product.categories.map((pc) => pc.categoryId);
   const relatedProducts = await getRelatedProducts(product.id, categoryIds);
 
-  return <ProductDetailClient product={product} relatedProducts={relatedProducts} />;
+  return (
+    <ProductDetailClient product={product} relatedProducts={relatedProducts} />
+  );
 }

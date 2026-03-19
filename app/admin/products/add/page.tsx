@@ -41,6 +41,8 @@ function AddProductContent() {
     metaDescription: "",
     featured: false,
     isReturnable: true,
+    isBranded: false,
+    shippingCharge: "0",
     ageGroup: "",
     status: "ACTIVE",
   });
@@ -49,6 +51,14 @@ function AddProductContent() {
   const [variants, setVariants] = useState([
     { size: "", color: "", price: "", stock: "" },
   ]);
+  const [linkedProducts, setLinkedProducts] = useState<
+    { linkedProductId: string; name: string; label: string }[]
+  >([]);
+  const [productSearch, setProductSearch] = useState("");
+  const [productSearchResults, setProductSearchResults] = useState<
+    { id: string; name: string }[]
+  >([]);
+  const [searchingProducts, setSearchingProducts] = useState(false);
 
   // Fetch categories on mount
   useEffect(() => {
@@ -92,6 +102,8 @@ function AddProductContent() {
             metaDescription: product.metaDescription || "",
             featured: product.isFeatured || false,
             isReturnable: product.isReturnable ?? true,
+            isBranded: product.isBranded || false,
+            shippingCharge: product.shippingCharge?.toString() || "0",
             ageGroup: product.ageGroup || "",
             status: product.isActive ? "ACTIVE" : "DRAFT",
           });
@@ -115,6 +127,17 @@ function AddProductContent() {
           // Set image previews
           if (product.images?.length) {
             setImagePreviews(product.images.map((img: any) => img.url));
+          }
+
+          // Load existing linked products (variants)
+          if (product.productLinks?.length) {
+            setLinkedProducts(
+              product.productLinks.map((pl: any) => ({
+                linkedProductId: pl.linkedProductId,
+                name: pl.linkedProduct?.name || pl.linkedProductId,
+                label: pl.label || "",
+              })),
+            );
           }
         })
         .catch((err) => console.error("Error loading product:", err));
@@ -174,6 +197,48 @@ function AddProductContent() {
     setVariants(newVariants);
   };
 
+  const searchProducts = async (query: string) => {
+    setProductSearch(query);
+    if (!query.trim()) {
+      setProductSearchResults([]);
+      return;
+    }
+    setSearchingProducts(true);
+    try {
+      const res = await fetch(
+        `/api/products?search=${encodeURIComponent(query)}&limit=6`,
+      );
+      const data = await res.json();
+      setProductSearchResults(data.products || []);
+    } finally {
+      setSearchingProducts(false);
+    }
+  };
+
+  const addLinkedProduct = (product: { id: string; name: string }) => {
+    if (linkedProducts.find((lp) => lp.linkedProductId === product.id)) return;
+    setLinkedProducts([
+      ...linkedProducts,
+      { linkedProductId: product.id, name: product.name, label: "" },
+    ]);
+    setProductSearch("");
+    setProductSearchResults([]);
+  };
+
+  const removeLinkedProduct = (linkedProductId: string) => {
+    setLinkedProducts(
+      linkedProducts.filter((lp) => lp.linkedProductId !== linkedProductId),
+    );
+  };
+
+  const updateLinkedProductLabel = (linkedProductId: string, label: string) => {
+    setLinkedProducts(
+      linkedProducts.map((lp) =>
+        lp.linkedProductId === linkedProductId ? { ...lp, label } : lp,
+      ),
+    );
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -223,6 +288,17 @@ function AddProductContent() {
       formDataToSend.append(
         "variants",
         JSON.stringify(variants.filter((v) => v.size || v.color)),
+      );
+
+      // Add linked products (product variants)
+      formDataToSend.append(
+        "productLinks",
+        JSON.stringify(
+          linkedProducts.map((lp) => ({
+            linkedProductId: lp.linkedProductId,
+            label: lp.label,
+          })),
+        ),
       );
 
       const method = productId ? "PUT" : "POST";
@@ -894,6 +970,48 @@ function AddProductContent() {
                   ? "7-day return window applies."
                   : "This product cannot be returned after purchase."}
               </p>
+            </div>
+
+            {/* Branded Product & Shipping Charge */}
+            <div className="bg-white rounded-xl shadow-sm p-6">
+              <h2 className="text-base font-semibold mb-3">Shipping</h2>
+              <div className="flex items-center gap-3 mb-4">
+                <input
+                  type="checkbox"
+                  id="isBranded"
+                  checked={formData.isBranded}
+                  onChange={(e) =>
+                    setFormData({ ...formData, isBranded: e.target.checked })
+                  }
+                  className="w-4 h-4 text-blue-600"
+                />
+                <label
+                  htmlFor="isBranded"
+                  className="text-sm font-medium text-gray-700"
+                >
+                  Branded Product (sold at MRP)
+                </label>
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-gray-600 mb-1">
+                  Shipping Charge (₹)
+                </label>
+                <input
+                  type="number"
+                  min="0"
+                  step="1"
+                  value={formData.shippingCharge}
+                  onChange={(e) =>
+                    setFormData({ ...formData, shippingCharge: e.target.value })
+                  }
+                  placeholder="0"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm"
+                />
+                <p className="text-xs text-gray-400 mt-1">
+                  Set to 0 for free shipping. Shown to customers on product page
+                  and checkout.
+                </p>
+              </div>
             </div>
 
             {/* Actions */}

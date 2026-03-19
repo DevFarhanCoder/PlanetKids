@@ -860,14 +860,19 @@ export default async function Home() {
 
             <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-2 snap-x snap-mandatory md:grid md:grid-cols-3 md:overflow-visible md:snap-none">
               {homeVideos.map((video) => {
-                const isYouTube = video.videoUrl.includes("youtube.com") || video.videoUrl.includes("youtu.be");
+                const isYouTube =
+                  video.videoUrl.includes("youtube.com") ||
+                  video.videoUrl.includes("youtu.be");
                 const ytId = isYouTube
-                  ? (video.videoUrl.includes("youtu.be")
-                      ? video.videoUrl.split("/").pop()?.split("?")[0]
-                      : new URL(video.videoUrl).searchParams.get("v"))
+                  ? video.videoUrl.includes("youtu.be")
+                    ? video.videoUrl.split("/").pop()?.split("?")[0]
+                    : new URL(video.videoUrl).searchParams.get("v")
                   : null;
-                const thumbnail = video.thumbnail ||
-                  (ytId ? `https://img.youtube.com/vi/${ytId}/mqdefault.jpg` : null);
+                const thumbnail =
+                  video.thumbnail ||
+                  (ytId
+                    ? `https://img.youtube.com/vi/${ytId}/mqdefault.jpg`
+                    : null);
 
                 return (
                   <Link
@@ -884,7 +889,11 @@ export default async function Home() {
                         />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center">
-                          <svg className="w-8 h-8 text-gray-300" fill="currentColor" viewBox="0 0 24 24">
+                          <svg
+                            className="w-8 h-8 text-gray-300"
+                            fill="currentColor"
+                            viewBox="0 0 24 24"
+                          >
                             <path d="M8 5v14l11-7z" />
                           </svg>
                         </div>
@@ -892,7 +901,11 @@ export default async function Home() {
                       {/* Play overlay */}
                       <div className="absolute inset-0 bg-black/10 group-hover:bg-black/25 transition-all flex items-center justify-center">
                         <div className="w-9 h-9 bg-white/90 rounded-full flex items-center justify-center shadow">
-                          <svg className="w-4 h-4 text-purple-600 ml-0.5" fill="currentColor" viewBox="0 0 24 24">
+                          <svg
+                            className="w-4 h-4 text-purple-600 ml-0.5"
+                            fill="currentColor"
+                            viewBox="0 0 24 24"
+                          >
                             <path d="M8 5v14l11-7z" />
                           </svg>
                         </div>

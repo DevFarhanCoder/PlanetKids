@@ -108,7 +108,11 @@ export default function CartPage() {
     (sum, item) => sum + Number(item.product.price) * item.quantity,
     0,
   );
-  const shipping = 0; // Fixed at ₹0
+  const shipping = cartItems.reduce(
+    (sum, item) =>
+      sum + Number((item.product as any).shippingCharge || 0) * item.quantity,
+    0,
+  );
   const total = subtotal + shipping;
 
   if (cartItems.length === 0) {
@@ -260,7 +264,13 @@ export default function CartPage() {
                 </div>
                 <div className="flex justify-between text-gray-700">
                   <span>Shipping</span>
-                  <span>₹0</span>
+                  <span>
+                    {shipping > 0 ? (
+                      `₹${shipping.toLocaleString("en-IN")}`
+                    ) : (
+                      <span className="text-green-600">Free</span>
+                    )}
+                  </span>
                 </div>
               </div>
 

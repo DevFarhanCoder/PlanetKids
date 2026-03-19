@@ -125,7 +125,11 @@ export default function CheckoutPage() {
       0,
     );
 
-    const shipping = 0; // Fixed at ₹0
+    const shipping = cart.items.reduce(
+      (sum: number, item: any) =>
+        sum + Number(item.product.shippingCharge || 0) * item.quantity,
+      0,
+    );
     const codCharge = paymentMethod === "COD" ? 50 : 0;
     const tax = 0; // Fixed at ₹0
     const total = subtotal + shipping + codCharge + tax;

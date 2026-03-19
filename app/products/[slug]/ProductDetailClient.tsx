@@ -206,14 +206,14 @@ export default function ProductDetailClient({
                   touchStartX.current = e.touches[0].clientX;
                 }}
                 onTouchEnd={(e) => {
-                  const delta = touchStartX.current - e.changedTouches[0].clientX;
+                  const delta =
+                    touchStartX.current - e.changedTouches[0].clientX;
                   if (Math.abs(delta) > 40) {
                     if (delta > 0)
                       setSelectedImage((p) =>
                         Math.min(p + 1, product.images.length - 1),
                       );
-                    else
-                      setSelectedImage((p) => Math.max(p - 1, 0));
+                    else setSelectedImage((p) => Math.max(p - 1, 0));
                   }
                 }}
               >
@@ -223,9 +223,7 @@ export default function ProductDetailClient({
                       product.images[selectedImage]?.url ||
                       product.images[0].url
                     }
-                    alt={
-                      product.images[selectedImage]?.altText || product.name
-                    }
+                    alt={product.images[selectedImage]?.altText || product.name}
                     fill
                     className="object-contain p-6"
                     priority
@@ -327,9 +325,7 @@ export default function ProductDetailClient({
                       product.images[selectedImage]?.url ||
                       product.images[0].url
                     }
-                    alt={
-                      product.images[selectedImage]?.altText || product.name
-                    }
+                    alt={product.images[selectedImage]?.altText || product.name}
                     fill
                     className="object-contain p-8"
                     priority
@@ -445,7 +441,7 @@ export default function ProductDetailClient({
             </div>
 
             {/* Price */}
-              <div className="bg-gray-50 rounded-xl p-6">
+            <div className="bg-gray-50 rounded-xl p-6">
               <div className="flex items-baseline gap-3 mb-2">
                 <span className="text-4xl font-bold text-primary">
                   ₹{product.price.toLocaleString()}
@@ -465,7 +461,9 @@ export default function ProductDetailClient({
                     </>
                   )}
               </div>
-              <p className="text-sm text-gray-500 mb-1">Inclusive of all taxes</p>
+              <p className="text-sm text-gray-500 mb-1">
+                Inclusive of all taxes
+              </p>
               <p className="text-sm font-medium">
                 {product.shippingCharge > 0 ? (
                   <span className="text-orange-600">
@@ -730,7 +728,9 @@ export default function ProductDetailClient({
                       <li>• Cash on Delivery available</li>
                       {product.shippingCharge > 0 ? (
                         <li className="text-orange-600 font-medium">
-                          • Shipping charge: ₹{product.shippingCharge.toLocaleString()} (branded product, sold at MRP)
+                          • Shipping charge: ₹
+                          {product.shippingCharge.toLocaleString()} (branded
+                          product, sold at MRP)
                         </li>
                       ) : (
                         <li className="text-green-600 font-medium">
@@ -785,7 +785,9 @@ export default function ProductDetailClient({
         {relatedProducts.length > 0 && (
           <div className="mt-16">
             <h2 className="text-2xl font-bold mb-2">Similar Products</h2>
-            <p className="text-sm text-gray-500 mb-6">You may also like these</p>
+            <p className="text-sm text-gray-500 mb-6">
+              You may also like these
+            </p>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
               {relatedProducts.map((relatedProduct) => {
                 const relatedDiscount = relatedProduct.compareAtPrice

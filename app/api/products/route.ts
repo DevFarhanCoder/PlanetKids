@@ -16,6 +16,7 @@ export async function GET(request: NextRequest) {
     const category = searchParams.get("category");
     const featured = searchParams.get("featured");
     const newArrivals = searchParams.get("newArrivals");
+    const search = searchParams.get("search");
     const page = parseInt(searchParams.get("page") || "1");
     const limit = parseInt(searchParams.get("limit") || "20");
     const skip = (page - 1) * limit;
@@ -34,6 +35,14 @@ export async function GET(request: NextRequest) {
             orderBy: { order: "asc" },
           },
           variants: true,
+          productLinks: {
+            include: {
+              linkedProduct: {
+                select: { id: true, name: true, slug: true },
+              },
+            },
+            orderBy: { displayOrder: "asc" },
+          },
           reviews: {
             include: {
               user: {
@@ -75,6 +84,10 @@ export async function GET(request: NextRequest) {
 
     if (newArrivals === "true") {
       where.isNewArrival = true;
+    }
+
+    if (search) {
+      where.name = { contains: search, mode: "insensitive" };
     }
 
     // Get products with pagination
@@ -148,6 +161,12 @@ export async function POST(request: NextRequest) {
     const isFeatured = formData.get("isFeatured") === "true";
     const isNewArrival = formData.get("isNewArrival") === "true";
     const isReturnable = formData.get("isReturnable") !== "false";
+    const isBranded = formData.get("isBranded") === "true";
+    const shippingCharge = formData.get("shippingCharge")
+      ? parseFloat(formData.get("shippingCharge") as string)
+      : 0;
+    const productLinksRaw = formData.get("productLinks") as string;
+    const productLinks = productLinksRaw ? JSON.parse(productLinksRaw) : [];
 
     // Handle image uploads
     const images = formData.getAll("images") as File[];
@@ -216,6 +235,8 @@ export async function POST(request: NextRequest) {
         isFeatured,
         isNewArrival,
         isReturnable,
+        isBranded,
+        shippingCharge,
         isActive: true, // Make product active by default
         categories: {
           create: categoryIds.map((categoryId: string) => ({
@@ -239,6 +260,19 @@ export async function POST(request: NextRequest) {
         images: true,
       },
     });
+
+    // Save product links (variants pointing to other products)
+    if (productLinks.length > 0) {
+      await prisma.productLink.createMany({
+        data: productLinks.map((pl: any, i: number) => ({
+          productId: product.id,
+          linkedProductId: pl.linkedProductId,
+          label: pl.label || null,
+          displayOrder: i,
+        })),
+        skipDuplicates: true,
+      });
+    }
 
     return NextResponse.json(product, { status: 201 });
   } catch (error: any) {
@@ -303,6 +337,12 @@ export async function PUT(request: NextRequest) {
       updateData.isReturnable = formData.get("isReturnable") !== "false";
     if (formData.has("isActive"))
       updateData.isActive = formData.get("isActive") === "true";
+    if (formData.has("isBranded"))
+      updateData.isBranded = formData.get("isBranded") === "true";
+    if (formData.has("shippingCharge"))
+      updateData.shippingCharge = parseFloat(
+        formData.get("shippingCharge") as string,
+      );
 
     // Handle new images
     const images = formData.getAll("images") as File[];
@@ -396,6 +436,25 @@ export async function PUT(request: NextRequest) {
         images: true,
       },
     });
+
+    // Update product links if provided
+    if (formData.has("productLinks")) {
+      const productLinksRaw = formData.get("productLinks") as string;
+      const productLinks = JSON.parse(productLinksRaw);
+      // Replace all existing links
+      await prisma.productLink.deleteMany({ where: { productId: id } });
+      if (productLinks.length > 0) {
+        await prisma.productLink.createMany({
+          data: productLinks.map((pl: any, i: number) => ({
+            productId: id,
+            linkedProductId: pl.linkedProductId,
+            label: pl.label || null,
+            displayOrder: i,
+          })),
+          skipDuplicates: true,
+        });
+      }
+    }
 
     return NextResponse.json(product);
   } catch (error) {
