@@ -160,15 +160,20 @@ model Product {
   metaDescription String?
   metaKeywords    String?
 
-  categories    ProductCategory[]
-  images        ProductImage[]
-  variants      ProductVariant[]
-  reviews       Review[]
-  orderItems    OrderItem[]
-  cartItems     CartItem[]
-  wishlistItems WishlistItem[]
-  comparisons   Comparison[]
+  shippingCharge Decimal @default(0) @db.Decimal(10, 2)
+  isBranded      Boolean @default(false)
+
+  categories       ProductCategory[]
+  images           ProductImage[]
+  variants         ProductVariant[]
+  reviews          Review[]
+  orderItems       OrderItem[]
+  cartItems        CartItem[]
+  wishlistItems    WishlistItem[]
+  comparisons      Comparison[]
   homeSectionItems HomeSectionItem[]
+  productLinks     ProductLink[] @relation("ProductLinks")
+  linkedByProducts ProductLink[] @relation("ProductLinkedBy")
 
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
@@ -181,6 +186,20 @@ model Product {
   @@index([ageGroup])
   @@index([createdAt])
   @@index([salesCount])
+}
+
+model ProductLink {
+  id             String  @id @default(cuid())
+  productId      String
+  linkedProductId String
+  label          String?
+  displayOrder   Int     @default(0)
+
+  product       Product @relation("ProductLinks", fields: [productId], references: [id], onDelete: Cascade)
+  linkedProduct Product @relation("ProductLinkedBy", fields: [linkedProductId], references: [id], onDelete: Cascade)
+
+  @@unique([productId, linkedProductId])
+  @@index([productId])
 }
 
 enum AgeGroup {
