@@ -151,10 +151,15 @@ export async function POST(request: NextRequest) {
     const compareAtPrice = formData.get("compareAtPrice")
       ? parseFloat(formData.get("compareAtPrice") as string)
       : null;
-    const sku = formData.get("sku") as string;
+    const skuRaw = formData.get("sku") as string;
+    const sku = skuRaw && skuRaw.trim() ? skuRaw.trim() : null;
+    const barcodeRaw = formData.get("barcode") as string;
+    const barcode = barcodeRaw && barcodeRaw.trim() ? barcodeRaw.trim() : null;
     const quantity = parseInt(formData.get("quantity") as string);
-    const brand = formData.get("brand") as string;
-    const ageGroup = formData.get("ageGroup") as string;
+    const brandRaw = formData.get("brand") as string;
+    const brand = brandRaw && brandRaw.trim() ? brandRaw.trim() : null;
+    const ageGroupRaw = formData.get("ageGroup") as string;
+    const ageGroup = ageGroupRaw && ageGroupRaw.trim() ? ageGroupRaw.trim() : null;
     const categoryIds = JSON.parse(
       (formData.get("categoryIds") as string) || "[]",
     );
@@ -231,7 +236,7 @@ export async function POST(request: NextRequest) {
         sku,
         quantity,
         brand,
-        ageGroup: ageGroup as any,
+        ageGroup: ageGroup as any || null,
         isFeatured,
         isNewArrival,
         isReturnable,
@@ -323,12 +328,24 @@ export async function PUT(request: NextRequest) {
       updateData.compareAtPrice = parseFloat(
         formData.get("compareAtPrice") as string,
       );
-    if (formData.has("sku")) updateData.sku = formData.get("sku");
+    if (formData.has("sku")) {
+      const v = formData.get("sku") as string;
+      updateData.sku = v && v.trim() ? v.trim() : null;
+    }
+    if (formData.has("barcode")) {
+      const v = formData.get("barcode") as string;
+      updateData.barcode = v && v.trim() ? v.trim() : null;
+    }
     if (formData.has("quantity"))
       updateData.quantity = parseInt(formData.get("quantity") as string);
-    if (formData.has("brand")) updateData.brand = formData.get("brand");
-    if (formData.has("ageGroup"))
-      updateData.ageGroup = formData.get("ageGroup");
+    if (formData.has("brand")) {
+      const v = formData.get("brand") as string;
+      updateData.brand = v && v.trim() ? v.trim() : null;
+    }
+    if (formData.has("ageGroup")) {
+      const v = formData.get("ageGroup") as string;
+      updateData.ageGroup = v && v.trim() ? v.trim() : null;
+    }
     if (formData.has("isFeatured"))
       updateData.isFeatured = formData.get("isFeatured") === "true";
     if (formData.has("isNewArrival"))
