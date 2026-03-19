@@ -111,13 +111,17 @@ export default function ProductDetailClient({
 
   const handleWishlist = async () => {
     if (!session) {
-      router.push("/login?callbackUrl=" + encodeURIComponent(window.location.pathname));
+      router.push(
+        "/login?callbackUrl=" + encodeURIComponent(window.location.pathname),
+      );
       return;
     }
     setWishlistLoading(true);
     try {
       if (isWishlisted) {
-        await fetch(`/api/wishlist?productId=${product.id}`, { method: "DELETE" });
+        await fetch(`/api/wishlist?productId=${product.id}`, {
+          method: "DELETE",
+        });
         setIsWishlisted(false);
       } else {
         await fetch("/api/wishlist", {
