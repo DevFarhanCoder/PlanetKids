@@ -232,10 +232,12 @@ export default function ProductDetailClient({
               <div
                 ref={carouselRef}
                 className="flex overflow-x-auto scrollbar-hide"
-                style={{
-                  scrollSnapType: "x mandatory",
-                  WebkitOverflowScrolling: "touch",
-                } as React.CSSProperties}
+                style={
+                  {
+                    scrollSnapType: "x mandatory",
+                    WebkitOverflowScrolling: "touch",
+                  } as React.CSSProperties
+                }
                 onScroll={handleScroll}
               >
                 {product.images.length > 0 ? (
