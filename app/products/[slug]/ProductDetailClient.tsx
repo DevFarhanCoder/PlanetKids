@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -16,6 +16,7 @@ import {
   Shield,
   RotateCcw,
   ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 
 interface Product {
@@ -26,6 +27,8 @@ interface Product {
   shortDescription: string | null;
   price: number;
   compareAtPrice: number | null;
+  shippingCharge: number;
+  isBranded: boolean;
   sku: string | null;
   barcode: string | null;
   quantity: number;
@@ -48,6 +51,16 @@ interface Product {
     };
   }>;
   variants: any[];
+  productLinks: Array<{
+    linkedProductId: string;
+    label: string | null;
+    linkedProduct: {
+      id: string;
+      name: string;
+      slug: string;
+      images: Array<{ url: string }>;
+    };
+  }>;
 }
 
 interface RelatedProduct {
@@ -80,6 +93,8 @@ export default function ProductDetailClient({
     "description" | "details" | "shipping"
   >("description");
   const [addingToCart, setAddingToCart] = useState(false);
+  const swipeRef = useRef<HTMLDivElement>(null);
+  const touchStartX = useRef(0);
 
   const discount = product.compareAtPrice
     ? Math.round(
@@ -180,61 +195,162 @@ export default function ProductDetailClient({
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
           {/* Product Images */}
-          <div className="space-y-4">
-            {/* Main Image */}
-            <div className="relative aspect-square bg-white rounded-2xl overflow-hidden border border-gray-200">
-              {product.images.length > 0 ? (
-                <Image
-                  src={
-                    product.images[selectedImage]?.url || product.images[0].url
+          <div>
+            {/* ── MOBILE: full-width swipe carousel ── */}
+            <div className="relative lg:hidden">
+              {/* Slide container */}
+              <div
+                ref={swipeRef}
+                className="relative w-full bg-white border border-gray-200 rounded-2xl overflow-hidden aspect-square"
+                onTouchStart={(e) => {
+                  touchStartX.current = e.touches[0].clientX;
+                }}
+                onTouchEnd={(e) => {
+                  const delta = touchStartX.current - e.changedTouches[0].clientX;
+                  if (Math.abs(delta) > 40) {
+                    if (delta > 0)
+                      setSelectedImage((p) =>
+                        Math.min(p + 1, product.images.length - 1),
+                      );
+                    else
+                      setSelectedImage((p) => Math.max(p - 1, 0));
                   }
-                  alt={product.images[selectedImage]?.altText || product.name}
-                  fill
-                  className="object-contain p-8"
-                  priority
-                />
-              ) : (
-                <div className="flex items-center justify-center h-full text-8xl">
-                  📦
-                </div>
-              )}
-              {product.isNewArrival && (
-                <div className="absolute top-4 left-4 bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
-                  NEW
-                </div>
-              )}
-              {discount > 0 && (
-                <div className="absolute top-4 right-4 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
-                  {discount}% OFF
+                }}
+              >
+                {product.images.length > 0 ? (
+                  <Image
+                    src={
+                      product.images[selectedImage]?.url ||
+                      product.images[0].url
+                    }
+                    alt={
+                      product.images[selectedImage]?.altText || product.name
+                    }
+                    fill
+                    className="object-contain p-6"
+                    priority
+                  />
+                ) : (
+                  <div className="flex items-center justify-center h-full text-8xl">
+                    📦
+                  </div>
+                )}
+
+                {/* Badges */}
+                {product.isNewArrival && (
+                  <div className="absolute top-3 left-3 bg-blue-500 text-white px-2.5 py-1 rounded-full text-xs font-semibold">
+                    NEW
+                  </div>
+                )}
+                {discount > 0 && (
+                  <div className="absolute top-3 right-3 bg-red-500 text-white px-2.5 py-1 rounded-full text-xs font-semibold">
+                    {discount}% OFF
+                  </div>
+                )}
+
+                {/* Prev / Next arrows */}
+                {product.images.length > 1 && (
+                  <>
+                    <button
+                      onClick={() =>
+                        setSelectedImage((p) => Math.max(p - 1, 0))
+                      }
+                      disabled={selectedImage === 0}
+                      className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-white/80 rounded-full flex items-center justify-center shadow disabled:opacity-30"
+                    >
+                      <ChevronLeft className="w-5 h-5 text-gray-700" />
+                    </button>
+                    <button
+                      onClick={() =>
+                        setSelectedImage((p) =>
+                          Math.min(p + 1, product.images.length - 1),
+                        )
+                      }
+                      disabled={selectedImage === product.images.length - 1}
+                      className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-white/80 rounded-full flex items-center justify-center shadow disabled:opacity-30"
+                    >
+                      <ChevronRight className="w-5 h-5 text-gray-700" />
+                    </button>
+                  </>
+                )}
+              </div>
+
+              {/* Dot indicators */}
+              {product.images.length > 1 && (
+                <div className="flex justify-center gap-1.5 mt-3">
+                  {product.images.map((_, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setSelectedImage(i)}
+                      className={`rounded-full transition-all ${
+                        i === selectedImage
+                          ? "w-5 h-2 bg-primary"
+                          : "w-2 h-2 bg-gray-300"
+                      }`}
+                    />
+                  ))}
                 </div>
               )}
             </div>
 
-            {/* Thumbnail Images */}
-            {product.images.length > 1 && (
-              <div className="grid grid-cols-4 gap-4">
-                {product.images.map((image, index) => (
-                  <button
-                    key={image.id}
-                    onClick={() => setSelectedImage(index)}
-                    className={`relative aspect-square rounded-lg overflow-hidden border-2 transition-all ${
-                      selectedImage === index
-                        ? "border-primary shadow-lg"
-                        : "border-gray-200 hover:border-gray-300"
-                    }`}
-                  >
-                    <Image
-                      src={image.url}
-                      alt={
-                        image.altText || `${product.name} - Image ${index + 1}`
-                      }
-                      fill
-                      className="object-contain p-2"
-                    />
-                  </button>
-                ))}
+            {/* ── DESKTOP: vertical thumbnail strip + main image ── */}
+            <div className="hidden lg:flex gap-3">
+              {/* Vertical thumbnails */}
+              {product.images.length > 1 && (
+                <div className="flex flex-col gap-2 overflow-y-auto max-h-[500px] w-20 flex-shrink-0 scrollbar-thin scrollbar-thumb-gray-300">
+                  {product.images.map((image, index) => (
+                    <button
+                      key={image.id}
+                      onClick={() => setSelectedImage(index)}
+                      className={`relative aspect-square w-full rounded-lg overflow-hidden border-2 flex-shrink-0 transition-all ${
+                        selectedImage === index
+                          ? "border-primary shadow-md"
+                          : "border-gray-200 hover:border-gray-400"
+                      }`}
+                    >
+                      <Image
+                        src={image.url}
+                        alt={image.altText || `${product.name} ${index + 1}`}
+                        fill
+                        className="object-contain p-1"
+                      />
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              {/* Main image */}
+              <div className="relative aspect-square flex-1 bg-white rounded-2xl overflow-hidden border border-gray-200">
+                {product.images.length > 0 ? (
+                  <Image
+                    src={
+                      product.images[selectedImage]?.url ||
+                      product.images[0].url
+                    }
+                    alt={
+                      product.images[selectedImage]?.altText || product.name
+                    }
+                    fill
+                    className="object-contain p-8"
+                    priority
+                  />
+                ) : (
+                  <div className="flex items-center justify-center h-full text-8xl">
+                    📦
+                  </div>
+                )}
+                {product.isNewArrival && (
+                  <div className="absolute top-4 left-4 bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                    NEW
+                  </div>
+                )}
+                {discount > 0 && (
+                  <div className="absolute top-4 right-4 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                    {discount}% OFF
+                  </div>
+                )}
               </div>
-            )}
+            </div>
           </div>
 
           {/* Product Info */}
@@ -284,10 +400,52 @@ export default function ProductDetailClient({
                   {product.shortDescription}
                 </p>
               )}
+
+              {/* Linked Product Variants (same item, different colour/style) */}
+              {product.productLinks && product.productLinks.length > 0 && (
+                <div className="mt-4">
+                  <p className="text-sm font-semibold text-gray-700 mb-2">
+                    Also available in:
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {/* Current product chip */}
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border-2 border-primary bg-primary/5 text-primary text-sm font-semibold">
+                      {product.images[0] && (
+                        <Image
+                          src={product.images[0].url}
+                          alt={product.name}
+                          width={20}
+                          height={20}
+                          className="rounded-full object-cover"
+                        />
+                      )}
+                      This
+                    </span>
+                    {product.productLinks.map((pl) => (
+                      <Link
+                        key={pl.linkedProductId}
+                        href={`/products/${pl.linkedProduct.slug}`}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border-2 border-gray-200 hover:border-primary text-gray-700 hover:text-primary text-sm font-medium transition-colors"
+                      >
+                        {pl.linkedProduct.images[0] && (
+                          <Image
+                            src={pl.linkedProduct.images[0].url}
+                            alt={pl.linkedProduct.name}
+                            width={20}
+                            height={20}
+                            className="rounded-full object-cover"
+                          />
+                        )}
+                        {pl.label || pl.linkedProduct.name}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Price */}
-            <div className="bg-gray-50 rounded-xl p-6">
+              <div className="bg-gray-50 rounded-xl p-6">
               <div className="flex items-baseline gap-3 mb-2">
                 <span className="text-4xl font-bold text-primary">
                   ₹{product.price.toLocaleString()}
@@ -307,7 +465,16 @@ export default function ProductDetailClient({
                     </>
                   )}
               </div>
-              <p className="text-sm text-gray-500">Inclusive of all taxes</p>
+              <p className="text-sm text-gray-500 mb-1">Inclusive of all taxes</p>
+              <p className="text-sm font-medium">
+                {product.shippingCharge > 0 ? (
+                  <span className="text-orange-600">
+                    🚚 Shipping: ₹{product.shippingCharge.toLocaleString()}
+                  </span>
+                ) : (
+                  <span className="text-green-600">🚚 Free Shipping</span>
+                )}
+              </p>
             </div>
 
             {/* Stock Status */}
@@ -421,8 +588,14 @@ export default function ProductDetailClient({
             <div className="grid grid-cols-3 gap-4 pt-6 border-t">
               <div className="text-center">
                 <Truck className="w-8 h-8 mx-auto mb-2 text-primary" />
-                <p className="text-sm font-medium">Free Shipping</p>
-                <p className="text-xs text-gray-500">On orders above ₹999</p>
+                <p className="text-sm font-medium">
+                  {product.shippingCharge > 0 ? "Shipping" : "Free Shipping"}
+                </p>
+                <p className="text-xs text-gray-500">
+                  {product.shippingCharge > 0
+                    ? `₹${product.shippingCharge} per order`
+                    : "On all orders"}
+                </p>
               </div>
               <div className="text-center">
                 <Shield className="w-8 h-8 mx-auto mb-2 text-primary" />
@@ -549,13 +722,21 @@ export default function ProductDetailClient({
                       Shipping Information
                     </h3>
                     <ul className="space-y-2 text-gray-600">
-                      <li>• Free shipping on orders above ₹999</li>
                       <li>• Standard delivery: 5-7 business days</li>
                       <li>
                         • Express delivery: 2-3 business days (additional
                         charges apply)
                       </li>
                       <li>• Cash on Delivery available</li>
+                      {product.shippingCharge > 0 ? (
+                        <li className="text-orange-600 font-medium">
+                          • Shipping charge: ₹{product.shippingCharge.toLocaleString()} (branded product, sold at MRP)
+                        </li>
+                      ) : (
+                        <li className="text-green-600 font-medium">
+                          • Free shipping on this product
+                        </li>
+                      )}
                     </ul>
                   </div>
                   <div>
@@ -603,7 +784,8 @@ export default function ProductDetailClient({
         {/* Related Products */}
         {relatedProducts.length > 0 && (
           <div className="mt-16">
-            <h2 className="text-2xl font-bold mb-6">You May Also Like</h2>
+            <h2 className="text-2xl font-bold mb-2">Similar Products</h2>
+            <p className="text-sm text-gray-500 mb-6">You may also like these</p>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
               {relatedProducts.map((relatedProduct) => {
                 const relatedDiscount = relatedProduct.compareAtPrice
