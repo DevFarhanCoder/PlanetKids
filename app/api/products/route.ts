@@ -159,7 +159,8 @@ export async function POST(request: NextRequest) {
     const brandRaw = formData.get("brand") as string;
     const brand = brandRaw && brandRaw.trim() ? brandRaw.trim() : null;
     const ageGroupRaw = formData.get("ageGroup") as string;
-    const ageGroup = ageGroupRaw && ageGroupRaw.trim() ? ageGroupRaw.trim() : null;
+    const ageGroup =
+      ageGroupRaw && ageGroupRaw.trim() ? ageGroupRaw.trim() : null;
     const categoryIds = JSON.parse(
       (formData.get("categoryIds") as string) || "[]",
     );
@@ -236,7 +237,7 @@ export async function POST(request: NextRequest) {
         sku,
         quantity,
         brand,
-        ageGroup: ageGroup as any || null,
+        ageGroup: (ageGroup as any) || null,
         isFeatured,
         isNewArrival,
         isReturnable,
