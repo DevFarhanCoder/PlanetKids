@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -89,11 +89,50 @@ export default function ProductDetailClient({
   const [quantity, setQuantity] = useState(1);
   const [selectedImage, setSelectedImage] = useState(0);
   const [isWishlisted, setIsWishlisted] = useState(false);
+  const [wishlistLoading, setWishlistLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<
     "description" | "details" | "shipping"
   >("description");
   const [addingToCart, setAddingToCart] = useState(false);
   const carouselRef = useRef<HTMLDivElement>(null);
+
+  // Load wishlist status on mount
+  useEffect(() => {
+    if (!session) return;
+    fetch("/api/wishlist")
+      .then((r) => r.json())
+      .then((items: any[]) => {
+        if (Array.isArray(items)) {
+          setIsWishlisted(items.some((i) => i.productId === product.id));
+        }
+      })
+      .catch(() => {});
+  }, [session, product.id]);
+
+  const handleWishlist = async () => {
+    if (!session) {
+      router.push("/login?callbackUrl=" + encodeURIComponent(window.location.pathname));
+      return;
+    }
+    setWishlistLoading(true);
+    try {
+      if (isWishlisted) {
+        await fetch(`/api/wishlist?productId=${product.id}`, { method: "DELETE" });
+        setIsWishlisted(false);
+      } else {
+        await fetch("/api/wishlist", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ productId: product.id }),
+        });
+        setIsWishlisted(true);
+      }
+    } catch {
+      // silent fail
+    } finally {
+      setWishlistLoading(false);
+    }
+  };
 
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const container = e.currentTarget;
@@ -199,11 +238,11 @@ export default function ProductDetailClient({
         </div>
       </div>
 
-      <div className="container-custom pt-3 pb-8">
+      <div className="container-custom pt-2 pb-8">
         {/* Back Button */}
         <Link
           href="/products"
-          className="inline-flex items-center gap-2 text-gray-600 hover:text-primary mb-3 transition-colors"
+          className="inline-flex items-center gap-2 text-gray-600 hover:text-primary mb-2 transition-colors"
         >
           <ChevronLeft className="w-5 h-5" />
           Back to Products
@@ -540,8 +579,9 @@ export default function ProductDetailClient({
                 {addingToCart ? "Adding..." : "Add to Cart"}
               </button>
               <button
-                onClick={() => setIsWishlisted(!isWishlisted)}
-                className={`px-4 py-4 rounded-lg border-2 transition-all ${
+                onClick={handleWishlist}
+                disabled={wishlistLoading}
+                className={`px-4 py-4 rounded-lg border-2 transition-all disabled:opacity-60 ${
                   isWishlisted
                     ? "border-red-500 bg-red-50 text-red-500"
                     : "border-gray-300 hover:border-red-500 hover:bg-red-50 hover:text-red-500"
