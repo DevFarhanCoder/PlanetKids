@@ -93,8 +93,24 @@ export default function ProductDetailClient({
     "description" | "details" | "shipping"
   >("description");
   const [addingToCart, setAddingToCart] = useState(false);
-  const swipeRef = useRef<HTMLDivElement>(null);
-  const touchStartX = useRef(0);
+  const carouselRef = useRef<HTMLDivElement>(null);
+
+  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    const container = e.currentTarget;
+    const W = container.clientWidth;
+    const itemW = W * 0.85 + 8;
+    const idx = Math.round(container.scrollLeft / itemW);
+    setSelectedImage(Math.max(0, Math.min(idx, product.images.length - 1)));
+  };
+
+  const scrollToImage = (i: number) => {
+    const container = carouselRef.current;
+    if (!container) return;
+    const W = container.clientWidth;
+    const itemW = W * 0.85 + 8;
+    container.scrollTo({ left: i * itemW, behavior: "smooth" });
+    setSelectedImage(i);
+  };
 
   const discount = product.compareAtPrice
     ? Math.round(
@@ -161,7 +177,7 @@ export default function ProductDetailClient({
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-white">
       {/* Breadcrumb */}
       <div className="bg-white border-b">
         <div className="container-custom py-4">
@@ -183,93 +199,73 @@ export default function ProductDetailClient({
         </div>
       </div>
 
-      <div className="container-custom py-8">
+      <div className="container-custom pt-3 pb-8">
         {/* Back Button */}
         <Link
           href="/products"
-          className="inline-flex items-center gap-2 text-gray-600 hover:text-primary mb-6 transition-colors"
+          className="inline-flex items-center gap-2 text-gray-600 hover:text-primary mb-3 transition-colors"
         >
           <ChevronLeft className="w-5 h-5" />
           Back to Products
         </Link>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-12">
           {/* Product Images */}
           <div>
-            {/* ── MOBILE: full-width swipe carousel ── */}
-            <div className="relative lg:hidden">
-              {/* Slide container */}
-              <div
-                ref={swipeRef}
-                className="relative w-full bg-white border border-gray-200 rounded-2xl overflow-hidden aspect-square"
-                onTouchStart={(e) => {
-                  touchStartX.current = e.touches[0].clientX;
-                }}
-                onTouchEnd={(e) => {
-                  const delta =
-                    touchStartX.current - e.changedTouches[0].clientX;
-                  if (Math.abs(delta) > 40) {
-                    if (delta > 0)
-                      setSelectedImage((p) =>
-                        Math.min(p + 1, product.images.length - 1),
-                      );
-                    else setSelectedImage((p) => Math.max(p - 1, 0));
-                  }
-                }}
-              >
-                {product.images.length > 0 ? (
-                  <Image
-                    src={
-                      product.images[selectedImage]?.url ||
-                      product.images[0].url
-                    }
-                    alt={product.images[selectedImage]?.altText || product.name}
-                    fill
-                    className="object-contain p-6"
-                    priority
-                  />
-                ) : (
-                  <div className="flex items-center justify-center h-full text-8xl">
-                    📦
-                  </div>
-                )}
-
-                {/* Badges */}
+            {/* ── MOBILE: peek swipe carousel (CSS scroll-snap) ── */}
+            <div className="lg:hidden -mx-4 sm:-mx-6">
+              {/* Badges row above carousel */}
+              <div className="flex items-center gap-2 px-4 sm:px-6 mb-2 h-6">
                 {product.isNewArrival && (
-                  <div className="absolute top-3 left-3 bg-blue-500 text-white px-2.5 py-1 rounded-full text-xs font-semibold">
+                  <span className="bg-blue-500 text-white px-2.5 py-0.5 rounded-full text-xs font-semibold">
                     NEW
-                  </div>
+                  </span>
                 )}
                 {discount > 0 && (
-                  <div className="absolute top-3 right-3 bg-red-500 text-white px-2.5 py-1 rounded-full text-xs font-semibold">
+                  <span className="bg-red-500 text-white px-2.5 py-0.5 rounded-full text-xs font-semibold">
                     {discount}% OFF
-                  </div>
+                  </span>
                 )}
+              </div>
 
-                {/* Prev / Next arrows */}
-                {product.images.length > 1 && (
-                  <>
-                    <button
-                      onClick={() =>
-                        setSelectedImage((p) => Math.max(p - 1, 0))
-                      }
-                      disabled={selectedImage === 0}
-                      className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-white/80 rounded-full flex items-center justify-center shadow disabled:opacity-30"
+              {/* Scroll container — peek 7.5% on each side */}
+              <div
+                ref={carouselRef}
+                className="flex overflow-x-auto scrollbar-hide"
+                style={{
+                  scrollSnapType: "x mandatory",
+                  WebkitOverflowScrolling: "touch",
+                } as React.CSSProperties}
+                onScroll={handleScroll}
+              >
+                {product.images.length > 0 ? (
+                  product.images.map((image, index) => (
+                    <div
+                      key={image.id}
+                      className="flex-shrink-0"
+                      style={{
+                        width: "85%",
+                        scrollSnapAlign: "center",
+                        marginLeft: index === 0 ? "7.5%" : "4px",
+                        marginRight:
+                          index === product.images.length - 1 ? "7.5%" : "4px",
+                      }}
                     >
-                      <ChevronLeft className="w-5 h-5 text-gray-700" />
-                    </button>
-                    <button
-                      onClick={() =>
-                        setSelectedImage((p) =>
-                          Math.min(p + 1, product.images.length - 1),
-                        )
-                      }
-                      disabled={selectedImage === product.images.length - 1}
-                      className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-white/80 rounded-full flex items-center justify-center shadow disabled:opacity-30"
-                    >
-                      <ChevronRight className="w-5 h-5 text-gray-700" />
-                    </button>
-                  </>
+                      <div className="relative aspect-square rounded-2xl overflow-hidden bg-white border border-gray-100">
+                        <Image
+                          src={image.url}
+                          alt={image.altText || product.name}
+                          fill
+                          className="object-contain p-4"
+                          priority={index === 0}
+                        />
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="w-full aspect-square flex items-center justify-center text-8xl bg-white rounded-2xl mx-[7.5%]">
+                    📦
+                  </div>
                 )}
               </div>
 
@@ -279,7 +275,7 @@ export default function ProductDetailClient({
                   {product.images.map((_, i) => (
                     <button
                       key={i}
-                      onClick={() => setSelectedImage(i)}
+                      onClick={() => scrollToImage(i)}
                       className={`rounded-full transition-all ${
                         i === selectedImage
                           ? "w-5 h-2 bg-primary"
@@ -350,14 +346,20 @@ export default function ProductDetailClient({
           </div>
 
           {/* Product Info */}
-          <div className="space-y-6">
+          <div className="space-y-4">
             <div>
-              <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-3">
+              {/* Brand */}
+              {product.brand && (
+                <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">
+                  by {product.brand}
+                </p>
+              )}
+              <h1 className="text-2xl lg:text-4xl font-bold text-gray-900 mb-2">
                 {product.name}
               </h1>
 
               {/* Rating */}
-              <div className="flex items-center gap-4 mb-4">
+              <div className="flex items-center gap-3 mb-2">
                 <div className="flex items-center gap-1">
                   {[...Array(5)].map((_, i) => (
                     <Star
@@ -377,7 +379,7 @@ export default function ProductDetailClient({
               </div>
 
               {/* Category Badges */}
-              <div className="flex flex-wrap gap-2 mb-4">
+              <div className="flex flex-wrap gap-2 mb-2">
                 {product.categories.map((pc) => (
                   <Link
                     key={pc.category.id}
@@ -441,9 +443,9 @@ export default function ProductDetailClient({
             </div>
 
             {/* Price */}
-            <div className="bg-gray-50 rounded-xl p-6">
-              <div className="flex items-baseline gap-3 mb-2">
-                <span className="text-4xl font-bold text-primary">
+            <div>
+              <div className="flex items-baseline gap-3 mb-1">
+                <span className="text-3xl font-bold text-primary">
                   ₹{product.price.toLocaleString()}
                 </span>
                 {product.compareAtPrice &&
@@ -461,7 +463,7 @@ export default function ProductDetailClient({
                     </>
                   )}
               </div>
-              <p className="text-sm text-gray-500 mb-1">
+              <p className="text-xs text-gray-400 mb-1">
                 Inclusive of all taxes
               </p>
               <p className="text-sm font-medium">
@@ -502,17 +504,17 @@ export default function ProductDetailClient({
                   <div className="flex items-center border border-gray-300 rounded-lg">
                     <button
                       onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                      className="p-3 hover:bg-gray-50 transition-colors"
+                      className="p-2 hover:bg-gray-50 transition-colors"
                       disabled={quantity <= 1}
                     >
                       <Minus className="w-4 h-4" />
                     </button>
-                    <span className="px-6 font-semibold">{quantity}</span>
+                    <span className="px-5 font-semibold">{quantity}</span>
                     <button
                       onClick={() =>
                         setQuantity(Math.min(product.quantity, quantity + 1))
                       }
-                      className="p-3 hover:bg-gray-50 transition-colors"
+                      className="p-2 hover:bg-gray-50 transition-colors"
                       disabled={quantity >= product.quantity}
                     >
                       <Plus className="w-4 h-4" />
@@ -583,7 +585,7 @@ export default function ProductDetailClient({
             </div>
 
             {/* Features */}
-            <div className="grid grid-cols-3 gap-4 pt-6 border-t">
+            <div className="grid grid-cols-3 gap-3 pt-4 border-t">
               <div className="text-center">
                 <Truck className="w-8 h-8 mx-auto mb-2 text-primary" />
                 <p className="text-sm font-medium">
@@ -620,7 +622,7 @@ export default function ProductDetailClient({
         </div>
 
         {/* Product Details Tabs */}
-        <div className="mt-12">
+        <div className="mt-6">
           <div className="bg-white rounded-xl shadow-sm overflow-hidden">
             {/* Tab Headers */}
             <div className="border-b flex">
@@ -783,7 +785,7 @@ export default function ProductDetailClient({
 
         {/* Related Products */}
         {relatedProducts.length > 0 && (
-          <div className="mt-16">
+          <div className="mt-8">
             <h2 className="text-2xl font-bold mb-2">Similar Products</h2>
             <p className="text-sm text-gray-500 mb-6">
               You may also like these
