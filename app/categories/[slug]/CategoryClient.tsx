@@ -491,63 +491,6 @@ export default function CategoryClient({ category }: CategoryClientProps) {
                 </div>
               )}
 
-              {/* Age Filter */}
-              <div className="border-b border-gray-200">
-                <button
-                  onClick={() => setAgeExpanded(!ageExpanded)}
-                  className="w-full flex items-center justify-between px-4 py-3 hover:bg-gray-50 transition-colors"
-                >
-                  <span className="text-xs font-black text-gray-700 uppercase tracking-wide">
-                    Age
-                  </span>
-                  {ageExpanded ? (
-                    <ChevronUp className="w-3.5 h-3.5 text-gray-400" />
-                  ) : (
-                    <ChevronDown className="w-3.5 h-3.5 text-gray-400" />
-                  )}
-                </button>
-                {ageExpanded && (
-                  <div className="px-4 pb-3 space-y-2.5">
-                    {AGE_FILTERS.filter((a) => a.value !== "all").map((age) => (
-                      <label
-                        key={age.value}
-                        onClick={() =>
-                          setSelectedAge(
-                            selectedAge === age.value ? "all" : age.value,
-                          )
-                        }
-                        className="flex items-center gap-2 cursor-pointer group"
-                      >
-                        <div
-                          className={`w-3.5 h-3.5 border rounded-sm flex items-center justify-center flex-shrink-0 transition-colors ${selectedAge === age.value ? "bg-orange-500 border-orange-500" : "border-gray-400 group-hover:border-orange-400"}`}
-                        >
-                          {selectedAge === age.value && (
-                            <svg
-                              className="w-2 h-2 text-white"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth={3}
-                              viewBox="0 0 12 12"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M2 6l3 3 5-5"
-                              />
-                            </svg>
-                          )}
-                        </div>
-                        <span
-                          className={`text-sm transition-colors ${selectedAge === age.value ? "text-orange-600 font-semibold" : "text-gray-600 group-hover:text-gray-900"}`}
-                        >
-                          {age.label}
-                        </span>
-                      </label>
-                    ))}
-                  </div>
-                )}
-              </div>
-
               {/* Price Filter */}
               <div className="border-b border-gray-200">
                 <button
