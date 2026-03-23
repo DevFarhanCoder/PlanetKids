@@ -603,17 +603,6 @@ export default function CategoryClient({ category }: CategoryClientProps) {
             {/* Active filter pills */}
             {activeFilterCount > 0 && (
               <div className="flex items-center gap-2 flex-wrap mb-3">
-                {selectedAge !== "all" && (
-                  <div className="flex items-center gap-1.5 bg-orange-100 text-orange-700 text-xs font-semibold px-3 py-1.5 rounded-full">
-                    {AGE_FILTERS.find((a) => a.value === selectedAge)?.label}
-                    <button
-                      onClick={() => setSelectedAge("all")}
-                      aria-label="Remove age filter"
-                    >
-                      <X className="w-3 h-3" />
-                    </button>
-                  </div>
-                )}
                 {selectedPriceRange !== null && (
                   <div className="flex items-center gap-1.5 bg-orange-100 text-orange-700 text-xs font-semibold px-3 py-1.5 rounded-full">
                     {PRICE_RANGES[selectedPriceRange].label}
