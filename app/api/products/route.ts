@@ -280,6 +280,25 @@ export async function POST(request: NextRequest) {
       });
     }
 
+    // Save variants
+    const variantsRaw = formData.get("variants") as string;
+    if (variantsRaw) {
+      const variantsData = JSON.parse(variantsRaw);
+      if (variantsData.length > 0) {
+        await prisma.productVariant.createMany({
+          data: variantsData
+            .filter((v: any) => v.name?.trim() && v.value?.trim())
+            .map((v: any) => ({
+              productId: product.id,
+              name: v.name.trim(),
+              value: v.value.trim(),
+              price: v.price ? parseFloat(v.price) : null,
+              quantity: v.stock ? parseInt(v.stock) : 0,
+            })),
+        });
+      }
+    }
+
     return NextResponse.json(product, { status: 201 });
   } catch (error: any) {
     console.error("Error creating product:", error);
@@ -491,6 +510,27 @@ export async function PUT(request: NextRequest) {
             displayOrder: i,
           })),
           skipDuplicates: true,
+        });
+      }
+    }
+
+    // Update variants if provided
+    if (formData.has("variants")) {
+      const variantsRaw = formData.get("variants") as string;
+      const variantsData = JSON.parse(variantsRaw);
+      // Replace all existing variants
+      await prisma.productVariant.deleteMany({ where: { productId: id } });
+      if (variantsData.length > 0) {
+        await prisma.productVariant.createMany({
+          data: variantsData
+            .filter((v: any) => v.name?.trim() && v.value?.trim())
+            .map((v: any) => ({
+              productId: id,
+              name: v.name.trim(),
+              value: v.value.trim(),
+              price: v.price ? parseFloat(v.price) : null,
+              quantity: v.stock ? parseInt(v.stock) : 0,
+            })),
         });
       }
     }

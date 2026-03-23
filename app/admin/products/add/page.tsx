@@ -51,7 +51,7 @@ function AddProductContent() {
   const [imagePreviews, setImagePreviews] = useState<string[]>([]); // new file previews
   const [dragIndex, setDragIndex] = useState<number | null>(null);
   const [variants, setVariants] = useState([
-    { size: "", color: "", price: "", stock: "" },
+    { name: "", value: "", price: "", stock: "" },
   ]);
   const [linkedProducts, setLinkedProducts] = useState<
     { linkedProductId: string; name: string; label: string }[]
@@ -141,6 +141,18 @@ function AddProductContent() {
               })),
             );
           }
+
+          // Load existing variants
+          if (product.variants?.length) {
+            setVariants(
+              product.variants.map((v: any) => ({
+                name: v.name || "",
+                value: v.value || "",
+                price: v.price?.toString() || "",
+                stock: v.quantity?.toString() || "",
+              })),
+            );
+          }
         })
         .catch((err) => console.error("Error loading product:", err));
     }
@@ -225,7 +237,7 @@ function AddProductContent() {
   const handleDragEnd = () => setDragIndex(null);
 
   const addVariant = () => {
-    setVariants([...variants, { size: "", color: "", price: "", stock: "" }]);
+    setVariants([...variants, { name: "", value: "", price: "", stock: "" }]);
   };
 
   const removeVariant = (index: number) => {
@@ -331,7 +343,7 @@ function AddProductContent() {
       // Add variants
       formDataToSend.append(
         "variants",
-        JSON.stringify(variants.filter((v) => v.size || v.color)),
+        JSON.stringify(variants.filter((v) => v.name.trim() || v.value.trim())),
       );
 
       // Add linked products (product variants)
@@ -674,72 +686,85 @@ function AddProductContent() {
 
             {/* Variants */}
             <div className="bg-white rounded-xl shadow-sm p-6">
-              <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center justify-between mb-1">
                 <h2 className="text-xl font-semibold">Variants</h2>
                 <button
                   type="button"
                   onClick={addVariant}
-                  className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                  className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm"
                 >
                   <Plus className="w-4 h-4" />
                   Add Variant
                 </button>
               </div>
+              <p className="text-xs text-gray-500 mb-4">
+                A variant is a specific option of this product. Add one row per
+                option — e.g. <strong>Type: Color, Value: Red</strong> or{" "}
+                <strong>Type: Size, Value: Large</strong>. Leave Price blank to
+                use the main product price.
+              </p>
 
-              <div className="space-y-4">
+              <div className="space-y-3">
+                {/* Header row */}
+                <div className="hidden md:grid grid-cols-[1fr_1fr_100px_80px_32px] gap-3 text-xs font-semibold text-gray-500 uppercase tracking-wide px-1">
+                  <span>Type (e.g. Color, Size)</span>
+                  <span>Value (e.g. Red, Large)</span>
+                  <span>Price (₹)</span>
+                  <span>Stock</span>
+                  <span />
+                </div>
+
                 {variants.map((variant, index) => (
                   <div
                     key={index}
-                    className="flex gap-4 items-start p-4 border border-gray-200 rounded-lg"
+                    className="grid grid-cols-2 md:grid-cols-[1fr_1fr_100px_80px_32px] gap-3 items-center p-3 bg-gray-50 rounded-lg border border-gray-200"
                   >
-                    <div className="flex-1 grid grid-cols-1 md:grid-cols-4 gap-4">
-                      <input
-                        type="text"
-                        placeholder="Size (e.g., S, M, L)"
-                        value={variant.size}
-                        onChange={(e) =>
-                          updateVariant(index, "size", e.target.value)
-                        }
-                        className="px-3 py-2 border border-gray-300 rounded-lg"
-                      />
-                      <input
-                        type="text"
-                        placeholder="Color"
-                        value={variant.color}
-                        onChange={(e) =>
-                          updateVariant(index, "color", e.target.value)
-                        }
-                        className="px-3 py-2 border border-gray-300 rounded-lg"
-                      />
-                      <input
-                        type="number"
-                        placeholder="Price"
-                        step="0.01"
-                        value={variant.price}
-                        onChange={(e) =>
-                          updateVariant(index, "price", e.target.value)
-                        }
-                        className="px-3 py-2 border border-gray-300 rounded-lg"
-                      />
-                      <input
-                        type="number"
-                        placeholder="Stock"
-                        value={variant.stock}
-                        onChange={(e) =>
-                          updateVariant(index, "stock", e.target.value)
-                        }
-                        className="px-3 py-2 border border-gray-300 rounded-lg"
-                      />
-                    </div>
-                    {variants.length > 1 && (
-                      <button
-                        type="button"
-                        onClick={() => removeVariant(index)}
-                        className="p-2 text-red-500 hover:bg-red-50 rounded-lg"
-                      >
-                        <X className="w-5 h-5" />
-                      </button>
-                    )}
+                    <input
+                      type="text"
+                      placeholder="e.g. Color"
+                      value={variant.name}
+                      onChange={(e) =>
+                        updateVariant(index, "name", e.target.value)
+                      }
+                      className="px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white"
+                    />
+                    <input
+                      type="text"
+                      placeholder="e.g. Red"
+                      value={variant.value}
+                      onChange={(e) =>
+                        updateVariant(index, "value", e.target.value)
+                      }
+                      className="px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white"
+                    />
+                    <input
+                      type="number"
+                      placeholder="Optional"
+                      step="0.01"
+                      min="0"
+                      value={variant.price}
+                      onChange={(e) =>
+                        updateVariant(index, "price", e.target.value)
+                      }
+                      className="px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white"
+                    />
+                    <input
+                      type="number"
+                      placeholder="0"
+                      min="0"
+                      value={variant.stock}
+                      onChange={(e) =>
+                        updateVariant(index, "stock", e.target.value)
+                      }
+                      className="px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => removeVariant(index)}
+                      className="p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
                   </div>
                 ))}
               </div>
