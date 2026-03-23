@@ -485,6 +485,50 @@ export default function ProductDetailClient({
                   </div>
                 </div>
               )}
+
+              {/* Variants: colour / size options stored on this product */}
+              {product.variants && product.variants.length > 0 && (
+                <div className="mt-4 space-y-3">
+                  {product.variants.some((v: any) => v.color) && (
+                    <div>
+                      <p className="text-sm font-semibold text-gray-700 mb-2">
+                        Color:
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        {product.variants
+                          .filter((v: any) => v.color)
+                          .map((v: any) => (
+                            <span
+                              key={v.id}
+                              className="px-3 py-1.5 rounded-full border-2 border-gray-200 text-sm text-gray-700"
+                            >
+                              {v.color}
+                            </span>
+                          ))}
+                      </div>
+                    </div>
+                  )}
+                  {product.variants.some((v: any) => v.size) && (
+                    <div>
+                      <p className="text-sm font-semibold text-gray-700 mb-2">
+                        Size:
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        {product.variants
+                          .filter((v: any) => v.size)
+                          .map((v: any) => (
+                            <span
+                              key={v.id}
+                              className="px-3 py-1.5 rounded-full border-2 border-gray-200 text-sm text-gray-700"
+                            >
+                              {v.size}
+                            </span>
+                          ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
 
             {/* Price */}

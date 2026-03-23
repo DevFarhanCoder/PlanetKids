@@ -38,15 +38,6 @@ interface CategoryClientProps {
   };
 }
 
-const AGE_FILTERS = [
-  { label: "All Ages", value: "all" },
-  { label: "0-2 Yrs", value: "0-2" },
-  { label: "3-5 Yrs", value: "3-5" },
-  { label: "6-8 Yrs", value: "6-8" },
-  { label: "9-12 Yrs", value: "9-12" },
-  { label: "12+ Yrs", value: "12plus" },
-];
-
 const SORT_OPTIONS = [
   { label: "Featured", value: "featured" },
   { label: "Price: Low to High", value: "price-low" },
@@ -69,13 +60,11 @@ export default function CategoryClient({ category }: CategoryClientProps) {
   const subcategories = category.children;
 
   const [sortBy, setSortBy] = useState("featured");
-  const [selectedAge, setSelectedAge] = useState("all");
   const [selectedPriceRange, setSelectedPriceRange] = useState<number | null>(
     null,
   );
   const [showSort, setShowSort] = useState(false);
   const [showMobileFilters, setShowMobileFilters] = useState(false);
-  const [ageExpanded, setAgeExpanded] = useState(true);
   const [priceExpanded, setPriceExpanded] = useState(true);
   const [subcatExpanded, setSubcatExpanded] = useState(true);
 
@@ -105,11 +94,9 @@ export default function CategoryClient({ category }: CategoryClientProps) {
   }
   const displayedCount = filtered.length;
 
-  const activeFilterCount =
-    (selectedAge !== "all" ? 1 : 0) + (selectedPriceRange !== null ? 1 : 0);
+  const activeFilterCount = selectedPriceRange !== null ? 1 : 0;
 
   const clearAllFilters = () => {
-    setSelectedAge("all");
     setSelectedPriceRange(null);
   };
 
@@ -154,76 +141,6 @@ export default function CategoryClient({ category }: CategoryClientProps) {
           )}
         </div>
       )}
-
-      {/* Age Filter */}
-      <div className="border-b border-gray-200">
-        <button
-          onClick={() => setAgeExpanded(!ageExpanded)}
-          className="w-full flex items-center justify-between px-4 py-3 hover:bg-gray-50 transition-colors"
-        >
-          <span className="text-sm font-bold text-gray-800 uppercase tracking-wide">
-            Age
-          </span>
-          {ageExpanded ? (
-            <ChevronUp className="w-4 h-4 text-gray-500" />
-          ) : (
-            <ChevronDown className="w-4 h-4 text-gray-500" />
-          )}
-        </button>
-        {ageExpanded && (
-          <div className="px-4 pb-3 space-y-2">
-            {AGE_FILTERS.filter((a) => a.value !== "all").map((age) => (
-              <label
-                key={age.value}
-                className="flex items-center gap-2 cursor-pointer group"
-              >
-                <div
-                  onClick={() =>
-                    setSelectedAge(
-                      selectedAge === age.value ? "all" : age.value,
-                    )
-                  }
-                  className={`w-4 h-4 border rounded-sm flex items-center justify-center flex-shrink-0 transition-colors cursor-pointer ${
-                    selectedAge === age.value
-                      ? "bg-orange-500 border-orange-500"
-                      : "border-gray-400 group-hover:border-orange-400"
-                  }`}
-                >
-                  {selectedAge === age.value && (
-                    <svg
-                      className="w-2.5 h-2.5 text-white"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth={3}
-                      viewBox="0 0 12 12"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M2 6l3 3 5-5"
-                      />
-                    </svg>
-                  )}
-                </div>
-                <span
-                  onClick={() =>
-                    setSelectedAge(
-                      selectedAge === age.value ? "all" : age.value,
-                    )
-                  }
-                  className={`text-sm transition-colors cursor-pointer ${
-                    selectedAge === age.value
-                      ? "text-orange-600 font-semibold"
-                      : "text-gray-700 group-hover:text-gray-900"
-                  }`}
-                >
-                  {age.label}
-                </span>
-              </label>
-            ))}
-          </div>
-        )}
-      </div>
 
       {/* Price Filter */}
       <div className="border-b border-gray-200">

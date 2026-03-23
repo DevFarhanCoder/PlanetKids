@@ -46,8 +46,10 @@ function AddProductContent() {
     ageGroup: "",
     status: "ACTIVE",
   });
-  const [images, setImages] = useState<File[]>([]);
-  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
+  const [existingImages, setExistingImages] = useState<string[]>([]); // URLs from DB
+  const [images, setImages] = useState<File[]>([]); // NEW files
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]); // new file previews
+  const [dragIndex, setDragIndex] = useState<number | null>(null);
   const [variants, setVariants] = useState([
     { size: "", color: "", price: "", stock: "" },
   ]);
@@ -126,7 +128,7 @@ function AddProductContent() {
 
           // Set image previews
           if (product.images?.length) {
-            setImagePreviews(product.images.map((img: any) => img.url));
+            setExistingImages(product.images.map((img: any) => img.url));
           }
 
           // Load existing linked products (variants)
@@ -179,9 +181,48 @@ function AddProductContent() {
   };
 
   const removeImage = (index: number) => {
-    setImages((prev) => prev.filter((_, i) => i !== index));
-    setImagePreviews((prev) => prev.filter((_, i) => i !== index));
+    const totalExisting = existingImages.length;
+    if (index < totalExisting) {
+      // Removing an existing (saved) image
+      setExistingImages((prev) => prev.filter((_, i) => i !== index));
+    } else {
+      // Removing a newly added file
+      const newIdx = index - totalExisting;
+      setImages((prev) => prev.filter((_, i) => i !== newIdx));
+      setImagePreviews((prev) => prev.filter((_, i) => i !== newIdx));
+    }
   };
+
+  // All displayed images = existing URLs + new file previews
+  const allPreviews = [...existingImages, ...imagePreviews];
+
+  const handleDragStart = (index: number) => setDragIndex(index);
+  const handleDragOver = (e: React.DragEvent, index: number) => {
+    e.preventDefault();
+    if (dragIndex === null || dragIndex === index) return;
+    const allImgs = [...existingImages, ...imagePreviews];
+    const reordered = [...allImgs];
+    const [moved] = reordered.splice(dragIndex, 1);
+    reordered.splice(index, 0, moved);
+    const newExisting: string[] = [];
+    const newPreviews: string[] = [];
+    const newFiles: File[] = [];
+    reordered.forEach((src) => {
+      const origExistIdx = existingImages.indexOf(src);
+      if (origExistIdx !== -1) {
+        newExisting.push(src);
+      } else {
+        const origNewIdx = imagePreviews.indexOf(src);
+        newPreviews.push(src);
+        if (origNewIdx !== -1) newFiles.push(images[origNewIdx]);
+      }
+    });
+    setExistingImages(newExisting);
+    setImagePreviews(newPreviews);
+    setImages(newFiles);
+    setDragIndex(index);
+  };
+  const handleDragEnd = () => setDragIndex(null);
 
   const addVariant = () => {
     setVariants([...variants, { size: "", color: "", price: "", stock: "" }]);
@@ -280,9 +321,12 @@ function AddProductContent() {
       }
 
       // Add images
-      images.forEach((image, index) => {
+      images.forEach((image) => {
         formDataToSend.append("images", image);
       });
+
+      // Tell the API which existing images to keep (the rest will be deleted)
+      formDataToSend.append("keepImageUrls", JSON.stringify(existingImages));
 
       // Add variants
       formDataToSend.append(
@@ -570,16 +614,32 @@ function AddProductContent() {
 
             {/* Product Images */}
             <div className="bg-white rounded-xl shadow-sm p-6">
-              <h2 className="text-xl font-semibold mb-4">Product Images</h2>
+              <h2 className="text-xl font-semibold mb-1">Product Images</h2>
+              <p className="text-xs text-gray-500 mb-4">Drag to reorder. First image is the main image.</p>
 
               <div className="space-y-4">
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  {imagePreviews.map((preview, index) => (
-                    <div key={index} className="relative group">
+                  {allPreviews.map((preview, index) => (
+                    <div
+                      key={index}
+                      draggable
+                      onDragStart={() => handleDragStart(index)}
+                      onDragOver={(e) => handleDragOver(e, index)}
+                      onDragEnd={handleDragEnd}
+                      className={`relative group cursor-grab active:cursor-grabbing rounded-lg border-2 transition-all ${
+                        dragIndex === index ? "opacity-50 border-blue-400" : "border-transparent"
+                      }`}
+                    >
+                      {index === 0 && (
+                        <span className="absolute top-1 left-1 z-10 bg-primary text-white text-[10px] font-bold px-1.5 py-0.5 rounded">
+                          MAIN
+                        </span>
+                      )}
                       <img
                         src={preview}
-                        alt={`Preview ${index + 1}`}
+                        alt={`Image ${index + 1}`}
                         className="w-full h-32 object-cover rounded-lg"
+                        draggable={false}
                       />
                       <button
                         type="button"

@@ -7,11 +7,11 @@ import { Eye, Search, Filter } from 'lucide-react';
 interface Order {
   id: string;
   orderNumber: string;
-  userId: string | null;
+  userId: string;
   user: { email: string; name: string | null } | null;
-  guestEmail: string | null;
-  guestName: string | null;
-  totalAmount: number;
+  shippingName: string;
+  shippingEmail: string;
+  total: string | number;
   status: string;
   paymentStatus: string;
   createdAt: string;
@@ -61,7 +61,7 @@ export default function AdminOrders() {
 
   const filteredOrders = orders.filter(order => {
     const matchesSearch = order.orderNumber.toLowerCase().includes(search.toLowerCase()) ||
-      order.guestEmail?.toLowerCase().includes(search.toLowerCase()) ||
+      order.shippingEmail?.toLowerCase().includes(search.toLowerCase()) ||
       order.user?.email?.toLowerCase().includes(search.toLowerCase());
     
     const matchesStatus = statusFilter === 'ALL' || order.status === statusFilter;
@@ -157,10 +157,10 @@ export default function AdminOrders() {
                   </td>
                   <td className="px-6 py-4">
                     <div className="text-sm text-gray-900">
-                      {order.user?.name || order.guestName || 'Guest'}
+                      {order.user?.name || order.shippingName || 'Guest'}
                     </div>
                     <div className="text-xs text-gray-500">
-                      {order.user?.email || order.guestEmail}
+                      {order.user?.email || order.shippingEmail}
                     </div>
                   </td>
                   <td className="px-6 py-4 text-sm text-gray-600">
@@ -170,7 +170,7 @@ export default function AdminOrders() {
                     {order.items.length} items
                   </td>
                   <td className="px-6 py-4 text-sm font-medium text-gray-900">
-                    ₹{order.totalAmount.toLocaleString()}
+                    ₹{Number(order.total).toLocaleString()}
                   </td>
                   <td className="px-6 py-4">
                     <select

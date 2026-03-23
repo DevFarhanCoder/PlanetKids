@@ -54,8 +54,33 @@ async function getCategory(slug: string) {
     return null;
   }
 
+  // If this is a parent category, also gather products from all subcategories
+  let allProductCategories = [...category.products];
+  if (category.children.length > 0) {
+    const childIds = category.children.map((c: any) => c.id);
+    const childPCs = await prisma.productCategory.findMany({
+      where: { categoryId: { in: childIds } },
+      include: {
+        product: {
+          include: {
+            images: { take: 1, orderBy: { order: "asc" as const } },
+          },
+        },
+      },
+    });
+    allProductCategories = [...allProductCategories, ...childPCs];
+  }
+
+  // De-duplicate by product id
+  const seen = new Set<string>();
+  const uniquePCs = allProductCategories.filter((pc) => {
+    if (seen.has(pc.product.id)) return false;
+    seen.add(pc.product.id);
+    return true;
+  });
+
   // Filter active products and transform (convert Decimal to number)
-  const products = category.products
+  const products = uniquePCs
     .filter((pc) => pc.product.isActive)
     .map((pc) => ({
       id: pc.product.id,

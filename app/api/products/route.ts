@@ -362,7 +362,27 @@ export async function PUT(request: NextRequest) {
         formData.get("shippingCharge") as string,
       );
 
-    // Handle new images
+    // Handle image updates: delete removed images and reorder kept ones
+    const keepImageUrlsRaw = formData.get("keepImageUrls") as string | null;
+    const keepImageUrls: string[] | null = keepImageUrlsRaw
+      ? JSON.parse(keepImageUrlsRaw)
+      : null;
+
+    if (keepImageUrls !== null) {
+      // Delete images the user removed
+      await prisma.productImage.deleteMany({
+        where: { productId: id, url: { notIn: keepImageUrls } },
+      });
+      // Update order of remaining images to match the user's desired order
+      for (let i = 0; i < keepImageUrls.length; i++) {
+        await prisma.productImage.updateMany({
+          where: { productId: id, url: keepImageUrls[i] },
+          data: { order: i },
+        });
+      }
+    }
+
+    // Upload any newly-added images
     const images = formData.getAll("images") as File[];
     if (images && images.length > 0) {
       const hasCloudinary =
@@ -408,11 +428,12 @@ export async function PUT(request: NextRequest) {
       }
 
       if (imageUrls.length > 0) {
+        const baseOrder = keepImageUrls ? keepImageUrls.length : 0;
         updateData.images = {
           create: imageUrls.map((url, index) => ({
             url,
             altText: updateData.name || "",
-            order: index,
+            order: baseOrder + index,
           })),
         };
       }
