@@ -447,86 +447,92 @@ export default function ProductDetailClient({
               {/* Linked Product Variants (same item, different colour/style) */}
               {product.productLinks && product.productLinks.length > 0 && (
                 <div className="mt-4">
-                  <p className="text-sm font-semibold text-gray-700 mb-2">
+                  <p className="text-sm font-semibold text-gray-700 mb-3">
                     Also available in:
                   </p>
-                  <div className="flex flex-wrap gap-2">
-                    {/* Current product chip */}
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border-2 border-primary bg-primary/5 text-primary text-sm font-semibold">
-                      {product.images[0] && (
-                        <Image
-                          src={product.images[0].url}
-                          alt={product.name}
-                          width={20}
-                          height={20}
-                          className="rounded-full object-cover"
-                        />
-                      )}
-                      This
-                    </span>
+                  <div className="flex gap-3 flex-wrap">
+                    {/* Current product card */}
+                    <div className="flex flex-col items-center gap-1 w-16">
+                      <div className="w-16 h-16 rounded-xl overflow-hidden border-2 border-primary shadow-sm">
+                        {product.images[0] ? (
+                          <Image
+                            src={product.images[0].url}
+                            alt={product.name}
+                            width={64}
+                            height={64}
+                            className="object-cover w-full h-full"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center text-2xl bg-primary/5">
+                            📦
+                          </div>
+                        )}
+                      </div>
+                      <span className="text-[10px] font-bold text-primary truncate w-full text-center">
+                        This
+                      </span>
+                    </div>
+
                     {product.productLinks.map((pl) => (
                       <Link
                         key={pl.linkedProductId}
                         href={`/products/${pl.linkedProduct.slug}`}
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border-2 border-gray-200 hover:border-primary text-gray-700 hover:text-primary text-sm font-medium transition-colors"
+                        className="flex flex-col items-center gap-1 w-16 group"
                       >
-                        {pl.linkedProduct.images[0] && (
-                          <Image
-                            src={pl.linkedProduct.images[0].url}
-                            alt={pl.linkedProduct.name}
-                            width={20}
-                            height={20}
-                            className="rounded-full object-cover"
-                          />
-                        )}
-                        {pl.label || pl.linkedProduct.name}
+                        <div className="w-16 h-16 rounded-xl overflow-hidden border-2 border-gray-200 hover:border-primary transition-colors">
+                          {pl.linkedProduct.images[0] ? (
+                            <Image
+                              src={pl.linkedProduct.images[0].url}
+                              alt={pl.label || pl.linkedProduct.name}
+                              width={64}
+                              height={64}
+                              className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-200"
+                            />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center text-2xl bg-gray-50">
+                              📦
+                            </div>
+                          )}
+                        </div>
+                        <span className="text-[10px] text-gray-500 group-hover:text-primary truncate w-full text-center transition-colors">
+                          {pl.label || pl.linkedProduct.name}
+                        </span>
                       </Link>
                     ))}
                   </div>
                 </div>
               )}
 
-              {/* Variants: colour / size options stored on this product */}
+              {/* Variants: attribute options (Color, Size, etc.) on this product */}
               {product.variants && product.variants.length > 0 && (
                 <div className="mt-4 space-y-3">
-                  {product.variants.some((v: any) => v.color) && (
-                    <div>
+                  {Object.entries(
+                    (product.variants as any[]).reduce(
+                      (groups: Record<string, any[]>, v) => {
+                        const key = v.name || "Option";
+                        if (!groups[key]) groups[key] = [];
+                        groups[key].push(v);
+                        return groups;
+                      },
+                      {},
+                    ),
+                  ).map(([groupName, groupVariants]) => (
+                    <div key={groupName}>
                       <p className="text-sm font-semibold text-gray-700 mb-2">
-                        Color:
+                        {groupName}:
                       </p>
                       <div className="flex flex-wrap gap-2">
-                        {product.variants
-                          .filter((v: any) => v.color)
-                          .map((v: any) => (
-                            <span
-                              key={v.id}
-                              className="px-3 py-1.5 rounded-full border-2 border-gray-200 text-sm text-gray-700"
-                            >
-                              {v.color}
-                            </span>
-                          ))}
+                        {(groupVariants as any[]).map((v) => (
+                          <span
+                            key={v.id}
+                            className="px-3 py-1.5 rounded-full border-2 border-gray-200 text-sm text-gray-700"
+                          >
+                            {v.value}
+                          </span>
+                        ))}
                       </div>
                     </div>
-                  )}
-                  {product.variants.some((v: any) => v.size) && (
-                    <div>
-                      <p className="text-sm font-semibold text-gray-700 mb-2">
-                        Size:
-                      </p>
-                      <div className="flex flex-wrap gap-2">
-                        {product.variants
-                          .filter((v: any) => v.size)
-                          .map((v: any) => (
-                            <span
-                              key={v.id}
-                              className="px-3 py-1.5 rounded-full border-2 border-gray-200 text-sm text-gray-700"
-                            >
-                              {v.size}
-                            </span>
-                          ))}
-                      </div>
-                    </div>
-                  )}
+                  ))}
                 </div>
               )}
             </div>

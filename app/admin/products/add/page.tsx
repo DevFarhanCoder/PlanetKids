@@ -769,6 +769,88 @@ function AddProductContent() {
                 ))}
               </div>
             </div>
+
+            {/* Color / Style Variants — Link to Other Products */}
+            <div className="bg-white rounded-xl shadow-sm p-6">
+              <h2 className="text-xl font-semibold mb-1">
+                Color / Style Variants
+              </h2>
+              <p className="text-xs text-gray-500 mb-4">
+                If this product exists as <strong>separate products</strong> in
+                different colors or styles, link them here. They will appear as
+                clickable image swatches on the product page (like Amazon /
+                Flipkart).
+                <br />
+                <strong>Example:</strong> On "Guitar – White", link "Guitar –
+                Blue" here with label "Blue".
+              </p>
+
+              {/* Search */}
+              <div className="relative mb-3">
+                <input
+                  type="text"
+                  placeholder="Search product to link…"
+                  value={productSearch}
+                  onChange={(e) => searchProducts(e.target.value)}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500"
+                />
+                {productSearchResults.length > 0 && (
+                  <div className="absolute z-20 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-48 overflow-y-auto">
+                    {productSearchResults.map((p) => (
+                      <button
+                        key={p.id}
+                        type="button"
+                        onClick={() => addLinkedProduct(p)}
+                        className="w-full text-left px-4 py-2 text-sm hover:bg-gray-50 transition-colors"
+                      >
+                        {p.name}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {linkedProducts.length === 0 ? (
+                <p className="text-xs text-gray-400 italic">
+                  No variants linked yet. Search above to link a product.
+                </p>
+              ) : (
+                <div className="space-y-2">
+                  {linkedProducts.map((lp) => (
+                    <div
+                      key={lp.linkedProductId}
+                      className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg border border-gray-200"
+                    >
+                      <span className="flex-1 text-sm font-medium text-gray-700 truncate">
+                        {lp.name}
+                      </span>
+                      <input
+                        type="text"
+                        placeholder="Label (e.g. Blue)"
+                        value={lp.label}
+                        onChange={(e) =>
+                          setLinkedProducts(
+                            linkedProducts.map((l) =>
+                              l.linkedProductId === lp.linkedProductId
+                                ? { ...l, label: e.target.value }
+                                : l,
+                            ),
+                          )
+                        }
+                        className="w-28 px-2 py-1 border border-gray-300 rounded text-xs focus:ring-1 focus:ring-blue-400"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => removeLinkedProduct(lp.linkedProductId)}
+                        className="p-1 text-red-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Sidebar */}

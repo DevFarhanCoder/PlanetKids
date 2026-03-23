@@ -53,26 +53,31 @@ async function getProduct(slug: string) {
 }
 
 async function getRelatedProducts(productId: string, categoryIds: string[]) {
-  if (categoryIds.length === 0) return [];
+  // Try same category first
+  let products: any[] = [];
+  if (categoryIds.length > 0) {
+    products = await prisma.product.findMany({
+      where: {
+        isActive: true,
+        id: { not: productId },
+        categories: { some: { categoryId: { in: categoryIds } } },
+      },
+      include: { images: { take: 1, orderBy: { order: "asc" } } },
+      take: 5,
+    });
+  }
 
-  const products = await prisma.product.findMany({
-    where: {
-      isActive: true,
-      id: { not: productId },
-      categories: {
-        some: {
-          categoryId: { in: categoryIds },
-        },
-      },
-    },
-    include: {
-      images: {
-        take: 1,
-        orderBy: { order: "asc" },
-      },
-    },
-    take: 5,
-  });
+  // Fallback: fill up to 5 with featured/recent products
+  if (products.length < 5) {
+    const existingIds = [productId, ...products.map((p) => p.id)];
+    const fallback = await prisma.product.findMany({
+      where: { isActive: true, id: { notIn: existingIds } },
+      include: { images: { take: 1, orderBy: { order: "asc" } } },
+      orderBy: [{ isFeatured: "desc" }, { createdAt: "desc" }],
+      take: 5 - products.length,
+    });
+    products = [...products, ...fallback];
+  }
 
   return products.map((p) => ({
     ...p,
