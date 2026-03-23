@@ -376,24 +376,6 @@ export default function CategoryClient({ category }: CategoryClientProps) {
             </div>
           </div>
         )}
-        {/* Age chips row */}
-        <div className="border-t border-gray-100 px-4 py-2 bg-white">
-          <div className="flex gap-2 overflow-x-auto scrollbar-hide">
-            {AGE_FILTERS.map((age) => (
-              <button
-                key={age.value}
-                onClick={() => setSelectedAge(age.value)}
-                className={`px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-colors flex-shrink-0 ${
-                  selectedAge === age.value
-                    ? "bg-orange-500 text-white shadow-sm"
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                }`}
-              >
-                {age.label}
-              </button>
-            ))}
-          </div>
-        </div>
       </div>
 
       {/* Mobile: subcategory pills */}
