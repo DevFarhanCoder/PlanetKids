@@ -615,7 +615,9 @@ function AddProductContent() {
             {/* Product Images */}
             <div className="bg-white rounded-xl shadow-sm p-6">
               <h2 className="text-xl font-semibold mb-1">Product Images</h2>
-              <p className="text-xs text-gray-500 mb-4">Drag to reorder. First image is the main image.</p>
+              <p className="text-xs text-gray-500 mb-4">
+                Drag to reorder. First image is the main image.
+              </p>
 
               <div className="space-y-4">
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -627,7 +629,9 @@ function AddProductContent() {
                       onDragOver={(e) => handleDragOver(e, index)}
                       onDragEnd={handleDragEnd}
                       className={`relative group cursor-grab active:cursor-grabbing rounded-lg border-2 transition-all ${
-                        dragIndex === index ? "opacity-50 border-blue-400" : "border-transparent"
+                        dragIndex === index
+                          ? "opacity-50 border-blue-400"
+                          : "border-transparent"
                       }`}
                     >
                       {index === 0 && (
