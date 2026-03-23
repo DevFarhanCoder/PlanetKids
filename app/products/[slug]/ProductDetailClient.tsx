@@ -782,14 +782,37 @@ export default function ProductDetailClient({
                       <span className="text-gray-600">{product.brand}</span>
                     </div>
                   )}
-                  {product.ageGroup && (
-                    <div className="flex py-3 border-b">
-                      <span className="font-semibold text-gray-700 w-40">
-                        Age Group:
-                      </span>
-                      <span className="text-gray-600">{product.ageGroup}</span>
-                    </div>
-                  )}
+                  {product.ageGroup &&
+                    (() => {
+                      let ageLabels: string[] = [];
+                      try {
+                        const parsed = JSON.parse(product.ageGroup!);
+                        ageLabels = Array.isArray(parsed)
+                          ? parsed.map((a: string) => {
+                              const map: Record<string, string> = {
+                                ZERO_TO_ONE: "0-2 Years",
+                                TWO_TO_FOUR: "3-5 Years",
+                                SIX_TO_EIGHT: "6-8 Years",
+                                EIGHT_PLUS: "9-12 Years",
+                                EIGHT_PLUS_TEENS: "12+ Years",
+                              };
+                              return map[a] || a;
+                            })
+                          : [product.ageGroup!];
+                      } catch {
+                        ageLabels = [product.ageGroup!];
+                      }
+                      return ageLabels.length > 0 ? (
+                        <div className="flex py-3 border-b">
+                          <span className="font-semibold text-gray-700 w-40">
+                            Age Group:
+                          </span>
+                          <span className="text-gray-600">
+                            {ageLabels.join(", ")}
+                          </span>
+                        </div>
+                      ) : null;
+                    })()}
                   {product.weight && (
                     <div className="flex py-3 border-b">
                       <span className="font-semibold text-gray-700 w-40">

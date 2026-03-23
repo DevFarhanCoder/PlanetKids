@@ -159,8 +159,24 @@ export async function POST(request: NextRequest) {
     const brandRaw = formData.get("brand") as string;
     const brand = brandRaw && brandRaw.trim() ? brandRaw.trim() : null;
     const ageGroupRaw = formData.get("ageGroup") as string;
-    const ageGroup =
-      ageGroupRaw && ageGroupRaw.trim() ? ageGroupRaw.trim() : null;
+    // Store as JSON array string; handle both new JSON array format and legacy single value
+    let ageGroup: string | null = null;
+    if (ageGroupRaw && ageGroupRaw.trim()) {
+      try {
+        const parsed = JSON.parse(ageGroupRaw);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          const normalized = parsed.map((a: string) =>
+            a === "EIGHT_PLUS_TEENS" ? "EIGHT_PLUS" : a,
+          );
+          ageGroup = JSON.stringify(normalized);
+        }
+      } catch {
+        const v = ageGroupRaw.trim();
+        ageGroup = v
+          ? JSON.stringify([v === "EIGHT_PLUS_TEENS" ? "EIGHT_PLUS" : v])
+          : null;
+      }
+    }
     const categoryIds = JSON.parse(
       (formData.get("categoryIds") as string) || "[]",
     );
@@ -364,7 +380,28 @@ export async function PUT(request: NextRequest) {
     }
     if (formData.has("ageGroup")) {
       const v = formData.get("ageGroup") as string;
-      updateData.ageGroup = v && v.trim() ? v.trim() : null;
+      if (v && v.trim()) {
+        try {
+          const parsed = JSON.parse(v);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            const normalized = parsed.map((a: string) =>
+              a === "EIGHT_PLUS_TEENS" ? "EIGHT_PLUS" : a,
+            );
+            updateData.ageGroup = JSON.stringify(normalized);
+          } else {
+            updateData.ageGroup = null;
+          }
+        } catch {
+          const single = v.trim();
+          updateData.ageGroup = single
+            ? JSON.stringify([
+                single === "EIGHT_PLUS_TEENS" ? "EIGHT_PLUS" : single,
+              ])
+            : null;
+        }
+      } else {
+        updateData.ageGroup = null;
+      }
     }
     if (formData.has("isFeatured"))
       updateData.isFeatured = formData.get("isFeatured") === "true";
@@ -380,6 +417,24 @@ export async function PUT(request: NextRequest) {
       updateData.shippingCharge = parseFloat(
         formData.get("shippingCharge") as string,
       );
+    if (formData.has("costPrice")) {
+      const v = formData.get("costPrice") as string;
+      updateData.costPrice =
+        v && v.trim() && !isNaN(parseFloat(v)) ? parseFloat(v) : null;
+    }
+    if (formData.has("metaTitle"))
+      updateData.metaTitle = formData.get("metaTitle");
+    if (formData.has("metaDescription"))
+      updateData.metaDescription = formData.get("metaDescription");
+    if (formData.has("metaKeywords"))
+      updateData.metaKeywords = formData.get("metaKeywords");
+    if (formData.has("trackInventory"))
+      updateData.trackInventory = formData.get("trackInventory") !== "false";
+    if (formData.has("lowStockThreshold")) {
+      const v = formData.get("lowStockThreshold") as string;
+      updateData.lowStockThreshold =
+        v && !isNaN(parseInt(v)) ? parseInt(v) : 10;
+    }
 
     // Handle image updates: delete removed images and reorder kept ones
     const keepImageUrlsRaw = formData.get("keepImageUrls") as string | null;

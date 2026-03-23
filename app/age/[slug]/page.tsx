@@ -59,13 +59,13 @@ async function getProductsByAge(slug: string) {
     return null;
   }
 
-  // Fetch products filtered by age group
+  // Fetch products filtered by age group (ageGroup stored as JSON array string)
   const products = await prisma.product.findMany({
     where: {
       isActive: true,
-      ageGroup: {
-        in: ageInfo.ageGroups as any,
-      },
+      OR: ageInfo.ageGroups.map((ag: string) => ({
+        ageGroup: { contains: `"${ag}"` },
+      })),
     },
     include: {
       images: {

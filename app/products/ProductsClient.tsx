@@ -93,7 +93,17 @@ export default function ProductsClient({
     }
 
     if (selectedAge !== "All Ages") {
-      filtered = filtered.filter((p) => p.ageGroup === selectedAge);
+      filtered = filtered.filter((p) => {
+        if (!p.ageGroup) return false;
+        try {
+          const arr = JSON.parse(p.ageGroup);
+          return Array.isArray(arr)
+            ? arr.includes(selectedAge)
+            : p.ageGroup === selectedAge;
+        } catch {
+          return p.ageGroup === selectedAge;
+        }
+      });
     }
 
     if (selectedBrand !== "All Brands") {

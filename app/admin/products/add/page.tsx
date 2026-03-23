@@ -43,7 +43,7 @@ function AddProductContent() {
     isReturnable: true,
     isBranded: false,
     shippingCharge: "0",
-    ageGroup: "",
+    ageGroups: [] as string[],
     status: "ACTIVE",
   });
   const [existingImages, setExistingImages] = useState<string[]>([]); // URLs from DB
@@ -106,7 +106,16 @@ function AddProductContent() {
             isReturnable: product.isReturnable ?? true,
             isBranded: product.isBranded || false,
             shippingCharge: product.shippingCharge?.toString() || "0",
-            ageGroup: product.ageGroup || "",
+            ageGroups: product.ageGroup
+              ? (() => {
+                  try {
+                    const parsed = JSON.parse(product.ageGroup);
+                    return Array.isArray(parsed) ? parsed : [product.ageGroup];
+                  } catch {
+                    return [product.ageGroup];
+                  }
+                })()
+              : [],
             status: product.isActive ? "ACTIVE" : "DRAFT",
           });
 
@@ -304,17 +313,35 @@ function AddProductContent() {
         formDataToSend.append("id", productId);
       }
 
-      // Add form fields (excluding categoryId and status, we'll handle them separately)
-      Object.entries(formData).forEach(([key, value]) => {
-        if (key !== "categoryId" && key !== "status") {
-          // Normalize virtual ageGroup value to actual DB enum
-          if (key === "ageGroup" && value === "EIGHT_PLUS_TEENS") {
-            formDataToSend.append(key, "EIGHT_PLUS");
-          } else {
-            formDataToSend.append(key, value.toString());
-          }
-        }
-      });
+      // Add form fields with correct API key names
+      formDataToSend.append("name", formData.name);
+      formDataToSend.append("slug", formData.slug);
+      formDataToSend.append("description", formData.description);
+      formDataToSend.append("price", formData.price);
+      formDataToSend.append("compareAtPrice", formData.comparePrice);
+      formDataToSend.append("costPrice", formData.cost);
+      formDataToSend.append("sku", formData.sku);
+      formDataToSend.append("barcode", formData.barcode);
+      formDataToSend.append(
+        "trackInventory",
+        formData.trackQuantity.toString(),
+      );
+      formDataToSend.append("quantity", formData.quantity);
+      formDataToSend.append("lowStockThreshold", formData.lowStockThreshold);
+      formDataToSend.append("metaTitle", formData.metaTitle);
+      formDataToSend.append("metaDescription", formData.metaDescription);
+      formDataToSend.append("metaKeywords", formData.tags);
+      formDataToSend.append("isFeatured", formData.featured.toString());
+      formDataToSend.append("isReturnable", formData.isReturnable.toString());
+      formDataToSend.append("isBranded", formData.isBranded.toString());
+      formDataToSend.append("shippingCharge", formData.shippingCharge);
+      if ((formData as any).brand)
+        formDataToSend.append("brand", (formData as any).brand);
+      // Age groups stored as JSON array
+      formDataToSend.append(
+        "ageGroup",
+        JSON.stringify(formData.ageGroups || []),
+      );
 
       // Convert status to isActive
       formDataToSend.append(
@@ -1036,14 +1063,11 @@ function AddProductContent() {
             {/* Age Group */}
             <div className="bg-white rounded-xl shadow-sm p-6">
               <h2 className="text-base font-semibold mb-3">Age Group</h2>
+              <p className="text-xs text-gray-500 mb-3">
+                Select all age groups this product is suitable for
+              </p>
               <div className="grid grid-cols-2 gap-2">
                 {[
-                  {
-                    value: "",
-                    label: "Not specified",
-                    emoji: "—",
-                    color: "border-gray-200 text-gray-500",
-                  },
                   {
                     value: "ZERO_TO_ONE",
                     label: "0-2 Years",
@@ -1079,29 +1103,37 @@ function AddProductContent() {
                     color: "border-purple-300 bg-purple-50 text-purple-700",
                     sub: "Teens & Beyond",
                   },
-                ].map(({ value, label, emoji, color, sub }) => (
-                  <button
-                    key={value}
-                    type="button"
-                    onClick={() =>
-                      setFormData({ ...formData, ageGroup: value })
-                    }
-                    className={`p-2 rounded-lg border-2 text-xs font-semibold transition-all flex flex-col items-start gap-0 ${
-                      formData.ageGroup === value
-                        ? color + " ring-2 ring-offset-1 ring-blue-400"
-                        : "border-gray-200 text-gray-500 hover:border-gray-300"
-                    }`}
-                  >
-                    <span className="flex items-center gap-1">
-                      <span>{emoji}</span> {label}
-                    </span>
-                    {sub && (
-                      <span className="text-[10px] font-normal opacity-70">
-                        {sub}
+                ].map(({ value, label, emoji, color, sub }) => {
+                  const selected = (formData.ageGroups || []).includes(value);
+                  return (
+                    <button
+                      key={value}
+                      type="button"
+                      onClick={() =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          ageGroups: selected
+                            ? (prev.ageGroups || []).filter((a) => a !== value)
+                            : [...(prev.ageGroups || []), value],
+                        }))
+                      }
+                      className={`p-2 rounded-lg border-2 text-xs font-semibold transition-all flex flex-col items-start gap-0 ${
+                        selected
+                          ? color + " ring-2 ring-offset-1 ring-blue-400"
+                          : "border-gray-200 text-gray-500 hover:border-gray-300"
+                      }`}
+                    >
+                      <span className="flex items-center gap-1">
+                        <span>{emoji}</span> {label}
                       </span>
-                    )}
-                  </button>
-                ))}
+                      {sub && (
+                        <span className="text-[10px] font-normal opacity-70">
+                          {sub}
+                        </span>
+                      )}
+                    </button>
+                  );
+                })}
               </div>
             </div>
 

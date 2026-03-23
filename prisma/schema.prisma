@@ -139,7 +139,7 @@ model Product {
   brand      String?
   weight     Decimal? @db.Decimal(10, 2)
   dimensions String?
-  ageGroup   AgeGroup?
+  ageGroup   String?
 
   isActive     Boolean @default(true)
   isFeatured   Boolean @default(false)
@@ -183,7 +183,6 @@ model Product {
   @@index([sku])
   @@index([isActive, isFeatured, isNewArrival, isTrending])
   @@index([price])
-  @@index([ageGroup])
   @@index([createdAt])
   @@index([salesCount])
 }
@@ -200,15 +199,6 @@ model ProductLink {
 
   @@unique([productId, linkedProductId])
   @@index([productId])
-}
-
-enum AgeGroup {
-  ZERO_TO_ONE
-  ONE_TO_TWO
-  TWO_TO_FOUR
-  FOUR_TO_SIX
-  SIX_TO_EIGHT
-  EIGHT_PLUS
 }
 
 model ProductCategory {
