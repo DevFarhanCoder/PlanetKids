@@ -233,20 +233,39 @@ export async function PUT(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { id, status, paymentStatus, trackingNumber } = body;
+    const {
+      id,
+      orderId,
+      status,
+      paymentStatus,
+      trackingNumber,
+      carrier,
+      adminNote,
+    } = body;
 
-    if (!id) {
+    const resolvedId = id || orderId;
+
+    if (!resolvedId) {
       return NextResponse.json({ error: "Order ID required" }, { status: 400 });
     }
 
     const updateData: any = {};
 
-    if (status) updateData.status = status;
+    if (status) {
+      updateData.status = status;
+      // Set timestamp fields based on status
+      if (status === "SHIPPED") updateData.shippedAt = new Date();
+      if (status === "DELIVERED") updateData.deliveredAt = new Date();
+      if (status === "CANCELLED") updateData.cancelledAt = new Date();
+    }
     if (paymentStatus) updateData.paymentStatus = paymentStatus;
-    if (trackingNumber) updateData.trackingNumber = trackingNumber;
+    if (trackingNumber !== undefined)
+      updateData.trackingNumber = trackingNumber;
+    if (carrier !== undefined) updateData.carrier = carrier;
+    if (adminNote !== undefined) updateData.adminNote = adminNote;
 
     const order = await prisma.order.update({
-      where: { id },
+      where: { id: resolvedId },
       data: updateData,
       include: {
         items: {
