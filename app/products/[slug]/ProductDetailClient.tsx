@@ -909,81 +909,83 @@ export default function ProductDetailClient({
             <p className="text-sm text-gray-500 mb-6">
               You may also like these
             </p>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-              {relatedProducts.map((relatedProduct) => {
-                const relatedDiscount = relatedProduct.compareAtPrice
-                  ? Math.round(
-                      ((relatedProduct.compareAtPrice - relatedProduct.price) /
-                        relatedProduct.compareAtPrice) *
-                        100,
-                    )
-                  : 0;
+            <div className="overflow-x-auto md:overflow-visible pb-2">
+              <div className="flex md:grid md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
+                {relatedProducts.map((relatedProduct) => {
+                  const relatedDiscount = relatedProduct.compareAtPrice
+                    ? Math.round(
+                        ((relatedProduct.compareAtPrice - relatedProduct.price) /
+                          relatedProduct.compareAtPrice) *
+                          100,
+                      )
+                    : 0;
 
-                return (
-                  <Link
-                    key={relatedProduct.id}
-                    href={`/products/${relatedProduct.slug}`}
-                    className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow group"
-                  >
-                    <div className="relative aspect-square bg-gray-100 rounded-t-xl overflow-hidden">
-                      {relatedProduct.images[0] ? (
-                        <Image
-                          src={relatedProduct.images[0].url}
-                          alt={relatedProduct.name}
-                          fill
-                          className="object-cover group-hover:scale-110 transition-transform duration-300"
-                        />
-                      ) : (
-                        <div className="flex items-center justify-center h-full text-6xl">
-                          📦
-                        </div>
-                      )}
-                      {relatedProduct.isFeatured && (
-                        <div className="absolute top-2 left-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full font-semibold">
-                          FEATURED
-                        </div>
-                      )}
-                    </div>
-                    <div className="p-4">
-                      <h3 className="font-semibold text-gray-800 mb-2 line-clamp-2">
-                        {relatedProduct.name}
-                      </h3>
-                      <div className="flex items-center gap-1 mb-2">
-                        {[...Array(5)].map((_, i) => (
-                          <Star
-                            key={i}
-                            className={`w-3 h-3 ${
-                              i < Math.round(relatedProduct.averageRating)
-                                ? "fill-yellow-400 text-yellow-400"
-                                : "fill-gray-200 text-gray-200"
-                            }`}
+                  return (
+                    <Link
+                      key={relatedProduct.id}
+                      href={`/products/${relatedProduct.slug}`}
+                      className="flex-shrink-0 w-40 md:w-auto bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow group"
+                    >
+                      <div className="relative aspect-square bg-gray-100 rounded-t-lg overflow-hidden">
+                        {relatedProduct.images[0] ? (
+                          <Image
+                            src={relatedProduct.images[0].url}
+                            alt={relatedProduct.name}
+                            fill
+                            className="object-cover group-hover:scale-110 transition-transform duration-300"
                           />
-                        ))}
-                        <span className="text-xs text-gray-500">
-                          ({relatedProduct.reviewCount})
-                        </span>
+                        ) : (
+                          <div className="flex items-center justify-center h-full text-5xl">
+                            📦
+                          </div>
+                        )}
+                        {relatedProduct.isFeatured && (
+                          <div className="absolute top-2 left-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full font-semibold">
+                            FEATURED
+                          </div>
+                        )}
                       </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-lg font-bold text-primary">
-                          ₹{relatedProduct.price.toLocaleString()}
-                        </span>
-                        {relatedProduct.compareAtPrice &&
-                          relatedDiscount > 0 && (
-                            <>
-                              <span className="text-sm text-gray-500 line-through">
-                                ₹
-                                {relatedProduct.compareAtPrice.toLocaleString()}
-                              </span>
-                              <span className="text-xs bg-red-100 text-red-600 px-2 py-0.5 rounded font-semibold">
-                                {relatedDiscount}% OFF
-                              </span>
-                            </>
-                          )}
+                      <div className="p-3">
+                        <h3 className="font-semibold text-sm text-gray-800 mb-1 line-clamp-2">
+                          {relatedProduct.name}
+                        </h3>
+                        <div className="flex items-center gap-1 mb-2">
+                          {[...Array(5)].map((_, i) => (
+                            <Star
+                              key={i}
+                              className={`w-2.5 h-2.5 ${
+                                i < Math.round(relatedProduct.averageRating)
+                                  ? "fill-yellow-400 text-yellow-400"
+                                  : "fill-gray-200 text-gray-200"
+                              }`}
+                            />
+                          ))}
+                          <span className="text-xs text-gray-500">
+                            ({relatedProduct.reviewCount})
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="text-base font-bold text-primary">
+                            ₹{relatedProduct.price.toLocaleString()}
+                          </span>
+                          {relatedProduct.compareAtPrice &&
+                            relatedDiscount > 0 && (
+                              <>
+                                <span className="text-xs text-gray-500 line-through">
+                                  ₹
+                                  {relatedProduct.compareAtPrice.toLocaleString()}
+                                </span>
+                                <span className="text-xs bg-red-100 text-red-600 px-1.5 py-0.5 rounded font-semibold">
+                                  {relatedDiscount}%
+                                </span>
+                              </>
+                            )}
+                        </div>
                       </div>
-                    </div>
-                  </Link>
-                );
-              })}
+                    </Link>
+                  );
+                })}
+              </div>
             </div>
           </div>
         )}
