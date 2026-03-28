@@ -914,7 +914,8 @@ export default function ProductDetailClient({
                 {relatedProducts.map((relatedProduct) => {
                   const relatedDiscount = relatedProduct.compareAtPrice
                     ? Math.round(
-                        ((relatedProduct.compareAtPrice - relatedProduct.price) /
+                        ((relatedProduct.compareAtPrice -
+                          relatedProduct.price) /
                           relatedProduct.compareAtPrice) *
                           100,
                       )
