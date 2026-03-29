@@ -2,6 +2,9 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import ProductDetailClient from "./ProductDetailClient";
 
+// Cache product pages for 1 hour — products rarely change minute-to-minute
+export const revalidate = 3600;
+
 async function getProduct(slug: string) {
   const product = await prisma.product.findUnique({
     where: { slug },
@@ -53,31 +56,33 @@ async function getProduct(slug: string) {
 }
 
 async function getRelatedProducts(productId: string, categoryIds: string[]) {
-  // Try same category first
-  let products: any[] = [];
-  if (categoryIds.length > 0) {
-    products = await prisma.product.findMany({
-      where: {
-        isActive: true,
-        id: { not: productId },
-        categories: { some: { categoryId: { in: categoryIds } } },
-      },
-      include: { images: { take: 1, orderBy: { order: "asc" } } },
-      take: 5,
-    });
-  }
-
-  // Fallback: fill up to 5 with featured/recent products
-  if (products.length < 5) {
-    const existingIds = [productId, ...products.map((p) => p.id)];
-    const fallback = await prisma.product.findMany({
-      where: { isActive: true, id: { notIn: existingIds } },
+  // Run both queries in parallel: category-matched + popular fallback
+  const [categoryProducts, fallbackProducts] = await Promise.all([
+    categoryIds.length > 0
+      ? prisma.product.findMany({
+          where: {
+            isActive: true,
+            id: { not: productId },
+            categories: { some: { categoryId: { in: categoryIds } } },
+          },
+          include: { images: { take: 1, orderBy: { order: "asc" } } },
+          take: 5,
+        })
+      : Promise.resolve([]),
+    prisma.product.findMany({
+      where: { isActive: true, id: { not: productId } },
       include: { images: { take: 1, orderBy: { order: "asc" } } },
       orderBy: [{ isFeatured: "desc" }, { createdAt: "desc" }],
-      take: 5 - products.length,
-    });
-    products = [...products, ...fallback];
-  }
+      take: 5,
+    }),
+  ]);
+
+  // Category-matched products first, fill remainder with fallback (no duplicates)
+  const categoryProductIds = new Set(categoryProducts.map((p) => p.id));
+  const uniqueFallback = fallbackProducts.filter(
+    (p) => !categoryProductIds.has(p.id),
+  );
+  const products = [...categoryProducts, ...uniqueFallback].slice(0, 5);
 
   return products.map((p) => ({
     ...p,
