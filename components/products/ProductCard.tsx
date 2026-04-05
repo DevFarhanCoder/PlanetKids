@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { Heart, ShoppingCart, Star } from "lucide-react";
 import { useState, useEffect } from "react";
@@ -55,6 +56,7 @@ export default function ProductCard(props: ProductCardProps) {
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
   const [isTogglingWishlist, setIsTogglingWishlist] = useState(false);
+  const [imageError, setImageError] = useState(false);
 
   // Check if product is in wishlist
   useEffect(() => {
@@ -160,11 +162,24 @@ export default function ProductCard(props: ProductCardProps) {
     <Link href={`/products/${slug}`} className="product-card group block">
       <div className="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border-2 border-gray-200 hover:border-primary-400 h-full">
         <div className="relative aspect-square bg-gradient-to-br from-primary-50 to-orange-50 overflow-hidden">
-          {/* Image Placeholder */}
-          <div className="absolute inset-0 flex items-center justify-center">
-            <span className="text-7xl transform group-hover:scale-110 transition-transform duration-500">
-              {image}
-            </span>
+          {/* Product Image */}
+          <div className="absolute inset-0">
+            {image && !imageError ? (
+              <Image
+                src={image}
+                alt={name || "Product image"}
+                fill
+                sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                className="object-cover group-hover:scale-110 transition-transform duration-500"
+                onError={() => setImageError(true)}
+              />
+            ) : (
+              <div className="absolute inset-0 flex items-center justify-center">
+                <span className="text-7xl transform group-hover:scale-110 transition-transform duration-500">
+                  📦
+                </span>
+              </div>
+            )}
           </div>
 
           {/* Badges */}
